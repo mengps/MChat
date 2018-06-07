@@ -6,3 +6,5 @@ release/
 Makefile
 *.stash
 *.rc
+*.exe
+*.qmlc

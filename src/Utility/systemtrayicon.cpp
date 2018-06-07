@@ -3,11 +3,11 @@
 #include <QAction>
 #include "systemtrayicon.h"
 
-#ifdef Q_OS_WIN
+/*#ifdef Q_OS_WIN
 #include <windows.h>
 #include <windowsx.h>
 #define WM_TRAYNOTIFY WM_USER + 1
-#endif
+#endif*/
 
 MyAction::MyAction(QObject *parent)
     :   QAction(parent)
