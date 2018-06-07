@@ -45,7 +45,7 @@ class MyMenu : public QQuickItem
     Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
 
 public:
-    MyMenu(QObject *parent = nullptr);
+    MyMenu(QQuickItem *parent = nullptr);
     ~MyMenu();
 
     int width() const;
@@ -85,7 +85,7 @@ class SystemTrayIcon : public QQuickItem
     Q_PROPERTY(MyMenu* menu READ menu WRITE setMenu NOTIFY menuChanged)
 
 public:
-    SystemTrayIcon(QObject *parent = nullptr);
+    SystemTrayIcon(QQuickItem *parent = nullptr);
     ~SystemTrayIcon();
 
     int x() const;
