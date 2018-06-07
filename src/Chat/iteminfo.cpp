@@ -46,7 +46,7 @@ int ItemInfo::unreadMessage() const
 
 ChatMessage* ItemInfo::lastMessage() const
 {
-    return m_messageList->dequeue();
+    return m_messageList->last();
 }
 
 ChatMessageList* ItemInfo::messageList() const

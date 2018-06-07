@@ -49,7 +49,7 @@ MySeparator::~MySeparator()
 
 }
 
-MyMenu::MyMenu(QQuickItem *parent)
+MyMenu::MyMenu(QObject *parent)
     :   QQuickItem(parent)
 {
     setObjectName("MyMenu");
@@ -146,7 +146,7 @@ void MyMenu::componentComplete()        //在菜单完成构建后调用，将�
     }
 }
 
-SystemTrayIcon::SystemTrayIcon(QQuickItem *parent)
+SystemTrayIcon::SystemTrayIcon(QObject *parent)
     :   QQuickItem(parent)
 {
     m_systemTray = new QSystemTrayIcon(this);

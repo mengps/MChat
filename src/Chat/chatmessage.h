@@ -49,7 +49,7 @@ public:
 
    Q_INVOKABLE int count() const;
    Q_INVOKABLE void append(ChatMessage *msg);
-   Q_INVOKABLE ChatMessage* dequeue();
+   Q_INVOKABLE ChatMessage* last();
 
 public slots:
     void setData(const QList<ChatMessage *> &data);

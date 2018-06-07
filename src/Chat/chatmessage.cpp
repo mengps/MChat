@@ -91,7 +91,7 @@ void ChatMessageList::append(ChatMessage *msg)
     emit messageListChanged();
 }
 
-ChatMessage* ChatMessageList::dequeue()
+ChatMessage* ChatMessageList::last()
 {
     if (!m_msgList.isEmpty())
         return m_msgList.last();

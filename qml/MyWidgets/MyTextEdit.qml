@@ -51,7 +51,6 @@ TextEdit
 
     onActiveFocusChanged: print("activeFocus", activeFocus)
     onFocusChanged: print("focus", focus)
-    onEnabledChanged: print("enabled", enabled)
 
     Menu
     {
