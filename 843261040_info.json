@@ -1,0 +1,190 @@
+﻿{
+    "Background": "qrc:/image/Background/3.jpg",
+    "Birthday": "1996-07-27",
+    "FriendList": [
+        {
+            "Friend": [
+                {
+                    "Birthday": "1995-9-14",
+                    "Gender": "女",
+                    "HeadImage": "qrc:/image/HeadImage/head17.jpg",
+                    "Level": 31,
+                    "Nickname": "hhh",
+                    "Signature": "~~~~~~~~~~~",
+                    "Username": "00000111"
+                }
+            ],
+            "Group": "~~~~~~"
+        },
+        {
+            "Friend": [
+                {
+                    "Birthday": "1997-12-02",
+                    "Gender": "男",
+                    "HeadImage": "qrc:/image/HeadImage/head1.jpg",
+                    "Level": 16,
+                    "Nickname": "mps1",
+                    "Signature": "我不想多说我只知道我爱你我还爱着你",
+                    "Username": "00000001"
+                },
+                {
+                    "Birthday": "1992-05-21",
+                    "Gender": "男",
+                    "HeadImage": "qrc:/image/HeadImage/head2.jpg",
+                    "Level": 10,
+                    "Nickname": "mps2",
+                    "Signature": "Baicheng until you let I love a good bitter",
+                    "Username": "00000002"
+                },
+                {
+                    "Birthday": "1993-07-27",
+                    "Gender": "男",
+                    "HeadImage": "qrc:/image/HeadImage/head3.jpg",
+                    "Level": 20,
+                    "Nickname": "mps3",
+                    "Signature": "成熟，稳重，贵在坚持。。。",
+                    "Username": "00000003"
+                },
+                {
+                    "Birthday": "1996-07-27",
+                    "Gender": "男",
+                    "HeadImage": "qrc:/image/HeadImage/head4.jpg",
+                    "Level": 16,
+                    "Nickname": "mps4",
+                    "Signature": "爱一个人 别太认真",
+                    "Username": "00000004"
+                },
+                {
+                    "Birthday": "1993-06-26",
+                    "Gender": "男",
+                    "HeadImage": "qrc:/image/HeadImage/head11.jpg",
+                    "Level": 78,
+                    "Nickname": "ssj3",
+                    "Signature": "在生命长河中能遇见你，我何其有幸。",
+                    "Username": "00000005"
+                },
+                {
+                    "Birthday": "1996-05-05",
+                    "Gender": "男",
+                    "HeadImage": "qrc:/image/HeadImage/head12.jpg",
+                    "Level": 54,
+                    "Nickname": "ssj4",
+                    "Signature": "陪你开枪的很多 替你挡子弹的却很少",
+                    "Username": "00000006"
+                },
+                {
+                    "Birthday": "1996-04-27",
+                    "Gender": "男",
+                    "HeadImage": "qrc:/image/HeadImage/head13.jpg",
+                    "Level": 18,
+                    "Nickname": "yyy1",
+                    "Signature": "心里有太多浓重的阴影，被生活混淆的烦躁不安",
+                    "Username": "0000007"
+                },
+                {
+                    "Birthday": "1946-07-27",
+                    "Gender": "男",
+                    "HeadImage": "qrc:/image/HeadImage/head14.jpg",
+                    "Level": 26,
+                    "Nickname": "yyy2",
+                    "Signature": "有些事，做了才知道。有些事，错了才知道。有些事，长大了才知道",
+                    "Username": "0000008"
+                }
+            ],
+            "Group": "我的好友"
+        },
+        {
+            "Friend": [
+                {
+                    "Birthday": "1997-12-23",
+                    "Gender": "男",
+                    "HeadImage": "qrc:/image/HeadImage/head18.jpg",
+                    "Level": 42,
+                    "Nickname": "ywq",
+                    "Signature": "我朋友说：帅，不能当饭吃。 我回了一句：可不帅的话，连饭都吃不下吧！",
+                    "Username": "00000009"
+                },
+                {
+                    "Birthday": "1992-07-12",
+                    "Gender": "女",
+                    "HeadImage": "qrc:/image/HeadImage/head6.jpg",
+                    "Level": 18,
+                    "Nickname": "mps6",
+                    "Signature": "我该清醒了，他是男神，而我只是女屌丝！",
+                    "Username": "00000010"
+                },
+                {
+                    "Birthday": "1993-12-22",
+                    "Gender": "男",
+                    "HeadImage": "qrc:/image/HeadImage/head7.jpg",
+                    "Level": 20,
+                    "Nickname": "mps7",
+                    "Signature": "用我的温柔 为你打造一整个世界～",
+                    "Username": "00000011"
+                },
+                {
+                    "Birthday": "1996-01-27",
+                    "Gender": "男",
+                    "HeadImage": "qrc:/image/HeadImage/head8.jpg",
+                    "Level": 37,
+                    "Nickname": "mps8",
+                    "Signature": "用一朵花轮回的时间，见证我最美好的年华",
+                    "Username": "00000012"
+                }
+            ],
+            "Group": "我的同学"
+        },
+        {
+            "Friend": [
+                {
+                    "Birthday": "1994-07-27",
+                    "Gender": "男",
+                    "HeadImage": "qrc:/image/HeadImage/head9.jpg",
+                    "Level": 22,
+                    "Nickname": "ssj1",
+                    "Signature": "噢噢噢噢哦",
+                    "Username": "00000013"
+                },
+                {
+                    "Birthday": "1991-05-27",
+                    "Gender": "男",
+                    "HeadImage": "qrc:/image/HeadImage/head10.jpg",
+                    "Level": 19,
+                    "Nickname": "ssj2",
+                    "Signature": "思绪，是一粒一粒堆积成的沙丘，是过往的一点一滴",
+                    "Username": "00000014"
+                }
+            ],
+            "Group": "我的家人"
+        },
+        {
+            "Friend": [
+                {
+                    "Birthday": "1995-07-27",
+                    "Gender": "男",
+                    "HeadImage": "qrc:/image/HeadImage/head15.jpg",
+                    "Level": 31,
+                    "Nickname": "yyy3",
+                    "Signature": "成长是需要多少悲伤来覆盖出来的海市蜃楼",
+                    "Username": "00000015"
+                },
+                {
+                    "Birthday": "1993-01-18",
+                    "Gender": "男",
+                    "HeadImage": "qrc:/image/HeadImage/head16.jpg",
+                    "Level": 33,
+                    "Nickname": "yyy4",
+                    "Signature": "你愿意做我的小火车永远不出轨  ||  我愿意做你的小美人鱼永不劈腿",
+                    "Username": "00000016"
+                }
+            ],
+            "Group": "我的网友"
+        }
+    ],
+    "Gender": "男",
+    "HeadImage": "qrc:/image/head1.jpg",
+    "Level": 999,
+    "Nickname": "MPS",
+    "Signature": "嗷嗷嗷嗷嗷嗷嗷嗷嗷嗷",
+    "Username": "843261040"
+}

@@ -1,0 +1,32 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/chatApi.js</file>
+        <file>qml/main.qml</file>
+        <file>qml/LoginInterface/LoginFailure.qml</file>
+        <file>qml/LoginInterface/MyParticle.qml</file>
+        <file>qml/MyWidgets/CusButton.qml</file>
+        <file>qml/MyWidgets/HeadStatus.qml</file>
+        <file>qml/MyWidgets/MyCheckButton.qml</file>
+        <file>qml/MainInterface/Contact.qml</file>
+        <file>qml/MainInterface/Introduction.qml</file>
+        <file>qml/MainInterface/MainInterface.qml</file>
+        <file>qml/MyWidgets/MyLevel.qml</file>
+        <file>qml/MyWidgets/MyToolTip.qml</file>
+        <file>qml/MyWidgets/MyComboBox.qml</file>
+        <file>qml/MyWidgets/MyButton.qml</file>
+        <file>qml/MyWidgets/CircularImage.qml</file>
+        <file>qml/MyWidgets/MoveMouseArea.qml</file>
+        <file>qml/UserInformation/ReplaceHeadImage.qml</file>
+        <file>qml/UserInformation/UserInformation.qml</file>
+        <file>qml/UserInformation/SaveInformation.qml</file>
+        <file>qml/ChatWindow/ChatRecord.qml</file>
+        <file>qml/ChatWindow/ChatWindow.qml</file>
+        <file>qml/MyWidgets/MyTextEdit.qml</file>
+        <file>qml/MyWidgets/FacesManager.qml</file>
+        <file>qml/MyWidgets/ColorManager.qml</file>
+        <file>qml/MyWidgets/ResizeMouseArea.qml</file>
+        <file>qml/MainInterface/RecentMessage.qml</file>
+        <file>qml/MyWidgets/SystemTray.qml</file>
+        <file>qml/MyWidgets/MessageTipWindow.qml</file>
+    </qresource>
+</RCC>

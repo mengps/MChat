@@ -1,0 +1,8 @@
+debug/
+release/
+*.user
+*.Debug
+*.Release
+Makefile
+*.stash
+*.rc
