@@ -1,5 +1,5 @@
 ﻿{
-    "Background": "../image/Background/2.jpg",
+    "Background": "qrc:/image/Background/2.jpg",
     "Birthday": "1997-12-02",
     "FriendList": [
         {
@@ -18,7 +18,7 @@
         }
     ],
     "Gender": "男",
-    "HeadImage": "../image/HeadImage/head1.jpg",
+    "HeadImage": "qrc:/image/HeadImage/head1.jpg",
     "Level": 16,
     "Nickname": "mps1",
     "Signature": "我不想多说我只知道我爱你我还爱着你",

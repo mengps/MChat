@@ -8,8 +8,6 @@
         <file>image/Background/6.jpg</file>
         <file>image/Background/7.jpg</file>
         <file>image/Background/8.jpg</file>
-        <file>image/ContactImage/bottomArrow.png</file>
-        <file>image/ContactImage/rightArrow.png</file>
         <file>image/ButtonImage/close_disable.png</file>
         <file>image/ButtonImage/close_down.png</file>
         <file>image/ButtonImage/close_hover.png</file>
@@ -310,5 +308,7 @@
         <file>image/WidgetsImage/replaceMask.png</file>
         <file>image/WidgetsImage/shake.png</file>
         <file>image/WidgetsImage/topArrow.png</file>
+        <file>image/WidgetsImage/leftArrow.png</file>
+        <file>image/WidgetsImage/rightArrow.png</file>
     </qresource>
 </RCC>

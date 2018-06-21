@@ -16,7 +16,7 @@ public slots:
     void requestNewConnection();                                        //建立一个新的连接/重新连接
     void readyLogin(const QString &username, const QString &password);  //准备登录
     void startHeartbeat();
-    void sendMessage(MSG_TYPE type, const MSG_ID_TYPE &receiver = MSG_ID_TYPE(), const QByteArray &message = QByteArray());
+    void sendMessage(MSG_TYPE type, const QByteArray &receiver = QByteArray(), const QByteArray &message = QByteArray());
     void readData();
 
 private slots:

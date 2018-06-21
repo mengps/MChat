@@ -23,9 +23,8 @@ FramelessWindow
 
     function logging()
     {
-
-        chatManager.username = userNameEditor.userName;
-        chatManager.password = passWordEditor.passWord;
+        chatManager.username = usernameEditor.username;
+        chatManager.password = passwordEditor.password;
         chatManager.rememberPassword = remember.checked;
         chatManager.autoLogin = autoLogin.checked;
         chatManager.loginStatus = Chat.Logging;
@@ -289,17 +288,17 @@ FramelessWindow
 
             Item
             {
-                id: userNameEditor
+                id: usernameEditor
                 width: 195
                 height: 30
                 anchors.top: headStatus.top
                 anchors.left: headStatus.right
                 anchors.leftMargin: 13
-                property alias userName: userNameField.text
+                property alias username: usernameField.text
 
                 TextField
                 {
-                    id: userNameField
+                    id: usernameField
                     anchors.fill: parent
                     font.pointSize: 10
                     font.family: "微软雅黑"
@@ -319,16 +318,111 @@ FramelessWindow
                         border.color: parent.hovered ? "#1583DD" : "#E5E5E5";
                     }
                 }
+
+                Image
+                {
+                    id: dropDownImage
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: 4
+                    width: 22
+                    height: 22
+                    source: clicked ? "qrc:/image/WidgetsImage/topArrow.png" : "qrc:/image/WidgetsImage/bottomArrow.png"
+                    property bool clicked: false
+
+                    MouseArea
+                    {
+                        anchors.fill: parent
+                        hoverEnabled: true
+
+                        onClicked:
+                        {
+                            parent.clicked = !parent.clicked;
+                            if (parent.clicked)
+                                histroyListView.model = chatManager.getLoginHistory();
+                        }
+                        onEntered: cursorShape = Qt.PointingHandCursor;
+                        onExited: cursorShape = Qt.ArrowCursor;
+                    }
+                }
+            }
+
+            Rectangle
+            {
+                id: dropDownBox
+                visible: dropDownImage.clicked
+                focus: true
+                clip: true
+                anchors.horizontalCenter: usernameEditor.horizontalCenter
+                anchors.top: usernameEditor.bottom
+                anchors.topMargin: 2
+                radius: 4
+                z: 6
+                width: usernameEditor.width
+                height: 100
+                border.color: "gray"
+
+                ListView
+                {
+                    id: histroyListView
+                    visible: true
+                    clip: true
+                    anchors.top: parent.top
+                    anchors.topMargin: 6
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 6
+                    anchors.left: parent.left
+                    anchors.leftMargin: 2
+                    anchors.right: parent.right
+                    anchors.rightMargin: 2
+                    spacing: 2
+                    delegate: Component
+                    {
+                        Rectangle
+                        {
+                            width: histroyListView.width
+                            height: ListView.isCurrentItem ? 30 : 20
+                            color: ListView.isCurrentItem ? "#D1D1D1" : "white"
+                            property bool hovered: false
+
+                            Text
+                            {
+                                anchors.centerIn: parent
+                                text: qsTr(modelData)
+                                font.pointSize: 11
+                                font.family: "微软雅黑"
+                            }
+
+                            MouseArea
+                            {
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                onEntered:
+                                {
+                                    parent.hovered = true;
+                                    histroyListView.currentIndex = index;
+                                }
+                                onExited: parent.hovered = false;
+                                onClicked:
+                                {
+                                    dropDownImage.clicked = !dropDownImage.clicked;
+                                    chatManager.username = modelData;
+                                    chatManager.readSettings();
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             Item
             {
                 id: signIn
                 width: 60
-                height: userNameEditor.height
-                anchors.left: userNameEditor.right
+                height: usernameEditor.height
+                anchors.left: usernameEditor.right
                 anchors.leftMargin: 12
-                anchors.verticalCenter: userNameEditor.verticalCenter
+                anchors.verticalCenter: usernameEditor.verticalCenter
 
                 MouseArea
                 {
@@ -357,16 +451,16 @@ FramelessWindow
 
             Item
             {
-                id: passWordEditor
+                id: passwordEditor
                 width: 195
                 height: 30
-                anchors.top: userNameEditor.bottom
-                anchors.left: userNameEditor.left
-                property alias passWord: passWordField.text
+                anchors.top: usernameEditor.bottom
+                anchors.left: usernameEditor.left
+                property alias password: passwordField.text
 
                 TextField
                 {
-                    id: passWordField
+                    id: passwordField
                     anchors.fill: parent
                     text: chatManager.password
                     placeholderText : qsTr("密码")
@@ -429,10 +523,10 @@ FramelessWindow
             {
                 id: forget
                 width: 60
-                height: passWordEditor.height
-                anchors.left: passWordEditor.right
+                height: passwordEditor.height
+                anchors.left: passwordEditor.right
                 anchors.leftMargin: 12
-                anchors.verticalCenter: passWordEditor.verticalCenter
+                anchors.verticalCenter: passwordEditor.verticalCenter
                 property bool hovered: false
 
                 MouseArea
@@ -469,9 +563,9 @@ FramelessWindow
                 color: Qt.lighter("#333")
                 text: qsTr("记住密码")
                 checked: chatManager.rememberPassword
-                anchors.top: passWordEditor.bottom
+                anchors.top: passwordEditor.bottom
                 anchors.topMargin: 12
-                anchors.left: passWordEditor.left
+                anchors.left: passwordEditor.left
                 anchors.leftMargin: 22
             }
 
@@ -485,7 +579,7 @@ FramelessWindow
                 color: Qt.lighter("#333")
                 text: qsTr("自动登录")
                 checked: chatManager.autoLogin
-                anchors.top: passWordEditor.bottom
+                anchors.top: passwordEditor.bottom
                 anchors.topMargin: 12
                 anchors.left: remember.right
                 anchors.leftMargin: 10
@@ -498,7 +592,7 @@ FramelessWindow
                 height: 30
                 anchors.bottom: clientInput.bottom
                 anchors.bottomMargin: 14
-                anchors.left: userNameEditor.left
+                anchors.left: usernameEditor.left
 
                 Rectangle
                 {

@@ -32,16 +32,16 @@ ChatManager::ChatManager(QObject *parent)
     //connect updateUserInfo UserInfoChanged()
 }
 
+ChatManager::~ChatManager()
+{
+
+}
+
 void ChatManager::initChatManager(QQmlApplicationEngine *qmlengine, QJSEngine *jsengine)
 {
     m_qmlEngine = qmlengine;
     m_jsEngine = jsengine;
-    readSettings();
-}
-
-ChatManager::~ChatManager()
-{
-
+    //readSettings();
 }
 
 bool ChatManager::loadLoginInterface()
@@ -117,7 +117,7 @@ QString ChatManager::password() const
     return m_password;
 }
 
-ItemInfo *ChatManager::userInfo() const
+ItemInfo* ChatManager::userInfo() const
 {
     return m_userInfo;
 }
@@ -218,6 +218,21 @@ void ChatManager::onLoginFinshed(bool ok)
     else setLoginStatus(Chat::LoginFailure);
 }
 
+QStringList ChatManager::getLoginHistory()
+{
+    QDir dir(QDir::homePath() + "/MChat/Settings");
+    QFileInfoList list = dir.entryInfoList();
+    QStringList historyList;
+
+    for (auto it : list)
+    {
+        if (it.isDir() && it.fileName() != "." && it.fileName() != "..")
+            historyList.append(it.fileName());
+    }
+
+    return historyList;
+}
+
 FramelessWindow* ChatManager::addChatWindow(const QString &username)
 {
     auto info = createItemInfo(username);
@@ -265,7 +280,7 @@ void ChatManager::deleteChatWindow()
     chatWindow = nullptr;
 }
 
-FriendInfo *ChatManager::createItemInfo(const QString &username)
+FriendInfo* ChatManager::createItemInfo(const QString &username)
 {
     if (m_friendList.contains(username))
         return qobject_cast<FriendInfo *>(m_friendList[username]);
@@ -281,7 +296,7 @@ FriendInfo *ChatManager::createItemInfo(const QString &username)
 
 void ChatManager::readSettings()
 {
-    QSettings settings("Settings//" + m_username + "//configura.ini", QSettings::IniFormat);
+    QSettings settings(QDir::homePath() + "/MChat/Settings/" + m_username + "/configura.ini", QSettings::IniFormat);
 
     if (m_loginStatus != Chat::LoginFinished)
     {
@@ -289,6 +304,12 @@ void ChatManager::readSettings()
         setChatStatus((Chat::ChatStatus)settings.value("ChatStatus").toInt());
         setRememberPassword(settings.value("RememberPassword").toBool());
         setAutoLogin(settings.value("AutoLogin").toBool());
+        settings.endGroup();
+
+        settings.beginGroup("AccountInfo");
+        setUsername(settings.value("Username").toString());
+        if (m_rememberPassword)
+            setPassword(QString::fromLatin1(QByteArray::fromBase64(settings.value("Password").toByteArray())));
         settings.endGroup();
     }
     else
@@ -305,18 +326,30 @@ void ChatManager::readSettings()
 
 void ChatManager::writeSettings()
 {
-    QSettings settings("Settings//" + m_username + "//configura.ini", QSettings::IniFormat);
 
-    if (m_loginStatus != Chat::LoginFinished)
+    QString path = QDir::homePath() + "/MChat/Settings/" + m_username;
+    QSettings settings(path + "/configura.ini", QSettings::IniFormat);
+
+    if (!QFile::exists(path))   //为每一个帐号创建一个文件夹
     {
-        settings.beginGroup("LoginSettings");
-        settings.setValue("ChatStatus", m_chatStatus);
-        settings.setValue("RememberPassword", m_rememberPassword);
-        settings.setValue("AutoLogin", m_autoLogin);
-        settings.endGroup();
+        QDir dir;
+        dir.mkpath(path);
     }
-    else
+
+    settings.beginGroup("LoginSettings");
+    settings.setValue("ChatStatus", m_chatStatus);
+    settings.setValue("RememberPassword", m_rememberPassword);
+    settings.setValue("AutoLogin", m_autoLogin);
+    settings.endGroup();
+
+    if (m_loginStatus == Chat::LoginFinished)
     {
+        settings.beginGroup("AccountInfo");
+        settings.setValue("Username", m_username);
+        if (m_rememberPassword)
+            settings.setValue("Password", m_password.toLatin1().toBase64());
+        settings.endGroup();
+
         settings.beginGroup("MainSettings");
         settings.setValue("HeadImage", m_userInfo->headImage());
         settings.setValue("Coord", m_mainInterface->coord());

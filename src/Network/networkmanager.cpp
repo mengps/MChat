@@ -1,4 +1,4 @@
-#include <QDebug>
+﻿#include <QDebug>
 #include <QFile>
 #include <QDateTime>
 #include <QJsonObject>
@@ -21,7 +21,6 @@ NetworkManager::NetworkManager(QObject *parent)
     :   QObject(parent)
 {
     m_tcpManager = new TcpManager(this);
-    m_databaseManager = DatabaseManager::instance();
 
     connect(m_tcpManager, &TcpManager::logined, this, &NetworkManager::onLogined);
     connect(m_tcpManager, &TcpManager::loginError, this, &NetworkManager::loginError);
@@ -95,6 +94,7 @@ void NetworkManager::onLogined(bool ok)
         {
             m_jsonParse = new MyJsonParse(myInfo);
             m_tcpManager->startHeartbeat();     //开始心跳检测
+            m_databaseManager = DatabaseManager::instance();	//初始化本地数据库
         }
         else qDebug() << "数据初始化不成功：" << error.errorString();
     }

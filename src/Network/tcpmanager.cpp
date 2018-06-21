@@ -61,7 +61,7 @@ void TcpManager::startHeartbeat()
         m_heartbeat->start();
 }
 
-void TcpManager::sendMessage(MSG_TYPE type, const MSG_ID_TYPE &receiver, const QByteArray &message)
+void TcpManager::sendMessage(MSG_TYPE type, const QByteArray &receiver, const QByteArray &message)
 {
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
@@ -76,7 +76,7 @@ void TcpManager::sendMessage(MSG_TYPE type, const MSG_ID_TYPE &receiver, const Q
         m_data =  message.toBase64();
         md5 = QCryptographicHash::hash(m_data, QCryptographicHash::Md5);
         m_fileBytes = m_data.size() + sizeof(flag) + sizeof(type) + sizeof(MSG_SIZE_TYPE) +
-                sizeof(MSG_ID_TYPE) + senderID.size() + sizeof(MSG_ID_TYPE) + receiver.size() +
+                sizeof(QByteArray) + senderID.size() + sizeof(QByteArray) + receiver.size() +
                 sizeof(QByteArray) + md5.size();
     }
 

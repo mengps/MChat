@@ -17,6 +17,7 @@ class NetworkManager : public QObject
 
 public:
     static NetworkManager* instance();
+    ~NetworkManager();
 
 public slots:    
     ItemInfo* createUserInfo();
@@ -39,7 +40,6 @@ signals:
 
 private:
     NetworkManager(QObject *parent = nullptr);
-    ~NetworkManager();
 
     QPointer<TcpManager> m_tcpManager;
     QPointer<UdpManager> m_udpManager;

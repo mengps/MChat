@@ -75,7 +75,7 @@ FramelessWindow
 
     function createSuperMenu(argX, argY)
     {
-        var componet = Qt.createComponent("qrc:/image/MyWidgets/SuperMenu.qml");
+        var componet = Qt.createComponent("qrc:/qml/MyWidgets/SuperMenu.qml");
         if (componet.status === Component.Ready)
             var obj = componet.createObject(chatWindow, { "x" : argX, "y" : argY, "z" : 10 });
        return obj;

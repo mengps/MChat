@@ -49,9 +49,6 @@ TextEdit
         }
     }
 
-    onActiveFocusChanged: print("activeFocus", activeFocus)
-    onFocusChanged: print("focus", focus)
-
     Menu
     {
         id: menu

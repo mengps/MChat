@@ -21,9 +21,9 @@ FramelessWindow
 
     property bool custom: false;
     property bool hasModify: false;
-    property int index: 0;
-    property var headImageWidget: undefined
-    property var saveInformation: undefined
+    property int index: customBackgroundComboBox.index;
+    property var headImageWidget: undefined;
+    property var saveInformation: undefined;
     property var backgroundImage: ["", "qrc:/image/Background/5.jpg", "qrc:/image/Background/6.jpg",
                                    "qrc:/image/Background/7.jpg", "qrc:/image/Background/8.jpg",
                                    "qrc:/image/Background/9.jpg", "qrc:/image/Background/10.jpg"];
@@ -31,7 +31,7 @@ FramelessWindow
     function save()
     {
         chatManager.userInfo.headImage = headImageEditor.source;
-        chatManager.userInfo.nickname = nicknameField.text;
+        chatManager.userInfo.nickname = nicknameEditor.text;
         chatManager.userInfo.gender = genderComboBox.model[genderComboBox.index];
         chatManager.userInfo.signature = signatureInput.text;
         networkManager.uploadUserInformation();
@@ -157,7 +157,7 @@ FramelessWindow
         {
             id: headImage
             anchors.verticalCenter: headImageEditor.verticalCenter
-            anchors.left: nicknameEditor.left
+            anchors.left: nickname.left
             height: 30
             font.family: "微软雅黑"
             text: qsTr("头像：")
@@ -215,7 +215,7 @@ FramelessWindow
 
         Row
         {
-            id: nicknameEditor
+            id: nickname
             spacing: 5
             anchors.top: myLevel.bottom
             anchors.topMargin: 15
@@ -231,7 +231,7 @@ FramelessWindow
 
             TextField
             {
-                id: nicknameField
+                id: nicknameEditor
                 width: 130
                 height: 30
                 focus: true
@@ -256,8 +256,8 @@ FramelessWindow
                 background : Rectangle
                 {
                     radius: 4
-                    border.width: 2
-                    border.color: parent.hovered || parent.focus ? "#1583DD" : "transparent";
+                    border.width: (parent.hovered || parent.focus) ? 2 : 1
+                    border.color: (parent.hovered || parent.focus) ? "#1583DD" : "transparent"
                 }
                 KeyNavigation.tab: genderComboBox
                 KeyNavigation.down: genderComboBox
@@ -280,9 +280,9 @@ FramelessWindow
         Text
         {
             id: gender
-            anchors.top: nicknameEditor.bottom
+            anchors.top: nickname.bottom
             anchors.topMargin: 15
-            anchors.left: nicknameEditor.left
+            anchors.left: nickname.left
             height: 30
             font.family: "微软雅黑"
             text: qsTr("性别：")
@@ -298,7 +298,7 @@ FramelessWindow
             anchors.top: gender.top
             index: chatManager.userInfo.gender === "男" ? 0 : 1;
             model: ["男", "女"]
-            KeyNavigation.up: clicked ? comboBox : nicknameField;
+            KeyNavigation.up: clicked ? comboBox : nicknameEditor;
             KeyNavigation.tab: clicked ? comboBox : yearField;
             KeyNavigation.down: clicked ? comboBox : yearField;
             onComboBoxEdited: root.hasModify = true;
@@ -340,8 +340,8 @@ FramelessWindow
                 background : Rectangle
                 {
                     radius: 4
-                    border.width: 2
-                    border.color: parent.hovered || parent.focus ? "#1583DD" : "transparent";
+                    border.width: (parent.hovered || parent.focus) ? 2 : 1
+                    border.color: (parent.hovered || parent.focus) ? "#1583DD" : "transparent"
                 }
                 KeyNavigation.up: genderComboBox
                 KeyNavigation.tab: monthField
@@ -374,8 +374,8 @@ FramelessWindow
                 background : Rectangle
                 {
                     radius: 4
-                    border.width: 2
-                    border.color: parent.hovered || parent.focus ? "#1583DD" : "transparent";
+                    border.width: (parent.hovered || parent.focus) ? 2 : 1
+                    border.color: (parent.hovered || parent.focus) ? "#1583DD" : "transparent"
                 }
                 KeyNavigation.up: yearField
                 KeyNavigation.tab: dateField
@@ -408,8 +408,8 @@ FramelessWindow
                 background : Rectangle
                 {
                     radius: 4
-                    border.width: 2
-                    border.color: parent.hovered || parent.focus ? "#1583DD" : "transparent";
+                    border.width: (parent.hovered || parent.focus) ? 2 : 1
+                    border.color: (parent.hovered || parent.focus) ? "#1583DD" : "transparent"
                 }
                 KeyNavigation.up: monthField
                 KeyNavigation.tab: customBackgroundComboBox
@@ -437,7 +437,7 @@ FramelessWindow
             anchors.left: customBackground.right
             anchors.leftMargin: 5
             anchors.top: customBackground.top
-            index: root.index
+            index: 0
             model: ["无背景", "背景1", "背景2", "背景3", "背景4", "背景5", "背景6"]
             onIndexChanged:
             {
@@ -446,7 +446,6 @@ FramelessWindow
                     root.custom = true;
                 }
                 else root.custom = false;
-                root.index = index;
             }
             onComboBoxEdited: root.hasModify = true;
             KeyNavigation.up: clicked ? comboBox : dateField;
@@ -488,8 +487,8 @@ FramelessWindow
             background: Rectangle
             {
                 radius: 4
-                border.width: 2
-                border.color: parent.hovered || parent.focus ? "#1583DD" : "transparent";
+                border.width: (parent.hovered || parent.focus) ? 2 : 1
+                border.color: (parent.hovered || parent.focus) ? "#1583DD" : "transparent"
             }
             KeyNavigation.up: customBackgroundComboBox
             property int maxLength: 30;

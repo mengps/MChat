@@ -89,9 +89,10 @@ FramelessWindow
 
     function createUserInfomation()
     {
-        var chatComp = Qt.createComponent("qrc:/image/UserInformation/UserInformation.qml");
+        var chatComp = Qt.createComponent("qrc:/qml/UserInformation/UserInformation.qml");
         if (chatComp.status === Component.Ready)
             var obj = chatComp.createObject(mainInterface);
+        else print()
        return obj;
     }
 
@@ -205,22 +206,21 @@ FramelessWindow
         onReleased: cursorShape = Qt.ArrowCursor;
     }
 
-
-    ResizeMouseArea
-    {
-        moveable: false
-        width: parent.actualWidth
-        height: parent.actualHeight
-        target: mainInterface
-    }
-
     Rectangle
     {
         id: content
         radius: 8
+        clip: true
         width: mainInterface.width
         height: mainInterface.height
         anchors.centerIn: parent
+
+        ResizeMouseArea
+        {
+            moveable: false
+            anchors.fill: parent
+            target: mainInterface
+        }
 
         Image
         {

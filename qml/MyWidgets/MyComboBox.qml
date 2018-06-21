@@ -1,14 +1,21 @@
 import QtQuick 2.7
+import QtQuick.Controls 2.2
 
 Item
 {
     id: root
-    width: 130
+    width: itemWidth
+
+    property int index: 0;
+    property int itemWidth: 130
+    property int itemHeight: 30
+    property int dropWidth: itemWidth
+    property int dropHeight: 180
 
     property alias model: listView.model;
+    property alias interactive: listView.interactive
     property alias clicked: currentBox.clicked
     property alias comboBox: dropDownBox
-    property int index: 0;
 
     signal comboBoxEdited();
 
@@ -16,7 +23,6 @@ Item
     {
         if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return)
         {
-            dropDownBox.visible = !dropDownBox.visible;
             currentBox.clicked = !currentBox.clicked;
             root.index = listView.currentIndex
             if (!clicked) focus = !clicked;
@@ -27,10 +33,10 @@ Item
     {
         id: currentBox
         width: parent.width
-        height: 30
+        height: root.itemHeight
         radius: 4
-        border.width: 2
-        border.color: hovered || root.focus ? "#1583DD" : "transparent"
+        border.width: (hovered || root.focus) ? 2 : 1
+        border.color: (hovered || root.focus) ? "#1583DD" : "gray"
         property bool clicked: false
         property bool hovered: false
 
@@ -48,8 +54,8 @@ Item
         {
             anchors.verticalCenter: parent.verticalCenter
             anchors.right: parent.right
-            anchors.rightMargin: 10
-            source: parent.clicked ? "qrc:/image/WidgetsImage/topArrow.png" : "qrc:/image/WidgetsImage/bottomArrow.png";
+            anchors.rightMargin: 8
+            source: currentBox.clicked ? "qrc:/image/WidgetsImage/topArrow.png" : "qrc:/image/WidgetsImage/bottomArrow.png";
         }
 
         MouseArea
@@ -61,9 +67,8 @@ Item
             onExited: parent.hovered = false;
             onClicked:
             {
-                root.focus = true;
-                dropDownBox.visible = !dropDownBox.visible;
-                parent.clicked = !parent.clicked;
+                currentBox.clicked = !currentBox.clicked;
+                dropDownBox.focus = true;
             }
         }
     }
@@ -76,9 +81,8 @@ Item
         {
             id: rc
             width: root.width
-            height: 30
-            radius: 4
-            color: (listView.currentIndex == index) ? "#1583DD" : "#D1D1D1"
+            height: root.itemHeight
+            color: (listView.currentIndex == index) ? "#1583DD" : "white"
             property bool hovered: false
 
             Text
@@ -105,7 +109,6 @@ Item
                 onClicked:
                 {
                     root.index = index;
-                    dropDownBox.visible = !dropDownBox.visible;
                     currentBox.clicked = !currentBox.clicked;
                     root.comboBoxEdited();
                 }
@@ -113,23 +116,30 @@ Item
         }
     }
 
-    Item
+    Rectangle
     {
         id: dropDownBox
-        visible: false
-        width: parent.width
-        height: listView.contentHeight
+        visible: currentBox.clicked
+        clip: true
+        width: root.dropWidth
+        height: Math.min(root.dropHeight, listView.contentHeight)
+        border.color: visible ? "#1583DD" : "transparent"
         anchors.left: parent.left
         anchors.top: currentBox.bottom
         Keys.onUpPressed: listView.decrementCurrentIndex()
         Keys.onDownPressed: listView.incrementCurrentIndex()
+        onFocusChanged: if (!focus) currentBox.clicked = false;
 
         ListView
         {
             id: listView
-            interactive : false
             anchors.fill: parent
             delegate: delegate
+            ScrollBar.vertical: ScrollBar
+            {
+                width: 10
+                policy: ScrollBar.AsNeeded
+            }
         }
     }
 }

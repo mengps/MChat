@@ -61,7 +61,8 @@ class ChatManager : public QObject
     Q_PROPERTY(QQmlListProperty<ItemInfo> recentMessageID READ recentMessageID NOTIFY recentMessageIDChanged)
 
 public:
-    static ChatManager *instance();  //得到当前对象的唯一实例
+    static ChatManager* instance();  //得到当前对象的唯一实例
+    ~ChatManager();
 
     void initChatManager(QQmlApplicationEngine *qmlengine, QJSEngine *jsengine);
     bool loadLoginInterface();
@@ -77,6 +78,17 @@ public:
     FriendGroupList* friendGroupList() const;
     QQmlListProperty<ItemInfo> recentMessageID() const;
 
+    Q_INVOKABLE QStringList getLoginHistory();                              //获取登录历史
+    Q_INVOKABLE FramelessWindow* addChatWindow(const QString &username);    //增加一个聊天窗口
+    Q_INVOKABLE void appendRecentMessageID(const QString &username);        //添加一个用户到最近消息列表
+    Q_INVOKABLE FriendInfo* createItemInfo(const QString &username);        //创建/获取一个好友信息
+
+    Q_INVOKABLE void closeAllOpenedWindow();                    //关闭所有打开的窗口
+    Q_INVOKABLE void readSettings();                            //读取基本设置
+    Q_INVOKABLE void writeSettings();                           //写入基本设置
+    Q_INVOKABLE void show();                                    //任何时刻显示界面
+    Q_INVOKABLE void quit();                                    //任何时刻正确退出程序
+
 public slots:
     void setLoginStatus(Chat::LoginStatus arg);
     void setChatStatus(Chat::ChatStatus arg);
@@ -84,16 +96,6 @@ public slots:
     void setAutoLogin(bool arg);
     void setUsername(const QString &arg);
     void setPassword(const QString &arg);
-
-    FramelessWindow* addChatWindow(const QString &username);    //增加一个聊天窗口
-    void appendRecentMessageID(const QString &username);        //添加一个用户到最近消息列表
-    FriendInfo *createItemInfo(const QString &username);        //创建/获取一个好友信息
-
-    void closeAllOpenedWindow();                    //关闭所有打开的窗口
-    void readSettings();                            //读取基本设置
-    void writeSettings();                           //写入基本设置
-    void show();                                    //任何时刻显示界面
-    void quit();                                    //任何时刻正确退出程序
 
 private slots:
     void onLoginFinshed(bool ok);
@@ -110,7 +112,6 @@ signals:
 
 private:
     ChatManager(QObject *parent = nullptr);
-    ~ChatManager();
 
     QPointer<FramelessWindow> m_loginInterface, m_mainInterface;    //登录界面和主界面
     QPointer<QQmlApplicationEngine> m_qmlEngine;

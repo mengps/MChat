@@ -14,8 +14,12 @@ DatabaseManager* DatabaseManager::instance()
 DatabaseManager::DatabaseManager(QObject *parent)
     :   QObject(parent)
 {
-    m_database = QSqlDatabase::addDatabase("QSQLITE");
     m_recordPath = QDir::homePath() + "/MChat/ChatRecord";
+    m_database = QSqlDatabase::addDatabase("QSQLITE");
+    m_database.setDatabaseName(m_recordPath + "/MSG" + ChatManager::instance()->username() + ".db");
+    m_database.setUserName("MChat");
+    m_database.setHostName("localhost");
+    m_database.setPassword("123456");
 }
 
 DatabaseManager::~DatabaseManager()
@@ -40,13 +44,14 @@ bool DatabaseManager::tableExist(const QString &tableName)
         return true;
     else
     {
-        qDebug() << "create" << query.lastError().text();
+        qDebug() <<  __func__ << query.lastError().text();
         return false;
     }
 }
 
 int DatabaseManager::getTableSize(const QString &tableName)
 {
+    openDatabase();
     QSqlQuery size(m_database);
     if (size.exec("SELECT COUNT(*) FROM " + tableName))
     {
@@ -55,9 +60,10 @@ int DatabaseManager::getTableSize(const QString &tableName)
     }
     else
     {
-        qDebug() << size.lastError().text();
+        qDebug() << __func__ << size.lastError().text();
         return -1;
     }
+    closeDatabase();
 }
 
 QString DatabaseManager::getTableName(const QString &username)
@@ -95,10 +101,6 @@ bool DatabaseManager::openDatabase()
 
     if (!m_database.isOpen())
     {
-        m_database.setDatabaseName(m_recordPath + "/MSG" + ChatManager::instance()->username() + ".db");
-        m_database.setUserName("MChat");
-        m_database.setPassword("123456");
-
         if (m_database.open())
             return true;
         else
@@ -134,11 +136,13 @@ bool DatabaseManager::insertData(const QString &username, ChatMessage *content)
             /*qDebug() << "消息" << content->message() << "插入成功"
                      << "senderID :" << content->senderID()
                      << "时间 :" << content->dateTime();*/
+            closeDatabase();
             return true;
         }
         else
         {
             qDebug() << query.lastError().text();
+            closeDatabase();
             return false;
         }
     }
@@ -155,8 +159,8 @@ bool DatabaseManager::getData(const QString &username, int count, ChatMessageLis
         int index = getTableSize(tableName); //得到最后一条消息的索引
         if (index <= count)                  //如果消息数量不够，就取出所有
             count = index;
-        QString select = QString("SELECT msg_index, msg_senderID, msg_datetime, msg_content FROM " + tableName
-                                 + " WHERE msg_index BETWEEN %1 AND %2").arg(index - count + 1).arg(index);
+        QString select = QString("SELECT msg_index, msg_senderID, msg_datetime, msg_content FROM " + tableName +
+                                 " WHERE msg_index BETWEEN %1 AND %2").arg(index - count + 1).arg(index);
         if (query.exec(select))
         {
             while (query.next())
@@ -171,11 +175,13 @@ bool DatabaseManager::getData(const QString &username, int count, ChatMessageLis
                 content->setMessage(data);
                 content_list->append(content);
             }
+            closeDatabase();
             return true;
         }
         else
         {
             qDebug() << query.lastError().text();
+            closeDatabase();
             return false;
         }
     }

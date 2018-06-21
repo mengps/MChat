@@ -105,7 +105,7 @@ Item
                     id: img
                     anchors.left: parent.left
                     anchors.leftMargin: 5
-                    source: item.clicked ? "qrc:/image/ContactImage/bottomArrow.png" : "qrc:/image/ContactImage/rightArrow.png"
+                    source: item.clicked ? "qrc:/image/WidgetsImage/bottomArrow.png" : "qrc:/image/WidgetsImage/rightArrow.png"
                 }
 
                 Text
