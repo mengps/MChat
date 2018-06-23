@@ -23,6 +23,7 @@ NetworkManager::NetworkManager(QObject *parent)
     m_tcpManager = new TcpManager(this);
 
     connect(m_tcpManager, &TcpManager::logined, this, &NetworkManager::onLogined);
+    connect(m_tcpManager, &TcpManager::infoGot, this, &NetworkManager::onInfoGot);
     connect(m_tcpManager, &TcpManager::loginError, this, &NetworkManager::loginError);
     connect(m_tcpManager, &TcpManager::hasNewMessage, this, &NetworkManager::deposeNewMessage);
 }
@@ -84,19 +85,7 @@ void NetworkManager::onLogined(bool ok)
     if (ok)
     {
         qDebug() << "验证通过";
-        QFile file(ChatManager::instance()->username() + "_info.json");
-        file.open(QIODevice::ReadOnly);
-        QString data = file.readAll();
-        file.close();//
-        QJsonParseError error;
-        QJsonDocument myInfo = QJsonDocument::fromJson(data.toUtf8(), &error);
-        if (!myInfo.isNull() && (error.error == QJsonParseError::NoError))
-        {
-            m_jsonParse = new MyJsonParse(myInfo);
-            m_tcpManager->startHeartbeat();     //开始心跳检测
-            m_databaseManager = DatabaseManager::instance();	//初始化本地数据库
-        }
-        else qDebug() << "数据初始化不成功：" << error.errorString();
+        m_tcpManager->sendMessage(MT_USERINFO, ChatManager::instance()->username().toLatin1(), QByteArray("1"));
     }
     else
     {
@@ -105,8 +94,24 @@ void NetworkManager::onLogined(bool ok)
                         "你输入的帐号或密码不正确，你要找回密码吗？\n" \
                         "如果你的密码丢失或遗忘，可以点击找回密码。");
     }
+}
 
-    emit loginFinshed(ok);
+void NetworkManager::onInfoGot(const QByteArray &infoJson)
+{
+    QJsonParseError error;
+    QJsonDocument myInfo = QJsonDocument::fromJson(infoJson, &error);
+    if (!myInfo.isNull() && (error.error == QJsonParseError::NoError))
+    {
+        m_jsonParse = new MyJsonParse(myInfo);
+        m_tcpManager->startHeartbeat();     //开始心跳检测
+        m_databaseManager = DatabaseManager::instance();	//初始化本地数据库
+        emit loginFinshed(true);
+    }
+    else
+    {
+        qDebug() << "数据初始化不成功：" << error.errorString();
+        emit loginFinshed(false);
+    }
 }
 
 void NetworkManager::cancelLogin()

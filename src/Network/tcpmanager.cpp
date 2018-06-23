@@ -40,7 +40,6 @@ TcpManager::TcpManager(QObject *parent)
 
 TcpManager::~TcpManager()
 {
-
 }
 
 void TcpManager::requestNewConnection()
@@ -71,18 +70,15 @@ void TcpManager::sendMessage(MSG_TYPE type, const QByteArray &receiver, const QB
     MSG_ID_TYPE senderID = m_username.toLatin1();
     MSG_MD5_TYPE md5 = QCryptographicHash::hash(QByteArray(), QCryptographicHash::Md5);
 
-    if (type == MT_TEXT || type == MT_CHECK)
-    {    
-        m_data =  message.toBase64();
-        md5 = QCryptographicHash::hash(m_data, QCryptographicHash::Md5);
-        m_fileBytes = m_data.size() + sizeof(flag) + sizeof(type) + sizeof(MSG_SIZE_TYPE) +
-                sizeof(QByteArray) + senderID.size() + sizeof(QByteArray) + receiver.size() +
-                sizeof(QByteArray) + md5.size();
-    }
+    m_data =  message.toBase64();
+    md5 = QCryptographicHash::hash(m_data, QCryptographicHash::Md5);
+    m_fileBytes = m_data.size() + sizeof(flag) + sizeof(type) + sizeof(MSG_SIZE_TYPE) +
+            sizeof(QByteArray) + senderID.size() + sizeof(QByteArray) + receiver.size() +
+            sizeof(QByteArray) + md5.size();
 
     out << flag << type << m_data.size() << senderID << receiver << md5;
 
-    qDebug() << write(block) << m_fileBytes << m_data.size();
+    qDebug() << __func__ << write(block) << m_fileBytes << m_data.size();
     QThread::msleep(10);
 }
 
@@ -169,6 +165,13 @@ void TcpManager::readData()
                 emit logined((bool)str.toInt());
                 break;
 
+            case MT_USERINFO:
+            {
+                emit infoGot(base64data);
+                qDebug() << base64data;
+                break;
+            }
+
             case MT_SHAKE:
                 qDebug() << "收到一条窗口震动来自：" << QString(senderID);
                 emit hasNewMessage(senderID, MT_SHAKE, QVariant());
@@ -196,7 +199,6 @@ void TcpManager::readData()
         type = MT_UNKNOW;
         senderID.clear();
         receiver.clear();
-        m_data.clear();
         md5.clear();
     }
 }

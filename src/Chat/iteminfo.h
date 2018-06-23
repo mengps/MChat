@@ -56,9 +56,9 @@ private:
     bool addMessage(MSG_TYPE type, const QString &senderID, const QString &msg);
 
 private:
-    QString m_username;   //id
-    QString m_nickname;   //昵称
-    QString m_headImage;     //头像
+    QString m_username;     //id
+    QString m_nickname;     //昵称
+    QString m_headImage;    //头像
     int m_unreadMessage;    //未读消息数
 
     ChatMessageList *m_messageList;
@@ -104,8 +104,8 @@ signals:
 
 private:
     QString m_background;   //背景
-    QString m_signature;  //签名
-    QString m_birthday; //生日
+    QString m_signature;    //签名
+    QString m_birthday;     //生日
     QString m_gender;       //性别
     int m_level;            //等级
 };

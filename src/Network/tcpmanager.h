@@ -27,6 +27,7 @@ private slots:
 signals:
     void loginError(const QString &error);
     void logined(bool ok);
+    void infoGot(const QByteArray &infoJson);
     void hasNewMessage(const QString &senderID, MSG_TYPE type, const QVariant &data);
 
 private:

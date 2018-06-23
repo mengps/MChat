@@ -19,6 +19,9 @@ public:
     static NetworkManager* instance();
     ~NetworkManager();
 
+    Q_INVOKABLE void cancelLogin();
+    Q_INVOKABLE void sendMessage(MSG_TYPE type, ChatMessage *message, const QString &receiver);
+
 public slots:    
     ItemInfo* createUserInfo();
     void checkLoginInfo(const QString &username, const QString &password);
@@ -26,8 +29,7 @@ public slots:
     void uploadUserInformation();
 
     void onLogined(bool ok);
-    void cancelLogin();
-    void sendMessage(MSG_TYPE type, ChatMessage *message, const QString &receiver);
+    void onInfoGot(const QByteArray &infoJson);
 
 private slots:
     void deposeNewMessage(const QString &senderID, MSG_TYPE type, const QVariant &data);
