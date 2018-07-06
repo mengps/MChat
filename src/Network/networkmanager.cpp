@@ -52,32 +52,8 @@ void NetworkManager::createFriend(FriendGroupList *friendGroupList, QMap<QString
 
 void NetworkManager::uploadUserInformation()
 {
-    QFile file(ChatManager::instance()->username() + "_info.json");
-    file.open(QIODevice::ReadOnly);
-    QString data = file.readAll();
-    file.close();
-    QJsonParseError error;
-    QJsonDocument myInfo = QJsonDocument::fromJson(data.toUtf8(), &error);
-    if (!myInfo.isNull() && (error.error == QJsonParseError::NoError))
-    {
-        if (myInfo.isObject())
-        {
-            QJsonObject object = myInfo.object();
-            FriendInfo *userInfo = qobject_cast<FriendInfo *>(ChatManager::instance()->userInfo());
-
-            object.insert("Nickname", userInfo->nickname());
-            object.insert("Gender", userInfo->gender());
-            object.insert("Background", userInfo->background());
-            object.insert("HeadImage", userInfo->headImage());
-            object.insert("Signature", userInfo->signature());
-            object.insert("Birthday", userInfo->birthday());
-            myInfo = QJsonDocument(object);
-        }
-    }
-    file.open(QIODevice::WriteOnly);
-    file.write(myInfo.toJson());
-    file.close();
-    qDebug() << "用户数据上传成功";
+    FriendInfo *userInfo = qobject_cast<FriendInfo *>(ChatManager::instance()->userInfo());
+    m_jsonParse->updateInfo(userInfo);
 }
 
 void NetworkManager::onLogined(bool ok)
@@ -126,7 +102,7 @@ void NetworkManager::sendMessage(MSG_TYPE type, ChatMessage *message, const QStr
 
 void NetworkManager::deposeNewMessage(const QString &senderID, MSG_TYPE type, const QVariant &data)
 {
-    FriendInfo *info = ChatManager::instance()->createItemInfo(senderID);
+    FriendInfo *info = ChatManager::instance()->createFriendInfo(senderID);
     switch (type)
     {
     case MT_SHAKE:

@@ -47,7 +47,7 @@ INCLUDEPATH += \
     src/DataBase \
     src/Network \
     src/Utility \
-    ../ChatServer
+    ../ChatServer/src
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =

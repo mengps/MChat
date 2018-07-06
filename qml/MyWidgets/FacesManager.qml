@@ -66,7 +66,7 @@ Rectangle
                     onEntered:
                     {
                         back.hovered = true;
-                        var file = ":/FacesImage/" + modelData;
+                        var file = ":/image/FacesImage/" + modelData;
                         if (Api.exists(file + ".gif"))
                         {
                             gifPreview.visible = true;
@@ -90,7 +90,7 @@ Rectangle
                     }
                     onClicked:
                     {
-                        var file = ":/FacesImage/" + modelData;
+                        var file = ":/image/FacesImage/" + modelData;
                         if (Api.exists(file + ".gif"))
                             file = "qrc" + file + ".gif";
                         else file = "qrc" + file + ".png";

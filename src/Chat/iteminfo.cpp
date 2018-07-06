@@ -10,7 +10,7 @@ ItemInfo::ItemInfo(QObject *parent)
     :   QObject(parent),
         m_username(""),
         m_nickname(""),
-        m_headImage(""),
+        m_headImage("qrc:/image/winIcon.png"),
         m_unreadMessage(0)
 {
     m_messageList = new ChatMessageList(this);
@@ -63,7 +63,7 @@ void ItemInfo::setNickname(const QString &arg)
     }
 }
 
-void ItemInfo::setUserName(const QString &arg)
+void ItemInfo::setUsername(const QString &arg)
 {
     if (m_username != arg)
     {

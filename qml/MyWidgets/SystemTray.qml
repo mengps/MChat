@@ -95,13 +95,13 @@ SystemTrayIcon
         target: networkManager
         onHasNewText:
         {
-            var sender_info = chatManager.createItemInfo(senderID);
+            var sender_info = chatManager.createFriendInfo(senderID);
             flickerImage(sender_info);
             messageTipWindow.appendMessage(sender_info);
         }
         onHasNewShake:
         {
-            var sender_info = chatManager.createItemInfo(senderID);
+            var sender_info = chatManager.createFriendInfo(senderID);
             stopFlicker();
             messageTipWindow.popbackMessage(sender_info)
         }

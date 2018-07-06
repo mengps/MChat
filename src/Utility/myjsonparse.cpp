@@ -16,10 +16,10 @@ MyJsonParse::~MyJsonParse()
 
 }
 
-void MyJsonParse::setJsonDocument(const QJsonDocument &json)
+void MyJsonParse::setJsonDocument(const QJsonDocument &doc)
 {
-    if (!json.isNull())
-        m_jsonDoc = json;
+    if (!doc.isNull())
+        m_jsonDoc = doc;
 }
 
 QJsonDocument MyJsonParse::jsonDocument() const
@@ -36,7 +36,7 @@ ItemInfo* MyJsonParse::userInfo()
 
         QJsonValue value = object.value("Username");
         if (value.isString())
-            info->setUserName(value.toString());
+            info->setUsername(value.toString());
         value = object.value("Nickname");
         if (value.isString())
             info->setNickname(value.toString());
@@ -55,10 +55,12 @@ ItemInfo* MyJsonParse::userInfo()
         value = object.value("Birthday");
         if (value.isString())
             info->setBirthday(value.toString());
+        value = object.value("UnreadMessage");
+        if (value.isDouble())
+            info->setUnreadMessage(value.toInt());
         value = object.value("Level");
         if (value.isDouble())
-            info->setLevel(value.toVariant().toInt());
-        qDebug() << "用户数据载入成功";
+            info->setLevel(value.toInt());
         return info;
     }
     return nullptr;
@@ -87,7 +89,7 @@ void MyJsonParse::createFriend(FriendGroupList *friendGroupList, QMap<QString, I
                         FriendInfo *info = new FriendInfo(friendGroupList);
                         value = object.value("Username");
                         if (value.isString())
-                            info->setUserName(value.toString());
+                            info->setUsername(value.toString());
                         value = object.value("Nickname");
                         if (value.isString())
                             info->setNickname(value.toString());
@@ -103,9 +105,12 @@ void MyJsonParse::createFriend(FriendGroupList *friendGroupList, QMap<QString, I
                         value = object.value("Birthday");
                         if (value.isString())
                             info->setBirthday(value.toString());
+                        value = object.value("UnreadMessage");
+                        if (value.isDouble())
+                            info->setUnreadMessage(value.toInt());
                         value = object.value("Level");
                         if (value.isDouble())
-                            info->setLevel(value.toVariant().toInt());
+                            info->setLevel(value.toInt());
                         info->loadRecord();
                         friendList->insert(info->username(), info);
                         friends.append(info);
@@ -118,4 +123,31 @@ void MyJsonParse::createFriend(FriendGroupList *friendGroupList, QMap<QString, I
         }
     }
     friendGroupList->setData(groups);
+}
+
+bool MyJsonParse::updateInfo(ItemInfo *info)
+{
+    FriendInfo *userInfo = qobject_cast<FriendInfo *>(info);
+    if (!m_jsonDoc.isNull())
+    {
+        if (m_jsonDoc.isObject())
+        {
+            QJsonObject object = m_jsonDoc.object();
+
+            object.insert("Nickname", userInfo->nickname());
+            object.insert("Gender", userInfo->gender());
+            object.insert("Background", userInfo->background());
+            object.insert("HeadImage", userInfo->headImage());
+            object.insert("Signature", userInfo->signature());
+            object.insert("Birthday", userInfo->birthday());
+            m_jsonDoc = QJsonDocument(object);
+        }
+        qDebug() << "用户数据上传成功！";
+        return true;
+    }
+    else
+    {
+        qDebug() << "用户数据上传失败！";
+        return false;
+    }
 }

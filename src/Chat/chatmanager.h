@@ -64,7 +64,7 @@ public:
     static ChatManager* instance();  //得到当前对象的唯一实例
     ~ChatManager();
 
-    void initChatManager(QQmlApplicationEngine *qmlengine, QJSEngine *jsengine);
+    void initChatManager(QQmlApplicationEngine *qmlengine);
     bool loadLoginInterface();
     bool loadMainInterface();
 
@@ -81,13 +81,13 @@ public:
     Q_INVOKABLE QStringList getLoginHistory();                              //获取登录历史
     Q_INVOKABLE FramelessWindow* addChatWindow(const QString &username);    //增加一个聊天窗口
     Q_INVOKABLE void appendRecentMessageID(const QString &username);        //添加一个用户到最近消息列表
-    Q_INVOKABLE FriendInfo* createItemInfo(const QString &username);        //创建/获取一个好友信息
+    Q_INVOKABLE FriendInfo* createFriendInfo(const QString &username);        //创建/获取一个好友信息
 
     Q_INVOKABLE void closeAllOpenedWindow();                    //关闭所有打开的窗口
     Q_INVOKABLE void readSettings();                            //读取基本设置
     Q_INVOKABLE void writeSettings();                           //写入基本设置
-    Q_INVOKABLE void show();                                    //任何时刻显示界面
-    Q_INVOKABLE void quit();                                    //任何时刻正确退出程序
+    Q_INVOKABLE void show();                                    //显示界面
+    Q_INVOKABLE void quit();                                    //退出程序
 
 public slots:
     void setLoginStatus(Chat::LoginStatus arg);
@@ -115,7 +115,6 @@ private:
 
     QPointer<FramelessWindow> m_loginInterface, m_mainInterface;    //登录界面和主界面
     QPointer<QQmlApplicationEngine> m_qmlEngine;
-    QPointer<QJSEngine> m_jsEngine;                         //
     Chat::LoginStatus m_loginStatus;                        //当前登录状态
     Chat::ChatStatus m_chatStatus;                          //当前聊天的状态
     QString m_username;                                     //当前登录的用户id

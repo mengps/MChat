@@ -4,9 +4,7 @@
 ChatMessage::ChatMessage(QObject *parent)
     :   QObject(parent)
 {
-    m_senderID = "";
-    m_dateTime = "";
-    m_message = "";
+
 }
 
 ChatMessage::~ChatMessage()

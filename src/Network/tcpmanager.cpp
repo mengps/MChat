@@ -45,7 +45,7 @@ TcpManager::~TcpManager()
 void TcpManager::requestNewConnection()
 {
     abort();
-    connectToHost("10.103.0.13", 43800, QAbstractSocket::ReadWrite);
+    connectToHost("127.0.0.1", 43800, QAbstractSocket::ReadWrite);
 }
 
 void TcpManager::readyLogin(const QString &username, const QString &password)
@@ -127,6 +127,8 @@ void TcpManager::readData()
     static MSG_ID_TYPE receiver = MSG_ID_TYPE();
     static MSG_MD5_TYPE md5;
 
+    qDebug() << bytesAvailable();
+
     if (m_data.size() == 0)  //必定为消息头
     {
         QDataStream in(this);
@@ -159,6 +161,7 @@ void TcpManager::readData()
             QByteArray base64data = QByteArray::fromBase64(m_data);
             QString str = QString::fromLocal8Bit(base64data);
             qDebug() << "md5 一致，消息为：\"" + str + "\"，大小：" + QString::number(m_data.size());
+            m_data.clear();
             switch (type)
             {
             case MT_CHECK:
@@ -166,11 +169,9 @@ void TcpManager::readData()
                 break;
 
             case MT_USERINFO:
-            {
                 emit infoGot(base64data);
                 qDebug() << base64data;
                 break;
-            }
 
             case MT_SHAKE:
                 qDebug() << "收到一条窗口震动来自：" << QString(senderID);

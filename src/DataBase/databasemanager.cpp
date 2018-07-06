@@ -105,7 +105,7 @@ bool DatabaseManager::openDatabase()
             return true;
         else
         {
-            qDebug() << m_database.lastError().text();
+            qDebug() << __func__ << m_database.lastError().text();
             return false;
         }
     }
@@ -141,7 +141,7 @@ bool DatabaseManager::insertData(const QString &username, ChatMessage *content)
         }
         else
         {
-            qDebug() << query.lastError().text();
+            qDebug() << __func__ << query.lastError().text();
             closeDatabase();
             return false;
         }
@@ -180,7 +180,7 @@ bool DatabaseManager::getData(const QString &username, int count, ChatMessageLis
         }
         else
         {
-            qDebug() << query.lastError().text();
+            qDebug() << __func__ << query.lastError().text();
             closeDatabase();
             return false;
         }

@@ -32,7 +32,7 @@ FramelessWindow
 
     onUsernameChanged:
     {
-        info = chatManager.createItemInfo(username);
+        info = chatManager.createFriendInfo(username);
         info.loadRecord();
         chatMessage.other = info;
     }

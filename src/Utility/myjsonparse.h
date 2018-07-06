@@ -10,12 +10,13 @@ public :
     MyJsonParse(const QJsonDocument &doc);
     ~MyJsonParse();
 
-    void setJsonDocument(const QJsonDocument &json);
+    void setJsonDocument(const QJsonDocument &doc);
     QJsonDocument jsonDocument() const;
 
 public:
     ItemInfo* userInfo();
     void createFriend(FriendGroupList *friendGroupList, QMap<QString, ItemInfo *> *friendList);
+    bool updateInfo(ItemInfo *info);
 
 private:
     QJsonDocument m_jsonDoc;

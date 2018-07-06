@@ -12,7 +12,7 @@ class ItemInfo : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString username READ username WRITE setUserName NOTIFY usernameChanged)
+    Q_PROPERTY(QString username READ username WRITE setUsername NOTIFY usernameChanged)
     Q_PROPERTY(QString nickname READ nickname WRITE setNickname NOTIFY nicknameChanged)
     Q_PROPERTY(QString headImage READ headImage WRITE setHeadImage NOTIFY headImageChanged)
     Q_PROPERTY(int unreadMessage READ unreadMessage WRITE setUnreadMessage NOTIFY unreadMessageChanged)
@@ -31,7 +31,7 @@ public:
     ChatMessageList* messageList() const;
 
 public slots:
-    void setUserName(const QString &arg);
+    void setUsername(const QString &arg);
     void setNickname(const QString &arg);
     void setHeadImage(const QString &arg);
     void setUnreadMessage(int arg);

@@ -47,13 +47,12 @@ int main(int argc, char *argv[])
     qmlRegisterUncreatableMetaObject(Chat::staticMetaObject, "an.chat", 1, 0, "Chat", "不能创建Chat对象");
 
     ChatManager *chatManager = ChatManager::instance();
-    QQmlApplicationEngine engine;
-    QJSEngine jsengine;
-    chatManager->initChatManager(&engine, &jsengine);
-    engine.rootContext()->setContextProperty("Api", new Api);
-    engine.rootContext()->setContextProperty("chatManager", chatManager);
+    QQmlApplicationEngine qmlEngine;
+    chatManager->initChatManager(&qmlEngine);
+    qmlEngine.rootContext()->setContextProperty("Api", new Api);
+    qmlEngine.rootContext()->setContextProperty("chatManager", chatManager);
     NetworkManager *networkManager = NetworkManager::instance();
-    engine.rootContext()->setContextProperty("networkManager", networkManager);
+    qmlEngine.rootContext()->setContextProperty("networkManager", networkManager);
 
     chatManager->loadLoginInterface();
 

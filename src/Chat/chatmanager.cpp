@@ -37,10 +37,9 @@ ChatManager::~ChatManager()
 
 }
 
-void ChatManager::initChatManager(QQmlApplicationEngine *qmlengine, QJSEngine *jsengine)
+void ChatManager::initChatManager(QQmlApplicationEngine *qmlengine)
 {
     m_qmlEngine = qmlengine;
-    m_jsEngine = jsengine;
     //readSettings();
 }
 
@@ -235,7 +234,7 @@ QStringList ChatManager::getLoginHistory()
 
 FramelessWindow* ChatManager::addChatWindow(const QString &username)
 {
-    auto info = createItemInfo(username);
+    auto info = createFriendInfo(username);
     info->setUnreadMessage(0);      //清空未读消息
     if (m_chatList.contains(username))
     {
@@ -245,9 +244,8 @@ FramelessWindow* ChatManager::addChatWindow(const QString &username)
     }
     else
     {
-        QQmlComponent component(m_qmlEngine, QUrl("qrc:/qml/ChatWindow/ChatWindow.qml"), m_mainInterface.data());
+        QQmlComponent component(m_qmlEngine, QUrl("qrc:/qml/ChatWindow/ChatWindow.qml"));
         QObject *object = component.create();
-        object->setParent(m_mainInterface);
         FramelessWindow *window = qobject_cast<FramelessWindow *>(object);
         window->setProperty("username", username);
         connect(window, &FramelessWindow::closed, this, &ChatManager::deleteChatWindow);
@@ -260,7 +258,7 @@ FramelessWindow* ChatManager::addChatWindow(const QString &username)
 
 void ChatManager::appendRecentMessageID(const QString &username)
 {
-    ItemInfo *info = static_cast<ItemInfo *>(createItemInfo(username));
+    ItemInfo *info = static_cast<ItemInfo *>(createFriendInfo(username));
     if (!m_recentMessageID.contains(info))
     {
         m_recentMessageID.append(info);
@@ -270,7 +268,10 @@ void ChatManager::appendRecentMessageID(const QString &username)
 
 void ChatManager::closeAllOpenedWindow()
 {
-
+    foreach (FramelessWindow *window, m_chatList)
+    {
+       if (window) window->close();
+    }
 }
 
 void ChatManager::deleteChatWindow()
@@ -280,14 +281,14 @@ void ChatManager::deleteChatWindow()
     chatWindow = nullptr;
 }
 
-FriendInfo* ChatManager::createItemInfo(const QString &username)
+FriendInfo* ChatManager::createFriendInfo(const QString &username)
 {
     if (m_friendList.contains(username))
         return qobject_cast<FriendInfo *>(m_friendList[username]);
     else
     {
         FriendInfo *info = new FriendInfo(this);
-        info->setUserName(username);
+        info->setUsername(username);
         //set *****
         m_friendList[username] = static_cast<ItemInfo *>(info);
         return info;
@@ -382,6 +383,9 @@ void ChatManager::quit()
     if (!m_loginInterface.isNull())
         QMetaObject::invokeMethod(m_loginInterface, "quit");
     if (!m_mainInterface.isNull())
+    {
         QMetaObject::invokeMethod(m_mainInterface, "quit");  
+        closeAllOpenedWindow();
+    }
     m_systemTray->onExit();
 }
