@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     app.setApplicationVersion("1.0.0");
     app.setOrganizationName("MPS");
     app.setApplicationDisplayName("MChat 聊天");
-    app.setQuitOnLastWindowClosed(true);
+    app.setQuitOnLastWindowClosed(false);
 
     QString styleSheet = " QMenu::item:selected { background: #FF8040; color: #000; height: 30px; }" \
                          " QMenu{ padding: 6px 0px 6px 0px; }" \
@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
                          " QMenu::separator{ height: 1px; margin: 6px 2px 6px 2px; background: #B2C0CD; }";
     app.setStyleSheet(styleSheet);
 
+    qRegisterMetaType<ChatMessage>("ChatMessage");
     qmlRegisterType<FramelessWindow>("an.framelessWindow", 1, 0, "FramelessWindow");
     qmlRegisterType<FriendInfo>("an.chat", 1, 0, "FriendInfo");
     qmlRegisterType<ItemInfo>("an.chat", 1, 0, "ItemInfo");
@@ -45,6 +46,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<MySeparator>("an.utility", 1, 0, "MySeparator");
     qmlRegisterType<SystemTrayIcon>("an.utility", 1, 0, "SystemTrayIcon");
     qmlRegisterUncreatableMetaObject(Chat::staticMetaObject, "an.chat", 1, 0, "Chat", "不能创建Chat对象");
+    qmlRegisterUncreatableMetaObject(ChatMessageStatus::staticMetaObject, "an.chat", 1, 0, "ChatMessageStatus", "不能创建ChatMessageStatus对象");
 
     ChatManager *chatManager = ChatManager::instance();
     QQmlApplicationEngine qmlEngine;

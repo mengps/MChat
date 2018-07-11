@@ -38,9 +38,7 @@ namespace Chat
     Q_ENUMS(DockStatus)
 }
 
-class QJSEngine;
 class QQmlApplicationEngine;
-class ItemInfo;
 class ChatMessage;
 class SystemTrayIcon;
 class FramelessWindow;
@@ -54,6 +52,7 @@ class ChatManager : public QObject
     Q_PROPERTY(Chat::ChatStatus chatStatus READ chatStatus WRITE setChatStatus NOTIFY chatStatusChanged)
     Q_PROPERTY(bool rememberPassword READ rememberPassword WRITE setRememberPassword NOTIFY rememberPasswordChanged)
     Q_PROPERTY(bool autoLogin READ autoLogin WRITE setAutoLogin NOTIFY autoLoginChanged)
+    Q_PROPERTY(QString headImage READ headImage WRITE setHeadImage NOTIFY headImageChanged)
     Q_PROPERTY(QString username READ username WRITE setUsername NOTIFY usernameChanged)
     Q_PROPERTY(QString password READ password WRITE setPassword NOTIFY passwordChanged)
     Q_PROPERTY(ItemInfo* userInfo READ userInfo CONSTANT)
@@ -72,6 +71,7 @@ public:
     Chat::ChatStatus chatStatus() const;
     bool rememberPassword() const;
     bool autoLogin() const;
+    QString headImage() const;
     QString username() const;
     QString password() const;
     ItemInfo* userInfo() const;
@@ -80,10 +80,11 @@ public:
 
     Q_INVOKABLE QStringList getLoginHistory();                              //获取登录历史
     Q_INVOKABLE FramelessWindow* addChatWindow(const QString &username);    //增加一个聊天窗口
+    Q_INVOKABLE bool chatWindowIsOpenned(const QString &username);          //判断聊天窗口事是否已经打开
     Q_INVOKABLE void appendRecentMessageID(const QString &username);        //添加一个用户到最近消息列表
-    Q_INVOKABLE FriendInfo* createFriendInfo(const QString &username);        //创建/获取一个好友信息
+    Q_INVOKABLE FriendInfo* createFriendInfo(const QString &username);      //创建/获取一个好友信息
 
-    Q_INVOKABLE void closeAllOpenedWindow();                    //关闭所有打开的窗口
+    Q_INVOKABLE void closeAllOpenedChat();                      //关闭所有打开的窗口
     Q_INVOKABLE void readSettings();                            //读取基本设置
     Q_INVOKABLE void writeSettings();                           //写入基本设置
     Q_INVOKABLE void show();                                    //显示界面
@@ -94,6 +95,7 @@ public slots:
     void setChatStatus(Chat::ChatStatus arg);
     void setRememberPassword(bool arg);
     void setAutoLogin(bool arg);
+    void setHeadImage(const QString &arg);
     void setUsername(const QString &arg);
     void setPassword(const QString &arg);
 
@@ -106,6 +108,7 @@ signals:
     void chatStatusChanged(Chat::ChatStatus arg);
     void rememberPasswordChanged(bool arg);
     void autoLoginChanged(bool arg);
+    void headImageChanged(const QString &arg);
     void usernameChanged(const QString &arg);
     void passwordChanged(const QString &arg);
     void recentMessageIDChanged();
@@ -119,6 +122,7 @@ private:
     Chat::ChatStatus m_chatStatus;                          //当前聊天的状态
     QString m_username;                                     //当前登录的用户id
     QString m_password;                                     //当前登录的用户密码
+    QString m_headImage;
     bool m_rememberPassword;
     bool m_autoLogin;
     NetworkManager *m_networkManager;

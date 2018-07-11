@@ -7,17 +7,24 @@ ChatMessage::ChatMessage(QObject *parent)
 
 }
 
+ChatMessage::ChatMessage(const ChatMessage &chatMessage, QObject *parent)
+    :   QObject(parent), m_sender(chatMessage.m_sender), m_dateTime(chatMessage.m_dateTime),
+      m_message(chatMessage.m_message), m_state(chatMessage.m_state)
+{
+
+}
+
 ChatMessage::~ChatMessage()
 {
 
 }
 
-void ChatMessage::setSenderID(const QString &arg)
+void ChatMessage::setSender(const QString &arg)
 {
-    if (m_senderID != arg)
+    if (m_sender != arg)
     {
-        m_senderID = arg;
-        senderIDChanged();
+        m_sender = arg;
+        senderChanged();
     }
 }
 
@@ -39,9 +46,18 @@ void ChatMessage::setMessage(const QString &arg)
     }
 }
 
-QString ChatMessage::senderID() const
+void ChatMessage::setState(ChatMessageStatus::Status arg)
 {
-    return m_senderID;
+    if (m_state != arg)
+    {
+        m_state = arg;
+        stateChanged();
+    }
+}
+
+QString ChatMessage::sender() const
+{
+    return m_sender;
 }
 
 QString ChatMessage::dateTime() const
@@ -54,6 +70,10 @@ QString ChatMessage::message() const
     return m_message;
 }
 
+ChatMessageStatus::Status ChatMessage::state() const
+{
+    return m_state;
+}
 
 //ChatMessageList
 ChatMessageList::ChatMessageList(QObject *parent)
@@ -81,6 +101,13 @@ QQmlListProperty<ChatMessage> ChatMessageList::messageList()
 int ChatMessageList::count() const
 {
     return m_msgList.count();
+}
+
+void ChatMessageList::append(const ChatMessage &msg)
+{
+    ChatMessage *chatMessage = new ChatMessage(msg, this);
+    m_msgList.append(chatMessage);
+    emit messageListChanged();
 }
 
 void ChatMessageList::append(ChatMessage *msg)

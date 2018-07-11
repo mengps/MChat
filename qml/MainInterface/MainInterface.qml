@@ -123,7 +123,7 @@ FramelessWindow
         target: networkManager
         onHasNewShake:
         {
-            var window = chatManager.addChatWindow(senderID);
+            var window = chatManager.addChatWindow(sender);
             window.shakeWindow();
         }
     }
@@ -147,6 +147,7 @@ FramelessWindow
         to: 1
         duration: 800
         easing.type: Easing.Linear
+        onStopped: chatManager.show();
     }
 
     NumberAnimation
@@ -159,7 +160,7 @@ FramelessWindow
         to: 0
         duration: 800
         easing.type: Easing.Linear
-        onStopped: mainInterface.close();
+        onStopped: Qt.quit();
     }
 
     MouseArea
@@ -451,21 +452,32 @@ FramelessWindow
             }
         }
 
-        Column
+
+        Rectangle
         {
-            height: 30
-            width: parent.width
-
+            id: toolBar
             anchors.bottom: parent.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.left: parent.left
+            radius: 6
+            color: "#58AFAFAF"
+            width: parent.width
+            height: 36
 
-            Image
+            Row
             {
-                id: name
-                width: 20
-                height: width
-                mipmap: true
-                source: "qrc:/image/WidgetsImage/addFriend_normal.png";
+                width: 210
+                height: 24
+                spacing: 15
+                anchors.centerIn: parent
+
+                Image
+                {
+                    id: addFriend
+                    width: 20
+                    height: 24
+                    mipmap: true
+                    source: "qrc:/image/WidgetsImage/addFriend_normal.png";
+                }
             }
         }
     }

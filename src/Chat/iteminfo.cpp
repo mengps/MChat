@@ -10,10 +10,10 @@ ItemInfo::ItemInfo(QObject *parent)
     :   QObject(parent),
         m_username(""),
         m_nickname(""),
-        m_headImage("qrc:/image/winIcon.png"),
+        m_headImage(""),
         m_unreadMessage(0)
 {
-    m_messageList = new ChatMessageList(this);
+    m_chatRecord = new ChatMessageList(this);
     m_chatManager = ChatManager::instance();
     m_databaseManager = DatabaseManager::instance();
     m_networkManager = NetworkManager::instance();
@@ -46,12 +46,12 @@ int ItemInfo::unreadMessage() const
 
 ChatMessage* ItemInfo::lastMessage() const
 {
-    return m_messageList->last();
+    return m_chatRecord->last();
 }
 
-ChatMessageList* ItemInfo::messageList() const
+ChatMessageList* ItemInfo::chatRecord() const
 {
-    return m_messageList;
+    return m_chatRecord;
 }
 
 void ItemInfo::setNickname(const QString &arg)
@@ -74,53 +74,37 @@ void ItemInfo::setUsername(const QString &arg)
 
 void ItemInfo::loadRecord()
 {
-    if (m_databaseManager->openDatabase())
-    {
-        if (m_messageList->count() == 0)
-            m_databaseManager->getData(m_username, 100, m_messageList);
-    }
+    if (m_chatRecord->count() == 0)
+        m_databaseManager->getChatMessage(m_username, 40, m_chatRecord);
 }
 
-bool ItemInfo::addShakeMessage(const QString &senderID)
+void ItemInfo::addTextMessage(const QString &sender, const QString &msg)
 {
-    return addMessage(MT_SHAKE, senderID, QString("窗口抖动~~"));
+    addMessage(MT_TEXT, sender, msg);
 }
 
-bool ItemInfo::addTextMessage(const QString &senderID, const QString &msg)
+void ItemInfo::addMessage(MSG_TYPE type, const QString &sender, const QString &msg)
 {
-    return addMessage(MT_TEXT, senderID, msg);
-}
-
-bool ItemInfo::addMessage(MSG_TYPE type, const QString &senderID, const QString &msg)
-{
-    if (m_databaseManager->openDatabase())
-    {
-        ChatMessage *message = new ChatMessage(this);
-        QString datetime = QDateTime::currentDateTime().toString("yyyyMMdd hhmmss");
-        message->setSenderID(senderID);
-        message->setDateTime(datetime);
-        message->setMessage(msg);
-        m_messageList->append(message);                         //加入到消息队列
-        m_databaseManager->insertData(m_username, message);     //加入到本地数据库
-        m_chatManager->appendRecentMessageID(m_username);       //加入到最近消息列表
-        if (senderID == m_chatManager->username())
-            m_networkManager->sendMessage(type, message, m_username);   //如果为自己发送的，就发送
-        else
-        {
-            //if (m_chatManager->)
-            setUnreadMessage(unreadMessage() + 1);             //如果为好友发送的，未读数+1
-        }
-        emit lastMessageChanged();
-        return true;
-    }
+    ChatMessage *message = new ChatMessage(this);
+    QString datetime = QDateTime::currentDateTime().toString("yyyyMMdd hhmmss");
+    message->setSender(sender);
+    message->setDateTime(datetime);
+    message->setMessage(msg);
+    message->setState(ChatMessageStatus::Sending);
+    m_chatRecord->append(message);                                  //加入到消息列表
+    if (sender == m_chatManager->username())
+        m_networkManager->sendChatMessage(type, message, m_username);   //如果为自己发送的，就发送
     else
     {
-        qDebug() << "数据库无法打开，消息发送失败。";
-        return false;
+        message->setState(ChatMessageStatus::Success);
+        if (!m_chatManager->chatWindowIsOpenned(sender))
+            setUnreadMessage(unreadMessage() + 1);                  //如果为好友发送的，并且窗口未打开，未读数+1
     }
+    m_chatManager->appendRecentMessageID(m_username);               //加入到最近消息列表
+    emit lastMessageChanged();
 }
 
-void ItemInfo::recallMessage(const QString &senderID, const QString &msg)
+void ItemInfo::recallMessage(const QString &sender, const QString &msg)
 {
 
 }
@@ -227,4 +211,9 @@ void FriendInfo::setLevel(int arg)
         m_level = arg;
         emit levelChanged(arg);
     }
+}
+
+void FriendInfo::addShakeMessage(const QString &sender)
+{
+    addMessage(MT_SHAKE, sender, QString("窗口抖动~~"));
 }

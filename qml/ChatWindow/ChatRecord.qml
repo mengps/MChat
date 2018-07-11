@@ -10,9 +10,9 @@ Item
 
     property FriendInfo other: FriendInfo{}
 
-    function appendMsg(senderID, msg)
+    function appendMsg(sender, msg)
     {
-        other.addTextMessage(senderID, msg);
+        other.addTextMessage(sender, msg);
     }
 
     Component
@@ -23,7 +23,7 @@ Item
         {
             width: listView.width
             height: bubble.height
-            property bool isOther: chatManager.username != senderID;
+            property bool isOther: chatManager.username != sender;
 
             CircularImage
             {
@@ -33,6 +33,59 @@ Item
                 height: 32
                 mipmap: true
                 source: isOther ? other.headImage : chatManager.userInfo.headImage
+            }
+
+            AnimatedImage
+            {
+                id: stateImage
+                x: bubble.x - 24
+                y: 12
+                playing: true
+                width: 20
+                height: 20
+                mipmap: true
+                source:
+                {
+                    if (modelData.state === ChatMessageStatus.Success)
+                        return "";
+                    else if (modelData.state === ChatMessageStatus.Sending)
+                        return "qrc:/image/LoadingImage/loading3.gif";
+                    else return "qrc:/image/WidgetsImage/cross.png";
+                }
+                property bool hovered: false
+
+                MyToolTip
+                {
+                    visible: stateImage.hovered && stateImage.source != "";
+                    text:
+                    {
+                        if (modelData.state === ChatMessageStatus.Sending)
+                            return "发送中...";
+                        else if (modelData.state === ChatMessageStatus.Failure)
+                            return "发送失败，请检查网络...\n   点击可重新发送";
+                        else return "";
+                    }
+                }
+
+                MouseArea
+                {
+                    hoverEnabled: true;
+                    anchors.fill: parent
+                    onEntered: parent.hovered = true;
+                    onExited:  parent.hovered = false;
+                    onPressed:
+                    {
+                        stateImage.x += 2;
+                        stateImage.y += 2;
+                    }
+                    onReleased:
+                    {
+                        stateImage.x -= 2;
+                        stateImage.y -= 2;
+                        if (modelData.state === ChatMessageStatus.Failure)  //点击可重新发送
+                            appendMsg(modelData.sender, modelData.message);
+                    }
+                }
             }
 
             BorderImage
@@ -75,8 +128,8 @@ Item
     {
         id: listView
         anchors.fill: parent
-        spacing: 20
-        model: other.messageList.messageList
+        spacing: 18
+        model: other.chatRecord.messageList
         delegate: delegate
         highlightFollowsCurrentItem: false
         ScrollBar.vertical: ScrollBar

@@ -13,13 +13,14 @@ SOURCES += \
     src/Chat/iteminfo.cpp \
     src/Chat/chatmessage.cpp \
     src/Network/networkmanager.cpp \
+    src/Network/tcpmanager.cpp \
     src/Utility/myjsonparse.cpp \
     src/Utility/friendmodel.cpp \
     src/Utility/gifhelper.cpp \
     src/Utility/systemtrayicon.cpp \
+    src/Utility/chatapi.cpp \
     src/DataBase/databasemanager.cpp \
-    src/Network/tcpmanager.cpp \
-    src/Utility/chatapi.cpp
+    ../ChatServer/src/mymessagedef.cpp
 
 HEADERS += \
     src/Chat/framelesswindow.h \
@@ -27,13 +28,13 @@ HEADERS += \
     src/Chat/iteminfo.h \
     src/Chat/chatmessage.h \
     src/Network/networkmanager.h \
+    src/Network/tcpmanager.h \
     src/Utility/myjsonparse.h \
     src/Utility/friendmodel.h \
     src/Utility/gifhelper.h \
     src/Utility/systemtrayicon.h \
-    src/DataBase/databasemanager.h \
-    src/Network/tcpmanager.h \
-    src/Utility/chatapi.h
+    src/Utility/chatapi.h \
+    src/DataBase/databasemanager.h
 
 RESOURCES += \
     qml.qrc \

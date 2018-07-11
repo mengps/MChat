@@ -92,7 +92,7 @@ FramelessWindow
             id: shakeX
             property: "x"
             target: chatWindow
-            duration: 50
+            duration: 60
         }
 
         NumberAnimation
@@ -100,7 +100,7 @@ FramelessWindow
             id: shakeY
             property: "y"
             target: chatWindow
-            duration: 50
+            duration: 60
         }
         onStopped: shakeWindow();
     }
@@ -294,27 +294,6 @@ FramelessWindow
             width: 174
             height: 0
             onFocusChanged: if (!focus) hide();
-
-            function show()
-            {
-                colorManagerAnimation.to = 240;
-                colorManagerAnimation.restart();
-            }
-
-            function hide()
-            {
-                colorManagerAnimation.to = 0;
-                colorManagerAnimation.restart();
-            }
-
-            NumberAnimation
-            {
-                id: colorManagerAnimation
-                running: false
-                target: colorManager
-                property: "height"
-                duration: 300
-            }
         }
 
         Rectangle
@@ -636,6 +615,7 @@ FramelessWindow
                 opacity: 0.9
                 focus: true
                 width: chatWindow.width - 31
+                color: colorManager.currentColor
                 height: Math.max(paintedHeight, flick.height)
 
                 function qucikEnter()
@@ -647,15 +627,10 @@ FramelessWindow
 
                 Keys.onReturnPressed: qucikEnter();
                 Keys.onEnterPressed: qucikEnter();
-                Keys.onSpacePressed:
-                {
-                    if (cursorRectangle.x >= width)
-                        sendMessage.insert(cursorPosition, "&#10");
-                    else
-                        sendMessage.insert(cursorPosition, "&nbsp");
-                }
                 onCursorPositionChanged:
                 {
+                    if (cursorRectangle.x >= width)
+                        sendMessage.insert(cursorPosition, "&#10&#10"); //一个&#10不起作用，不知为何
                     var relY = flick.y + cursorRectangle.y + cursorRectangle.height / 2 - flick.contentY;
                     if ((relY <= (flick.y + flick.height)) && (relY >= flick.y))
                     {

@@ -29,7 +29,6 @@ ChatManager::ChatManager(QObject *parent)
     m_rencentMessageIDProxy = new QQmlListProperty<ItemInfo>(this, m_recentMessageID);
 
     connect(m_networkManager, &NetworkManager::loginFinshed, this, &ChatManager::onLoginFinshed);
-    //connect updateUserInfo UserInfoChanged()
 }
 
 ChatManager::~ChatManager()
@@ -40,7 +39,7 @@ ChatManager::~ChatManager()
 void ChatManager::initChatManager(QQmlApplicationEngine *qmlengine)
 {
     m_qmlEngine = qmlengine;
-    //readSettings();
+    readSettings();
 }
 
 bool ChatManager::loadLoginInterface()
@@ -104,6 +103,11 @@ bool ChatManager::rememberPassword() const
 bool ChatManager::autoLogin() const
 {
     return m_autoLogin;
+}
+
+QString ChatManager::headImage() const
+{
+    return m_headImage;
 }
 
 QString ChatManager::username() const
@@ -187,6 +191,15 @@ void ChatManager::setAutoLogin(bool arg)
     }
 }
 
+void ChatManager::setHeadImage(const QString &arg)
+{
+    if (m_headImage != arg)
+    {
+        m_headImage = arg;
+        emit headImageChanged(arg);
+    }
+}
+
 void ChatManager::setUsername(const QString &arg)
 {
     if (m_username != arg)
@@ -209,7 +222,7 @@ void ChatManager::onLoginFinshed(bool ok)
 {
     if (ok)    //帐号密码验证
     {
-        m_userInfo = m_networkManager->createUserInfo();
+        m_userInfo = m_networkManager->getUserInfo();
         m_friendGroupList = new FriendGroupList(this);
         m_networkManager->createFriend(m_friendGroupList, &m_friendList);
         setLoginStatus(Chat::LoginSuccess);
@@ -256,6 +269,11 @@ FramelessWindow* ChatManager::addChatWindow(const QString &username)
     }
 }
 
+bool ChatManager::chatWindowIsOpenned(const QString &username)
+{
+    return m_chatList.contains(username);
+}
+
 void ChatManager::appendRecentMessageID(const QString &username)
 {
     ItemInfo *info = static_cast<ItemInfo *>(createFriendInfo(username));
@@ -266,7 +284,7 @@ void ChatManager::appendRecentMessageID(const QString &username)
     }
 }
 
-void ChatManager::closeAllOpenedWindow()
+void ChatManager::closeAllOpenedChat()
 {
     foreach (FramelessWindow *window, m_chatList)
     {
@@ -305,6 +323,7 @@ void ChatManager::readSettings()
         setChatStatus((Chat::ChatStatus)settings.value("ChatStatus").toInt());
         setRememberPassword(settings.value("RememberPassword").toBool());
         setAutoLogin(settings.value("AutoLogin").toBool());
+        setHeadImage(settings.value("HeadImage").toString());
         settings.endGroup();
 
         settings.beginGroup("AccountInfo");
@@ -338,6 +357,7 @@ void ChatManager::writeSettings()
     }
 
     settings.beginGroup("LoginSettings");
+    settings.setValue("HeadImage", m_headImage);
     settings.setValue("ChatStatus", m_chatStatus);
     settings.setValue("RememberPassword", m_rememberPassword);
     settings.setValue("AutoLogin", m_autoLogin);
@@ -352,7 +372,6 @@ void ChatManager::writeSettings()
         settings.endGroup();
 
         settings.beginGroup("MainSettings");
-        settings.setValue("HeadImage", m_userInfo->headImage());
         settings.setValue("Coord", m_mainInterface->coord());
         settings.setValue("Width", m_mainInterface->width());
         settings.setValue("Height", m_mainInterface->height());
@@ -384,8 +403,8 @@ void ChatManager::quit()
         QMetaObject::invokeMethod(m_loginInterface, "quit");
     if (!m_mainInterface.isNull())
     {
-        QMetaObject::invokeMethod(m_mainInterface, "quit");  
-        closeAllOpenedWindow();
+        QMetaObject::invokeMethod(m_mainInterface, "quit");
+        closeAllOpenedChat();
     }
     m_systemTray->onExit();
 }

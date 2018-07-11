@@ -45,8 +45,7 @@ FramelessWindow
         to: 1
         duration: 600
         easing.type: Easing.InQuad
-
-        onStopped: loginInterface.requestActivate();
+        onStopped: chatManager.show();
     }
 
     ParallelAnimation
@@ -57,8 +56,11 @@ FramelessWindow
         onStopped:
         {
             if (chatManager.loginStatus === Chat.LoginSuccess)
+            {
                 chatManager.loginStatus = Chat.LoginFinished;
-            loginInterface.close();
+                loginInterface.close();
+            }
+            else Qt.quit();
         }
 
         NumberAnimation
@@ -118,16 +120,30 @@ FramelessWindow
         height: loginInterface.height
         focus: true
         radius: 8
-        color: "#FFCC99"
+        color: colorManager.currentColor
         anchors.centerIn: parent
 
         Keys.onPressed:
             if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) logging();
 
+        ColorManager
+        {
+            id: colorManager
+            currentColor: "#FF6666"
+            anchors.top: topRect.top
+            anchors.topMargin: 34
+            anchors.right: topRect.right
+            anchors.rightMargin: 10
+            width: 174
+            height: 0
+            z:2
+            onFocusChanged: if (!focus) hide();
+        }
+
         LoginFailure    //登录失败页面，在最高层，开始不可见
         {
             id: loginFailure
-            z: 2
+            z: 10
         }
 
         Rectangle
@@ -139,7 +155,7 @@ FramelessWindow
             anchors.top: parent.top
             anchors.topMargin: content.radius
             anchors.horizontalCenter: parent.horizontalCenter
-            color: "#FFCC99"
+            color: colorManager.currentColor
 
             MoveMouseArea
             {
@@ -224,12 +240,27 @@ FramelessWindow
 
                     onClicked:
                     {
+                        if (colorManager.focus)
+                        {
+                            colorManager.focus = false;
+                        }
+                        else
+                        {
+                            colorManager.show();
+                            colorManager.focus = true;
+                        }
                     }
                     Component.onCompleted:
                     {
                         buttonNormalImage = "qrc:/image/ButtonImage/menu_normal.png";
                         buttonPressedImage = "qrc:/image/ButtonImage/menu_down.png";
                         buttonHoverImage = "qrc:/image/ButtonImage/menu_hover.png";
+                    }
+
+                    MyToolTip
+                    {
+                        visible: menuButton.hovered
+                        text: "调整颜色"
                     }
                 }
 
@@ -280,6 +311,7 @@ FramelessWindow
             HeadStatus
             {
                 id: headStatus
+                image: chatManager.headImage
                 anchors.top: parent.top
                 anchors.topMargin: 10
                 anchors.left: parent.left
@@ -462,7 +494,6 @@ FramelessWindow
                 {
                     id: passwordField
                     anchors.fill: parent
-                    text: chatManager.password
                     placeholderText : qsTr("密码")
                     passwordCharacter: "●"
                     passwordMaskDelay: 800
@@ -567,6 +598,11 @@ FramelessWindow
                 anchors.topMargin: 12
                 anchors.left: passwordEditor.left
                 anchors.leftMargin: 22
+                onCheckedChanged:
+                {
+                    if (checked && passwordEditor.password === "")
+                        passwordEditor.password = chatManager.password;
+                }
             }
 
             MyCheckButton

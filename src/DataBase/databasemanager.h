@@ -10,24 +10,23 @@ class DatabaseManager : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString recordPath READ recordPath WRITE setRecordPath NOTIFY recordPathChanged)
-
 public:
     static DatabaseManager* instance();
     ~DatabaseManager();
 
-    QString recordPath() const;
+private slots:
+    void initDatabaseSlot();
+    void openDatabaseSlot();
+    void closeDatabaseSlot();
+    void insertChatMessageSlot(const QString &username, ChatMessage *chatMessage);
+    void getChatMessageSlot(const QString &username, int count, ChatMessageList *chatMessageList);
 
-public slots:
-    void setRecordPath(const QString &arg);
-
-    bool openDatabase();
+signals:    //所有的操作使用信号进行
+    void initDatabase();
+    void openDatabase();
     void closeDatabase();
-    bool insertData(const QString &username, ChatMessage *content);
-    bool getData(const QString &username, int count, ChatMessageList *content_list);
-
-signals:
-    void recordPathChanged(const QString &arg);
+    void insertChatMessage(const QString &username, ChatMessage *chatMessage);
+    void getChatMessage(const QString &username, int count, ChatMessageList *chatMessageList);
 
 private:
     DatabaseManager(QObject *parent = nullptr);
@@ -38,7 +37,6 @@ private:
 
 private:
     QSqlDatabase m_database;
-    QString m_recordPath;
 };
 
 #endif // DATABASEMANAGER_H

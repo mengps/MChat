@@ -19,6 +19,27 @@ Rectangle
                               "#FFCCFF", "#FF99FF", "#CC66CC", "#CC33CC", "#993399", "#663366", "#330033"
                             ];
 
+    property color currentColor: "#000";
+    function show()
+    {
+        colorManagerAnimation.to = 240;
+        colorManagerAnimation.restart();
+    }
+
+    function hide()
+    {
+        colorManagerAnimation.to = 0;
+        colorManagerAnimation.restart();
+    }
+
+    NumberAnimation
+    {
+        id: colorManagerAnimation
+        running: false
+        target: root
+        property: "height"
+        duration: 300
+    }
     Component
     {
         id: delegate
@@ -52,7 +73,7 @@ Rectangle
                         cursorShape = Qt.ArrowCursor;
                         parent.hovered = false;
                     }
-                    onClicked: sendMessage.color = modelData;
+                    onClicked: root.currentColor = modelData;
                 }
             }
         }
@@ -69,4 +90,5 @@ Rectangle
         model: colorList
         delegate: delegate
     }
+
 }

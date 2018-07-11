@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>qml/chatApi.js</file>
         <file>qml/main.qml</file>
         <file>qml/LoginInterface/LoginFailure.qml</file>
         <file>qml/LoginInterface/MyParticle.qml</file>

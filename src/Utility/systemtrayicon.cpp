@@ -242,6 +242,7 @@ void SystemTrayIcon::onActivated(QSystemTrayIcon::ActivationReason reason)
 void SystemTrayIcon::onExit()
 {
     m_systemTray->hide();
+    deleteLater();
 }
 
 void SystemTrayIcon::timerEvent(QTimerEvent *event)

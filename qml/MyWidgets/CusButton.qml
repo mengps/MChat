@@ -9,6 +9,7 @@ Item
     property string buttonHoverImage: ""
     property string buttonDisableImage: ""
     property bool buttonDisable: false
+    property bool hovered: false
 
     signal clicked();
     signal exited();
@@ -32,6 +33,7 @@ Item
                 if (buttonDisable == false)
                 {
                     cusButton.entered();
+                    cusButton.hovered = true;
                     cusButtonImage.source = buttonHoverImage;
                 }
             }
@@ -48,6 +50,7 @@ Item
                 if (buttonDisable == false)
                 {
                     cusButton.exited();
+                    cusButton.hovered = false;
                     cusButtonImage.source = buttonNormalImage;
                 }
             }

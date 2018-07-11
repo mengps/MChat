@@ -1,6 +1,7 @@
 #include <QDir>
 #include <QDebug>
 #include <QSqlError>
+#include <QThread>
 #include "chatmanager.h"
 #include "chatmessage.h"
 #include "databasemanager.h"
@@ -14,9 +15,21 @@ DatabaseManager* DatabaseManager::instance()
 DatabaseManager::DatabaseManager(QObject *parent)
     :   QObject(parent)
 {
-    m_recordPath = QDir::homePath() + "/MChat/ChatRecord";
+    QThread *thread = new QThread;
+    connect(thread, &QThread::finished, thread, &QThread::deleteLater);
+    connect(this, &DatabaseManager::initDatabase, this, &DatabaseManager::initDatabaseSlot);
+    connect(this, &DatabaseManager::openDatabase, this, &DatabaseManager::openDatabaseSlot);
+    connect(this, &DatabaseManager::closeDatabase, this, &DatabaseManager::closeDatabaseSlot);
+    connect(this, &DatabaseManager::getChatMessage, this, &DatabaseManager::getChatMessageSlot);
+    connect(this, &DatabaseManager::insertChatMessage, this, &DatabaseManager::insertChatMessageSlot);
+    moveToThread(thread);
+    thread->start();
+}
+
+void DatabaseManager::initDatabaseSlot()
+{
     m_database = QSqlDatabase::addDatabase("QSQLITE");
-    m_database.setDatabaseName(m_recordPath + "/MSG" + ChatManager::instance()->username() + ".db");
+    m_database.setDatabaseName(QDir::homePath() + "/MChat/ChatRecord" + "/MSG" + ChatManager::instance()->username() + ".db");
     m_database.setUserName("MChat");
     m_database.setHostName("localhost");
     m_database.setPassword("123456");
@@ -24,20 +37,21 @@ DatabaseManager::DatabaseManager(QObject *parent)
 
 DatabaseManager::~DatabaseManager()
 {
-    closeDatabase();
+    closeDatabaseSlot();
 }
 
 bool DatabaseManager::tableExist(const QString &tableName)
 {
     if (!m_database.isOpen())
-        openDatabase();
+        openDatabaseSlot();
 
     QString query_create = "CREATE TABLE IF NOT EXISTS " + tableName +
                            "("
-                           "  msg_index      int      NOT NULL PRIMARY KEY,"
-                           "  msg_senderID   char(10) NOT NULL,"
-                           "  msg_datetime   datetime NOT NULL,"
-                           "  msg_content    text     NOT NULL"
+                           "  msg_index          int         NOT NULL PRIMARY KEY,"
+                           "  msg_sender         varchar(10) NOT NULL,"
+                           "  msg_datetime       datetime    NOT NULL,"
+                           "  msg_chatMessage    text        NOT NULL, "
+                           "  msg_state          int         NOT NULL"
                            ");";   //里面的分号可以不用
     QSqlQuery query;
     if (query.exec(query_create))
@@ -61,9 +75,9 @@ int DatabaseManager::getTableSize(const QString &tableName)
     else
     {
         qDebug() << __func__ << size.lastError().text();
+        closeDatabaseSlot();
         return -1;
     }
-    closeDatabase();
 }
 
 QString DatabaseManager::getTableName(const QString &username)
@@ -71,86 +85,62 @@ QString DatabaseManager::getTableName(const QString &username)
     return "Message" + username;
 }
 
-QString DatabaseManager::recordPath() const
+void DatabaseManager::openDatabaseSlot()
 {
-    return m_recordPath;
-}
-
-void DatabaseManager::setRecordPath(const QString &arg)
-{
-    if (m_recordPath == arg)
-    {
-        m_recordPath = arg;
-        if (!QFile::exists(m_recordPath))
-        {
-            QDir dir;
-            dir.mkpath(m_recordPath);
-        }
-
-        emit recordPathChanged(arg);
-    }
-}
-
-bool DatabaseManager::openDatabase()
-{
-    if (!QFile::exists(m_recordPath))
+    QString recordPath = QDir::homePath() + "/MChat/ChatRecord";
+    if (!QFile::exists(recordPath))
     {
         QDir dir;
-        dir.mkpath(m_recordPath);
+        dir.mkpath(recordPath);
     }
 
     if (!m_database.isOpen())
     {
         if (m_database.open())
-            return true;
+            return;
         else
         {
             qDebug() << __func__ << m_database.lastError().text();
-            return false;
         }
     }
-    else return true;
 }
 
-void DatabaseManager::closeDatabase()
+void DatabaseManager::closeDatabaseSlot()
 {
     if (m_database.isOpen())
         m_database.close();
 }
 
-bool DatabaseManager::insertData(const QString &username, ChatMessage *content)
+void DatabaseManager::insertChatMessageSlot(const QString &username, ChatMessage *chatMessage)
 {
     QString tableName = getTableName(username);
     if (tableExist(tableName))
     {
-        QString query_insert = "INSERT INTO " + tableName + " VALUES(?, ?, ?, ?);";
+        QString query_insert = "INSERT INTO " + tableName + " VALUES(?, ?, ?, ?, ?);";
         QSqlQuery query(m_database);
         int index = getTableSize(tableName) + 1; //当前消息的索引
         query.prepare(query_insert);
         query.addBindValue(index);
-        query.addBindValue(content->senderID());
-        query.addBindValue(content->dateTime());
-        query.addBindValue(content->message());
+        query.addBindValue(chatMessage->sender());
+        query.addBindValue(chatMessage->dateTime());
+        query.addBindValue(chatMessage->message());
+        query.addBindValue((int)chatMessage->state());
         if (query.exec())
         {
-            /*qDebug() << "消息" << content->message() << "插入成功"
-                     << "senderID :" << content->senderID()
-                     << "时间 :" << content->dateTime();*/
-            closeDatabase();
-            return true;
+            /*qDebug() << "消息" << chatMessage->message() << "插入成功"
+                     << "sender :" << chatMessage->sender()
+                     << "时间 :" << chatMessage->dateTime();*/
+            closeDatabaseSlot();
         }
         else
         {
             qDebug() << __func__ << query.lastError().text();
-            closeDatabase();
-            return false;
+            closeDatabaseSlot();
         }
     }
-
-    return false;
 }
 
-bool DatabaseManager::getData(const QString &username, int count, ChatMessageList *content_list)
+void DatabaseManager::getChatMessageSlot(const QString &username, int count, ChatMessageList *chatMessageList)
 {
     QString tableName = getTableName(username);
     if (tableExist(tableName))
@@ -159,30 +149,30 @@ bool DatabaseManager::getData(const QString &username, int count, ChatMessageLis
         int index = getTableSize(tableName); //得到最后一条消息的索引
         if (index <= count)                  //如果消息数量不够，就取出所有
             count = index;
-        QString select = QString("SELECT msg_index, msg_senderID, msg_datetime, msg_content FROM " + tableName +
+        QString select = QString("SELECT msg_index, msg_sender, msg_datetime, msg_chatMessage, msg_state FROM " + tableName +
                                  " WHERE msg_index BETWEEN %1 AND %2").arg(index - count + 1).arg(index);
         if (query.exec(select))
         {
             while (query.next())
             {
-                QString senderID = query.value(1).toString();
+                QString sender = query.value(1).toString();
                 QString datetime = query.value(2).toString();
                 QString data = query.value(3).toString();
+                ChatMessageStatus::Status state = (ChatMessageStatus::Status)query.value(4).toInt();
 
-                ChatMessage *content = new ChatMessage(content_list);
-                content->setSenderID(senderID);
-                content->setDateTime(datetime);
-                content->setMessage(data);
-                content_list->append(content);
+                ChatMessage chatMessage;
+                chatMessage.setSender(sender);
+                chatMessage.setDateTime(datetime);
+                chatMessage.setMessage(data);
+                chatMessage.setState(state);
+                QMetaObject::invokeMethod(chatMessageList, "append", Q_ARG(ChatMessage, chatMessage));  //跨线程使用这个
             }
-            closeDatabase();
-            return true;
+            closeDatabaseSlot();
         }
         else
         {
             qDebug() << __func__ << query.lastError().text();
-            closeDatabase();
-            return false;
+            closeDatabaseSlot();
         }
     }
 }

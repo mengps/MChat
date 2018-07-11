@@ -2,13 +2,15 @@
 #include <QVariant>
 #include <QDebug>
 #include <QJsonArray>
+#include <QDir>
 #include "myjsonparse.h"
 #include "iteminfo.h"
 #include "friendmodel.h"
 
 MyJsonParse::MyJsonParse(const QJsonDocument &doc)
+    :   m_jsonDoc(doc)
 {
-    m_jsonDoc = doc;
+
 }
 
 MyJsonParse::~MyJsonParse()
@@ -35,8 +37,12 @@ ItemInfo* MyJsonParse::userInfo()
         QJsonObject object = m_jsonDoc.object();
 
         QJsonValue value = object.value("Username");
+        QString username;
         if (value.isString())
-            info->setUsername(value.toString());
+        {
+            username = value.toString();
+            info->setUsername(username);
+        }
         value = object.value("Nickname");
         if (value.isString())
             info->setNickname(value.toString());
@@ -48,7 +54,13 @@ ItemInfo* MyJsonParse::userInfo()
             info->setBackground(value.toString());
         value = object.value("HeadImage");
         if (value.isString())
-            info->setHeadImage(value.toString());
+        {
+            QString image = value.toString();
+            if (image.left(3) == "qrc")
+                info->setHeadImage(image);
+            else info->setHeadImage("file:///" + QDir::homePath() + "/MChat/Settings/" + username +
+                                    "/headImage/" + image);
+        }
         value = object.value("Signature");
         if (value.isString())
             info->setSignature(value.toString());
@@ -87,9 +99,13 @@ void MyJsonParse::createFriend(FriendGroupList *friendGroupList, QMap<QString, I
                     {
                         QJsonObject object = iter.toObject();
                         FriendInfo *info = new FriendInfo(friendGroupList);
+                        QString username;
                         value = object.value("Username");
                         if (value.isString())
-                            info->setUsername(value.toString());
+                        {
+                            username = value.toString();
+                            info->setUsername(username);
+                        }
                         value = object.value("Nickname");
                         if (value.isString())
                             info->setNickname(value.toString());
@@ -98,7 +114,13 @@ void MyJsonParse::createFriend(FriendGroupList *friendGroupList, QMap<QString, I
                             info->setGender(value.toString());
                         value = object.value("HeadImage");
                         if (value.isString())
-                            info->setHeadImage(value.toString());
+                        {
+                            QString image = value.toString();
+                            if (image.left(3) == "qrc")
+                                info->setHeadImage(image);
+                            else info->setHeadImage("file:///" + QDir::homePath() + "/MChat/Settings/" + username +
+                                                    "/headImage/" + image);
+                        }
                         value = object.value("Signature");
                         if (value.isString())
                             info->setSignature(value.toString());

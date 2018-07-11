@@ -17,7 +17,7 @@ class ItemInfo : public QObject
     Q_PROPERTY(QString headImage READ headImage WRITE setHeadImage NOTIFY headImageChanged)
     Q_PROPERTY(int unreadMessage READ unreadMessage WRITE setUnreadMessage NOTIFY unreadMessageChanged)
     Q_PROPERTY(ChatMessage* lastMessage READ lastMessage NOTIFY lastMessageChanged)
-    Q_PROPERTY(ChatMessageList* messageList READ messageList CONSTANT)
+    Q_PROPERTY(ChatMessageList* chatRecord READ chatRecord CONSTANT)
 
 public:
     ItemInfo(QObject *parent = nullptr);
@@ -28,7 +28,7 @@ public:
     QString headImage() const;
     int unreadMessage() const;
     ChatMessage* lastMessage() const;
-    ChatMessageList* messageList() const;
+    ChatMessageList* chatRecord() const;
 
 public slots:
     void setUsername(const QString &arg);
@@ -38,12 +38,10 @@ public slots:
 
     void loadRecord();
 
-    //在消息记录中添加一条窗口抖动消息
-    bool addShakeMessage(const QString &senderID);
     //在消息记录中添加一条消息
-    bool addTextMessage(const QString &senderID, const QString &msg);
+    void addTextMessage(const QString &sender, const QString &msg);
     //在消息记录中撤回一条消息
-    void recallMessage(const QString &senderID, const QString &msg);
+    void recallMessage(const QString &sender, const QString &msg);
 
 signals:
     void usernameChanged(const QString &arg);
@@ -52,8 +50,8 @@ signals:
     void unreadMessageChanged(int arg);
     void lastMessageChanged();
 
-private:
-    bool addMessage(MSG_TYPE type, const QString &senderID, const QString &msg);
+protected:
+    void addMessage(MSG_TYPE type, const QString &sender, const QString &msg);
 
 private:
     QString m_username;     //id
@@ -61,7 +59,7 @@ private:
     QString m_headImage;    //头像
     int m_unreadMessage;    //未读消息数
 
-    ChatMessageList *m_messageList;
+    ChatMessageList *m_chatRecord;
     ChatManager* m_chatManager;
     DatabaseManager *m_databaseManager;
     NetworkManager *m_networkManager;
@@ -94,6 +92,10 @@ public slots:
     void setBirthday(const QString &arg);
     void setGender(const QString &arg);
     void setLevel(int arg);
+
+
+    //在消息记录中添加一条窗口抖动消息
+    void addShakeMessage(const QString &sender);
 
 signals:
     void backgroundChanged(const QString &arg);

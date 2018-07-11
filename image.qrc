@@ -310,5 +310,13 @@
         <file>image/WidgetsImage/topArrow.png</file>
         <file>image/WidgetsImage/leftArrow.png</file>
         <file>image/WidgetsImage/rightArrow.png</file>
+        <file>image/LoadingImage/loading1.gif</file>
+        <file>image/LoadingImage/loading2.gif</file>
+        <file>image/LoadingImage/loading3.gif</file>
+        <file>image/LoadingImage/loading4.gif</file>
+        <file>image/LoadingImage/loading5.gif</file>
+        <file>image/LoadingImage/loading6.gif</file>
+        <file>image/LoadingImage/loading7.gif</file>
+        <file>image/WidgetsImage/cross.png</file>
     </qresource>
 </RCC>

@@ -25,7 +25,11 @@ NetworkManager::NetworkManager(QObject *parent)
     connect(m_tcpManager, &TcpManager::logined, this, &NetworkManager::onLogined);
     connect(m_tcpManager, &TcpManager::infoGot, this, &NetworkManager::onInfoGot);
     connect(m_tcpManager, &TcpManager::loginError, this, &NetworkManager::loginError);
-    connect(m_tcpManager, &TcpManager::hasNewMessage, this, &NetworkManager::deposeNewMessage);
+    connect(m_tcpManager, &TcpManager::chatMessageSent, this, [this](const QString &username, ChatMessage *chatMessage)
+    {
+        m_databaseManager->insertChatMessage(username, chatMessage);      //消息发送完成加入到本地数据库
+    });
+    connect(m_tcpManager, &TcpManager::hasNewMessage, this, &NetworkManager::disposeNewMessage);
 }
 
 NetworkManager::~NetworkManager()
@@ -40,7 +44,7 @@ void NetworkManager::checkLoginInfo(const QString &username, const QString &pass
     m_tcpManager->requestNewConnection();
 }
 
-ItemInfo *NetworkManager::createUserInfo()
+ItemInfo *NetworkManager::getUserInfo()
 {
     return m_jsonParse->userInfo();
 }
@@ -61,7 +65,7 @@ void NetworkManager::onLogined(bool ok)
     if (ok)
     {
         qDebug() << "验证通过";
-        m_tcpManager->sendMessage(MT_USERINFO, ChatManager::instance()->username().toLatin1(), QByteArray("1"));
+        m_tcpManager->sendMessage(MT_USERINFO, MO_DOWNLOAD, ChatManager::instance()->username().toLatin1());
     }
     else
     {
@@ -78,9 +82,10 @@ void NetworkManager::onInfoGot(const QByteArray &infoJson)
     QJsonDocument myInfo = QJsonDocument::fromJson(infoJson, &error);
     if (!myInfo.isNull() && (error.error == QJsonParseError::NoError))
     {
-        m_jsonParse = new MyJsonParse(myInfo);
-        m_tcpManager->startHeartbeat();     //开始心跳检测
-        m_databaseManager = DatabaseManager::instance();	//初始化本地数据库
+        m_jsonParse = new MyJsonParse(myInfo);              //创建json解析器
+        m_tcpManager->startHeartbeat();                     //开始心跳检测
+        m_databaseManager = DatabaseManager::instance();
+        m_databaseManager->initDatabase();                  //初始化本地数据库
         emit loginFinshed(true);
     }
     else
@@ -95,24 +100,24 @@ void NetworkManager::cancelLogin()
     m_tcpManager->abort();
 }
 
-void NetworkManager::sendMessage(MSG_TYPE type, ChatMessage *message, const QString &receiver)
+void NetworkManager::sendChatMessage(MSG_TYPE type, ChatMessage *chatMessage, const QString &receiver)
 {
-    m_tcpManager->sendMessage(type, receiver.toLatin1(), message->message().toLocal8Bit());
+    m_tcpManager->sendChatMessage(type, MO_UPLOAD, receiver.toLatin1(), chatMessage);
 }
 
-void NetworkManager::deposeNewMessage(const QString &senderID, MSG_TYPE type, const QVariant &data)
+void NetworkManager::disposeNewMessage(const QString &sender, MSG_TYPE type, const QVariant &data)
 {
-    FriendInfo *info = ChatManager::instance()->createFriendInfo(senderID);
+    FriendInfo *info = ChatManager::instance()->createFriendInfo(sender);
     switch (type)
     {
     case MT_SHAKE:
-        info->addShakeMessage(senderID);
-        emit hasNewShake(senderID);
+        info->addShakeMessage(sender);
+        emit hasNewShake(sender);
         break;
 
     case MT_TEXT:
-        info->addTextMessage(senderID, data.toString());
-        emit hasNewText(senderID, data.toString());
+        info->addTextMessage(sender, data.toString());
+        emit hasNewText(sender, data.toString());
         break;
 
     default:

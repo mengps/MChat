@@ -20,10 +20,10 @@ public:
     ~NetworkManager();
 
     Q_INVOKABLE void cancelLogin();
-    Q_INVOKABLE void sendMessage(MSG_TYPE type, ChatMessage *message, const QString &receiver);
+    Q_INVOKABLE void sendChatMessage(MSG_TYPE type, ChatMessage *chatMessage, const QString &receiver);
 
 public slots:    
-    ItemInfo* createUserInfo();
+    ItemInfo* getUserInfo();
     void checkLoginInfo(const QString &username, const QString &password);
     void createFriend(FriendGroupList *friendGroupList, QMap<QString, ItemInfo *> *friendList);
     void uploadUserInformation();
@@ -32,13 +32,13 @@ public slots:
     void onInfoGot(const QByteArray &infoJson);
 
 private slots:
-    void deposeNewMessage(const QString &senderID, MSG_TYPE type, const QVariant &data);
+    void disposeNewMessage(const QString &sender, MSG_TYPE type, const QVariant &data);
 
 signals:
     void loginError(const QString &error);
     void loginFinshed(bool ok);
-    void hasNewShake(const QString &senderID);
-    void hasNewText(const QString &senderID, const QString &message);
+    void hasNewShake(const QString &sender);
+    void hasNewText(const QString &sender, const QString &message);
 
 private:
     NetworkManager(QObject *parent = nullptr);

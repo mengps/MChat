@@ -3,36 +3,57 @@
 #include <QObject>
 #include <QQmlListProperty>
 
+namespace ChatMessageStatus
+{
+    Q_NAMESPACE
+
+    enum Status
+    {
+        Sending,    //发送中
+        Success,    //已发送
+        Failure     //发送失败
+    };
+
+    Q_ENUMS(Status)
+}
+
+
 class ChatMessage : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString senderID READ senderID WRITE setSenderID NOTIFY senderIDChanged)
+    Q_PROPERTY(QString sender READ sender WRITE setSender NOTIFY senderChanged)
     Q_PROPERTY(QString dateTime READ dateTime WRITE setDateTime NOTIFY dateTimeChanged)
     Q_PROPERTY(QString message READ message WRITE setMessage NOTIFY messageChanged)
+    Q_PROPERTY(ChatMessageStatus::Status state READ state WRITE setState NOTIFY stateChanged)
 
 public:
     ChatMessage(QObject *parent = nullptr);
+    ChatMessage(const ChatMessage &chatMessage, QObject *parent = nullptr);
     ~ChatMessage();
 
-    QString senderID() const;
+    QString sender() const;
     QString dateTime() const;
     QString message() const;
+    ChatMessageStatus::Status state() const;
 
 public slots:
-    void setSenderID(const QString &arg);
+    void setSender(const QString &arg);
     void setDateTime(const QString &arg);
     void setMessage(const QString &arg);
+    void setState(ChatMessageStatus::Status arg);
 
 signals:
-    void senderIDChanged();
+    void senderChanged();
     void dateTimeChanged();
     void messageChanged();
+    void stateChanged();
 
 private:
-    QString m_senderID;       //存储该条消息的发送者id
-    QString m_dateTime;       //存储该条消息的时间 格式为：yyyyMMdd hhmmss
-    QString m_message;           //存储该条消息的数据
+    QString m_sender;                           //存储该条消息的发送者id
+    QString m_dateTime;                         //存储该条消息的时间 格式为：yyyyMMdd hhmmss
+    QString m_message;                          //存储该条消息的数据
+    ChatMessageStatus::Status m_state;          //存储本条消息的状态
 };
 
 class ChatMessageList : public QObject
@@ -48,6 +69,7 @@ public:
    QQmlListProperty<ChatMessage> messageList();
 
    Q_INVOKABLE int count() const;
+   Q_INVOKABLE void append(const ChatMessage &msg);
    Q_INVOKABLE void append(ChatMessage *msg);
    Q_INVOKABLE ChatMessage* last();
 
