@@ -2,14 +2,17 @@
 #include <QDebug>
 
 ChatMessage::ChatMessage(QObject *parent)
-    :   QObject(parent)
+    : QObject(parent)
 {
 
 }
 
 ChatMessage::ChatMessage(const ChatMessage &chatMessage, QObject *parent)
-    :   QObject(parent), m_sender(chatMessage.m_sender), m_dateTime(chatMessage.m_dateTime),
-      m_message(chatMessage.m_message), m_state(chatMessage.m_state)
+    : QObject(parent),
+      m_sender(chatMessage.m_sender),
+      m_dateTime(chatMessage.m_dateTime),
+      m_message(chatMessage.m_message),
+      m_state(chatMessage.m_state)
 {
 
 }
@@ -77,7 +80,7 @@ ChatMessageStatus::Status ChatMessage::state() const
 
 //ChatMessageList
 ChatMessageList::ChatMessageList(QObject *parent)
-    :   QObject(parent)
+    : QObject(parent)
 {
     m_msgProxy = new QQmlListProperty<ChatMessage>(parent, m_msgList);
 }
@@ -120,6 +123,8 @@ ChatMessage* ChatMessageList::last()
 {
     if (!m_msgList.isEmpty())
         return m_msgList.last();
+
+    return nullptr;
 }
 
 void ChatMessageList::setData(const QList<ChatMessage *> &data)

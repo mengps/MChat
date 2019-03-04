@@ -1,9 +1,3 @@
-#include <QDir>
-#include <QSettings>
-#include <QQmlComponent>
-#include <QQmlContext>
-#include <QQmlApplicationEngine>
-#include <QApplication>
 #include "chatmanager.h"
 #include "iteminfo.h"
 #include "framelesswindow.h"
@@ -11,6 +5,12 @@
 #include "networkmanager.h"
 #include "friendmodel.h"
 #include "systemtrayicon.h"
+#include <QDir>
+#include <QSettings>
+#include <QQmlComponent>
+#include <QQmlContext>
+#include <QQmlApplicationEngine>
+#include <QApplication>
 
 ChatManager* ChatManager::instance()
 {
@@ -19,11 +19,11 @@ ChatManager* ChatManager::instance()
 }
 
 ChatManager::ChatManager(QObject *parent)
-    :   QObject(parent),
-        m_username("843261040"),
-        m_password("00000000000"),
-        m_rememberPassword(false),
-        m_autoLogin(false)
+    : QObject(parent),
+      m_username("843261040"),
+      m_password("00000000000"),
+      m_rememberPassword(false),
+      m_autoLogin(false)
 {
     m_networkManager = NetworkManager::instance();
     m_rencentMessageIDProxy = new QQmlListProperty<ItemInfo>(this, m_recentMessageID);
@@ -125,9 +125,9 @@ ItemInfo* ChatManager::userInfo() const
     return m_userInfo;
 }
 
-FriendGroupList* ChatManager::friendGroupList() const
+FriendGroup* ChatManager::friendGroup() const
 {
-    return m_friendGroupList;
+    return m_friendGroup;
 }
 
 QQmlListProperty<ItemInfo> ChatManager::recentMessageID() const
@@ -142,7 +142,7 @@ void ChatManager::setLoginStatus(Chat::LoginStatus arg)
     if (arg == Chat::Logging)  //开始登录
     {
         qDebug() << "登录中";
-        m_networkManager->checkLoginInfo(m_username, m_password);
+        m_networkManager->checkLoginInfo();
     }
     else if (arg == Chat::LoginSuccess)    //登录成功载入主界面
     {
@@ -223,8 +223,8 @@ void ChatManager::onLoginFinshed(bool ok)
     if (ok)    //帐号密码验证
     {
         m_userInfo = m_networkManager->getUserInfo();
-        m_friendGroupList = new FriendGroupList(this);
-        m_networkManager->createFriend(m_friendGroupList, &m_friendList);
+        m_friendGroup = new FriendGroup(this);
+        m_networkManager->createFriend(m_friendGroup, &m_friendList);
         setLoginStatus(Chat::LoginSuccess);
     }
     else setLoginStatus(Chat::LoginFailure);
@@ -307,8 +307,8 @@ FriendInfo* ChatManager::createFriendInfo(const QString &username)
     {
         FriendInfo *info = new FriendInfo(this);
         info->setUsername(username);
-        //set *****
-        m_friendList[username] = static_cast<ItemInfo *>(info);
+        //设置一般的用户属性
+        m_friendList[username] = info;
         return info;
     }
 }
@@ -320,7 +320,7 @@ void ChatManager::readSettings()
     if (m_loginStatus != Chat::LoginFinished)
     {
         settings.beginGroup("LoginSettings");
-        setChatStatus((Chat::ChatStatus)settings.value("ChatStatus").toInt());
+        setChatStatus(static_cast<Chat::ChatStatus>(settings.value("ChatStatus").toInt()));
         setRememberPassword(settings.value("RememberPassword").toBool());
         setAutoLogin(settings.value("AutoLogin").toBool());
         setHeadImage(settings.value("HeadImage").toString());
@@ -338,8 +338,8 @@ void ChatManager::readSettings()
         m_mainInterface->setCoord(settings.value("Coord", m_mainInterface->coord()).toPoint());
         m_mainInterface->setWidth(settings.value("Width", m_mainInterface->width()).toInt());
         m_mainInterface->setHeight(settings.value("Height", m_mainInterface->height()).toInt());//默认大小即为当前大小
-        m_mainInterface->setProperty("isDock", (Chat::DockStatus)settings.value("IsDock", false).toBool());
-        m_mainInterface->setProperty("dockState", (Chat::DockStatus)settings.value("DockState", 0).toInt());
+        m_mainInterface->setProperty("isDock", settings.value("IsDock", false).toBool());
+        m_mainInterface->setProperty("dockState", settings.value("DockState", 0).toInt());
         settings.endGroup();
     }
 }

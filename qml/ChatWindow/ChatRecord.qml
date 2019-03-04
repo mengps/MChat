@@ -41,8 +41,8 @@ Item
                 x: bubble.x - 24
                 y: 12
                 playing: true
-                width: 20
-                height: 20
+                width: 16
+                height: 16
                 mipmap: true
                 source:
                 {
@@ -93,7 +93,7 @@ Item
                 id: bubble
                 clip: true
                 x: isOther ? headImage.x + headImage.width + 8 : headImage.x - width - 8
-                source: isOther ? "qrc:/image/Bubble/bubble_小仓仓_left.png" : "qrc:/image/Bubble/bubble_大猫猫_right.png";
+                source: isOther ? "qrc:/image/Bubble/bubble_mouse_left.png" : "qrc:/image/Bubble/bubble_cat_right.png";
                 width: tex.width + 30
                 height: tex.height + 30
                 border.left: isOther ? 15 : 26

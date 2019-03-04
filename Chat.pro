@@ -14,13 +14,15 @@ SOURCES += \
     src/Chat/chatmessage.cpp \
     src/Network/networkmanager.cpp \
     src/Network/tcpmanager.cpp \
-    src/Utility/myjsonparse.cpp \
+    src/Utility/jsonparse.cpp \
     src/Utility/friendmodel.cpp \
     src/Utility/gifhelper.cpp \
     src/Utility/systemtrayicon.cpp \
     src/Utility/chatapi.cpp \
     src/DataBase/databasemanager.cpp \
-    ../ChatServer/src/mymessagedef.cpp
+    ../ChatServer/src/protocol.cpp \
+    src/Utility/magicfish.cpp \
+    src/Utility/magicpool.cpp
 
 HEADERS += \
     src/Chat/framelesswindow.h \
@@ -29,12 +31,14 @@ HEADERS += \
     src/Chat/chatmessage.h \
     src/Network/networkmanager.h \
     src/Network/tcpmanager.h \
-    src/Utility/myjsonparse.h \
+    src/Utility/jsonparse.h \
     src/Utility/friendmodel.h \
     src/Utility/gifhelper.h \
     src/Utility/systemtrayicon.h \
     src/Utility/chatapi.h \
-    src/DataBase/databasemanager.h
+    src/DataBase/databasemanager.h \
+    src/Utility/magicfish.h \
+    src/Utility/magicpool.h
 
 RESOURCES += \
     qml.qrc \
@@ -71,3 +75,5 @@ DEFINES += QT_DEPRECATED_WARNINGS
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+FORMS +=

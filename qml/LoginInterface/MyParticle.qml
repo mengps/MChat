@@ -44,7 +44,7 @@ Item
             width: 4
             height: 4
             radius: 2
-            color: Qt.rgba(Math.random() * 0.8 + 0.1, Math.random() * 0.8 + 0.1, Math.random() * 0.8 + 0.1);
+            color: Qt.rgba(Math.random() * 0.8 + 0.1, Math.random() * 0.8 + 0.1, Math.random() * 0.5 + 0.5);
         }
     }
 
@@ -74,7 +74,7 @@ Item
         id: changer
         anchors.top: parent.top
         width: parent.width
-        height: root.height / 2
+        height: root.height * 0.7
         system: particleSystem
         groups: ["launch"]
         goalState: "explosion"

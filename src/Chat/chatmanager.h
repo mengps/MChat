@@ -1,36 +1,40 @@
 #ifndef CHATMANAGER_H
 #define CHATMANAGER_H
+
+#include "iteminfo.h"
 #include <QObject>
 #include <QPointer>
 #include <QList>
 #include <QQmlListProperty>
-#include "iteminfo.h"
 
 namespace Chat
 {
     Q_NAMESPACE
 
+    //登录状态
     enum LoginStatus
     {
-        NoLogin,
-        Logging,
-        LoginSuccess,
-        LoginFinished,
-        LoginFailure
+        NoLogin,        //未登录
+        Logging,        //登录中
+        LoginSuccess,   //登录成功
+        LoginFinished,  //登录结束
+        LoginFailure    //登录失败
     };
+    //聊天状态
     enum ChatStatus
     {
-        OnLine,     //在线
+        Online,     //在线
         Stealth,    //隐身
         Busy,       //忙碌
         OffLine     //离线
     };
+    //停靠状态
     enum DockStatus
     {
-        UnDock,
-        LeftDock,
-        RightDock,
-        TopDock
+        UnDock,     //未停靠
+        LeftDock,   //左停靠
+        RightDock,  //右停靠
+        TopDock     //上停靠
     };
 
     Q_ENUMS(LoginStatus)
@@ -42,7 +46,7 @@ class QQmlApplicationEngine;
 class ChatMessage;
 class SystemTrayIcon;
 class FramelessWindow;
-class FriendGroupList;
+class FriendGroup;
 class NetworkManager;
 class ChatManager : public QObject
 {
@@ -56,7 +60,7 @@ class ChatManager : public QObject
     Q_PROPERTY(QString username READ username WRITE setUsername NOTIFY usernameChanged)
     Q_PROPERTY(QString password READ password WRITE setPassword NOTIFY passwordChanged)
     Q_PROPERTY(ItemInfo* userInfo READ userInfo CONSTANT)
-    Q_PROPERTY(FriendGroupList* friendGroupList READ friendGroupList CONSTANT)
+    Q_PROPERTY(FriendGroup* friendGroup READ friendGroup CONSTANT)
     Q_PROPERTY(QQmlListProperty<ItemInfo> recentMessageID READ recentMessageID NOTIFY recentMessageIDChanged)
 
 public:
@@ -75,7 +79,7 @@ public:
     QString username() const;
     QString password() const;
     ItemInfo* userInfo() const;
-    FriendGroupList* friendGroupList() const;
+    FriendGroup* friendGroup() const;
     QQmlListProperty<ItemInfo> recentMessageID() const;
 
     Q_INVOKABLE QStringList getLoginHistory();                              //获取登录历史
@@ -87,8 +91,21 @@ public:
     Q_INVOKABLE void closeAllOpenedChat();                      //关闭所有打开的窗口
     Q_INVOKABLE void readSettings();                            //读取基本设置
     Q_INVOKABLE void writeSettings();                           //写入基本设置
-    Q_INVOKABLE void show();                                    //显示界面
+    Q_INVOKABLE void show();                                    //显示主界面
     Q_INVOKABLE void quit();                                    //退出程序
+
+signals:
+    //登录状态改变时发出
+    void loginStatusChanged(Chat::LoginStatus arg);
+    //用户状态改变时发出
+    void chatStatusChanged(Chat::ChatStatus arg);
+    //记住密码改变时发出
+    void rememberPasswordChanged(bool arg);
+    void autoLoginChanged(bool arg);
+    void headImageChanged(const QString &arg);
+    void usernameChanged(const QString &arg);
+    void passwordChanged(const QString &arg);
+    void recentMessageIDChanged();
 
 public slots:
     void setLoginStatus(Chat::LoginStatus arg);
@@ -103,32 +120,22 @@ private slots:
     void onLoginFinshed(bool ok);
     void deleteChatWindow();
 
-signals:
-    void loginStatusChanged(Chat::LoginStatus arg);
-    void chatStatusChanged(Chat::ChatStatus arg);
-    void rememberPasswordChanged(bool arg);
-    void autoLoginChanged(bool arg);
-    void headImageChanged(const QString &arg);
-    void usernameChanged(const QString &arg);
-    void passwordChanged(const QString &arg);
-    void recentMessageIDChanged();
-
 private:
     ChatManager(QObject *parent = nullptr);
 
     QPointer<FramelessWindow> m_loginInterface, m_mainInterface;    //登录界面和主界面
-    QPointer<QQmlApplicationEngine> m_qmlEngine;
+    QPointer<QQmlApplicationEngine> m_qmlEngine;            //当前的qml引擎
     Chat::LoginStatus m_loginStatus;                        //当前登录状态
     Chat::ChatStatus m_chatStatus;                          //当前聊天的状态
-    QString m_username;                                     //当前登录的用户id
-    QString m_password;                                     //当前登录的用户密码
-    QString m_headImage;
-    bool m_rememberPassword;
-    bool m_autoLogin;
+    QString m_username;                                     //当前用户id
+    QString m_password;                                     //当前用户密码
+    QString m_headImage;                                    //当前用户的头像
+    bool m_rememberPassword;                                //是否记住密码
+    bool m_autoLogin;                                       //是否自动登录
     NetworkManager *m_networkManager;
     SystemTrayIcon *m_systemTray;                           //全局系统托盘
     ItemInfo *m_userInfo;                                   //当前登录的用户信息
-    FriendGroupList *m_friendGroupList;                     //保存好友model
+    FriendGroup *m_friendGroup;                             //保存好友分组
     QQmlListProperty<ItemInfo> *m_rencentMessageIDProxy;
     QList<ItemInfo *> m_recentMessageID;                    //保存最近消息的id
     QMap<QString, ItemInfo *> m_friendList;                 //保存好友列表

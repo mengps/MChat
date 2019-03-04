@@ -1,7 +1,4 @@
-﻿#include <QApplication>
-#include <QQmlContext>
-#include <QQmlApplicationEngine>
-#include "iteminfo.h"
+﻿#include "iteminfo.h"
 #include "chatmanager.h"
 #include "chatmessage.h"
 #include "framelesswindow.h"
@@ -10,6 +7,10 @@
 #include "gifhelper.h"
 #include "chatapi.h"
 #include "systemtrayicon.h"
+#include "magicpool.h"
+#include <QApplication>
+#include <QQmlContext>
+#include <QQmlApplicationEngine>
 
 int main(int argc, char *argv[])
 {
@@ -25,7 +26,7 @@ int main(int argc, char *argv[])
     app.setApplicationDisplayName("MChat 聊天");
     app.setQuitOnLastWindowClosed(false);
 
-    QString styleSheet = " QMenu::item:selected { background: #FF8040; color: #000; height: 30px; }" \
+    QString styleSheet = " QMenu::item:selected{ background: #FF8040; color: #000; height: 30px; }" \
                          " QMenu{ padding: 6px 0px 6px 0px; }" \
                          " QMenu::item{ padding-left: 40px; padding-right: 20px; height: 28px; }" \
                          " QMenu::icon{ padding-left: 8px; }" \
@@ -36,8 +37,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<FramelessWindow>("an.framelessWindow", 1, 0, "FramelessWindow");
     qmlRegisterType<FriendInfo>("an.chat", 1, 0, "FriendInfo");
     qmlRegisterType<ItemInfo>("an.chat", 1, 0, "ItemInfo");
-    qmlRegisterType<FriendGroupList>("an.chat", 1, 0, "FriendGroupList");
-    qmlRegisterType<FriendGroupModel>("an.chat", 1, 0, "FriendGroupModel");
+    qmlRegisterType<FriendGroup>("an.chat", 1, 0, "FriendGroup");
+    qmlRegisterType<FriendModel>("an.chat", 1, 0, "FriendModel");
     qmlRegisterType<ChatMessage>("an.chat", 1, 0, "ChatMessage");
     qmlRegisterType<ChatMessageList>("an.chat", 1, 0, "ChatMessageList");
     qmlRegisterType<GifHelper>("an.utility", 1, 0, "GifHelper");
@@ -45,6 +46,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<MyAction>("an.utility", 1, 0, "MyAction");
     qmlRegisterType<MySeparator>("an.utility", 1, 0, "MySeparator");
     qmlRegisterType<SystemTrayIcon>("an.utility", 1, 0, "SystemTrayIcon");
+    qmlRegisterType<MagicPool>("an.utility", 1, 0, "MagicPool");
     qmlRegisterUncreatableMetaObject(Chat::staticMetaObject, "an.chat", 1, 0, "Chat", "不能创建Chat对象");
     qmlRegisterUncreatableMetaObject(ChatMessageStatus::staticMetaObject, "an.chat", 1, 0, "ChatMessageStatus", "不能创建ChatMessageStatus对象");
 

@@ -27,5 +27,10 @@
         <file>qml/MainInterface/RecentMessage.qml</file>
         <file>qml/MyWidgets/SystemTray.qml</file>
         <file>qml/MyWidgets/MessageTipWindow.qml</file>
+        <file>qml/index.js</file>
+        <file>qml/LoginInterface/EffectRectangle.qml</file>
+        <file>qml/MyWidgets/GlowRectangle.qml</file>
+        <file>qml/FlatWidgets/FlatInput.qml</file>
+        <file>qml/MyWidgets/GlowCircularImage.qml</file>
     </qresource>
 </RCC>

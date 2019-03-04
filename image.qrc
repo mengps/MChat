@@ -51,18 +51,18 @@
         <file>image/HeadImage/head14.jpg</file>
         <file>image/HeadImage/head15.jpg</file>
         <file>image/HeadImage/head16.jpg</file>
-        <file>image/Bubble/bubble_放飞心情_left.png</file>
-        <file>image/Bubble/bubble_放飞心情_right.png</file>
-        <file>image/Bubble/bubble_经典_left.png</file>
-        <file>image/Bubble/bubble_经典_right.png</file>
-        <file>image/Bubble/bubble_祈福_left.png</file>
-        <file>image/Bubble/bubble_祈福_right.png</file>
-        <file>image/Bubble/bubble_微笑河马_left.png</file>
-        <file>image/Bubble/bubble_微笑河马_right.png</file>
-        <file>image/Bubble/bubble_大猫猫_left.png</file>
-        <file>image/Bubble/bubble_大猫猫_right.png</file>
-        <file>image/Bubble/bubble_小仓仓_left.png</file>
-        <file>image/Bubble/bubble_小仓仓_right.png</file>
+        <file>image/Bubble/bubble_fly_left.png</file>
+        <file>image/Bubble/bubble_fly_right.png</file>
+        <file>image/Bubble/bubble_normal_left.png</file>
+        <file>image/Bubble/bubble_normal_right.png</file>
+        <file>image/Bubble/bubble_pray_left.png</file>
+        <file>image/Bubble/bubble_pray_right.png</file>
+        <file>image/Bubble/bubble_hippo_left.png</file>
+        <file>image/Bubble/bubble_hippo_right.png</file>
+        <file>image/Bubble/bubble_cat_left.png</file>
+        <file>image/Bubble/bubble_cat_right.png</file>
+        <file>image/Bubble/bubble_mouse_left.png</file>
+        <file>image/Bubble/bubble_mouse_right.png</file>
         <file>image/HeadImage/head17.jpg</file>
         <file>image/HeadImage/head18.jpg</file>
         <file>image/FacesImage/0.gif</file>
@@ -257,44 +257,8 @@
         <file>image/FacesImage/133.png</file>
         <file>image/FacesImage/134.gif</file>
         <file>image/FacesImage/134.png</file>
-        <file>image/FacesImage/dfp.png</file>
-        <file>image/FacesImage/dfr.png</file>
-        <file>image/FacesImage/dhp.png</file>
-        <file>image/FacesImage/K歌.png</file>
-        <file>image/FacesImage/棒棒糖.png</file>
-        <file>image/FacesImage/爆筋.png</file>
-        <file>image/FacesImage/鞭炮.png</file>
-        <file>image/FacesImage/彩球.png</file>
-        <file>image/FacesImage/钞票.png</file>
-        <file>image/FacesImage/车厢.png</file>
-        <file>image/FacesImage/打伞.png</file>
-        <file>image/FacesImage/灯笼.png</file>
-        <file>image/FacesImage/灯泡.png</file>
-        <file>image/FacesImage/多云.png</file>
-        <file>image/FacesImage/发财.png</file>
-        <file>image/FacesImage/飞机.png</file>
-        <file>image/FacesImage/风车.png</file>
-        <file>image/FacesImage/高铁右车头.png</file>
-        <file>image/FacesImage/高铁左车头.png</file>
-        <file>image/FacesImage/购物.png</file>
-        <file>image/FacesImage/喝彩.png</file>
-        <file>image/FacesImage/喝奶.png</file>
-        <file>image/FacesImage/开车.png</file>
-        <file>image/FacesImage/闹钟.png</file>
-        <file>image/FacesImage/祈祷.png</file>
-        <file>image/FacesImage/青蛙.png</file>
-        <file>image/FacesImage/沙发.png</file>
-        <file>image/FacesImage/手枪.png</file>
-        <file>image/FacesImage/帅.png</file>
-        <file>image/FacesImage/双喜.png</file>
-        <file>image/FacesImage/下面.png</file>
-        <file>image/FacesImage/下雨.png</file>
-        <file>image/FacesImage/香蕉.png</file>
-        <file>image/FacesImage/熊猫.png</file>
-        <file>image/FacesImage/药.png</file>
-        <file>image/FacesImage/邮件.png</file>
-        <file>image/FacesImage/纸巾.png</file>
-        <file>image/FacesImage/钻戒.png</file>
+        <file>image/FacesImage/135.png</file>
+        <file>image/FacesImage/136.png</file>
         <file>image/ParticleImage/blueStar.png</file>
         <file>image/WidgetsImage/addFriend_hover.png</file>
         <file>image/WidgetsImage/addFriend_normal.png</file>
@@ -318,5 +282,42 @@
         <file>image/LoadingImage/loading6.gif</file>
         <file>image/LoadingImage/loading7.gif</file>
         <file>image/WidgetsImage/cross.png</file>
+        <file>image/FacesImage/137.png</file>
+        <file>image/FacesImage/138.png</file>
+        <file>image/FacesImage/139.png</file>
+        <file>image/FacesImage/140.png</file>
+        <file>image/FacesImage/141.png</file>
+        <file>image/FacesImage/142.png</file>
+        <file>image/FacesImage/143.png</file>
+        <file>image/FacesImage/144.png</file>
+        <file>image/FacesImage/145.png</file>
+        <file>image/FacesImage/146.png</file>
+        <file>image/FacesImage/147.png</file>
+        <file>image/FacesImage/148.png</file>
+        <file>image/FacesImage/149.png</file>
+        <file>image/FacesImage/150.png</file>
+        <file>image/FacesImage/151.png</file>
+        <file>image/FacesImage/152.png</file>
+        <file>image/FacesImage/153.png</file>
+        <file>image/FacesImage/154.png</file>
+        <file>image/FacesImage/155.png</file>
+        <file>image/FacesImage/156.png</file>
+        <file>image/FacesImage/157.png</file>
+        <file>image/FacesImage/158.png</file>
+        <file>image/FacesImage/159.png</file>
+        <file>image/FacesImage/160.png</file>
+        <file>image/FacesImage/161.png</file>
+        <file>image/FacesImage/162.png</file>
+        <file>image/FacesImage/163.png</file>
+        <file>image/FacesImage/164.png</file>
+        <file>image/FacesImage/165.png</file>
+        <file>image/FacesImage/166.png</file>
+        <file>image/FacesImage/167.png</file>
+        <file>image/FacesImage/168.png</file>
+        <file>image/FacesImage/169.png</file>
+        <file>image/FacesImage/170.png</file>
+        <file>image/FacesImage/171.png</file>
+        <file>image/FacesImage/172.png</file>
+        <file>image/Background/timg.jpg</file>
     </qresource>
 </RCC>

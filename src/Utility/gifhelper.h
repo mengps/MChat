@@ -18,15 +18,15 @@ public:
     Q_INVOKABLE void addGif(QString gif);
     Q_INVOKABLE void cleanup();
 
+signals:
+    void cachePathChanged(const QString &path);
+    void updateGif(const QString &oldData, const QString &newData);
+
 public slots:
     void setCachePath(const QString &path);
 
 private slots:
     void disposeFrame(int frameNumber);
-
-signals:
-    void cachePathChanged(const QString &path);
-    void updateGif(const QString &oldData, const QString &newData);
 
 private:
     QList<QMovie *> m_gifList;

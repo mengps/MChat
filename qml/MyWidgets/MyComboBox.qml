@@ -4,18 +4,18 @@ import QtQuick.Controls 2.2
 Item
 {
     id: root
-    width: itemWidth
+    width: 130
 
     property int index: 0;
-    property int itemWidth: 130
-    property int itemHeight: 30
-    property int dropWidth: itemWidth
-    property int dropHeight: 180
+    property int itemWidth: width;
+    property int itemHeight: 30;
+    property int dropWidth: width;
+    property int dropHeight: 180;
 
     property alias model: listView.model;
-    property alias interactive: listView.interactive
-    property alias clicked: currentBox.clicked
-    property alias comboBox: dropDownBox
+    property alias interactive: listView.interactive;
+    property alias clicked: currentBox.clicked;
+    property alias comboBox: dropDownBox;
 
     signal comboBoxEdited();
 

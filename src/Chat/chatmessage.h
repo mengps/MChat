@@ -1,5 +1,6 @@
 ﻿#ifndef CHATMESSAGE_H
 #define CHATMESSAGE_H
+
 #include <QObject>
 #include <QQmlListProperty>
 
@@ -37,17 +38,17 @@ public:
     QString message() const;
     ChatMessageStatus::Status state() const;
 
-public slots:
-    void setSender(const QString &arg);
-    void setDateTime(const QString &arg);
-    void setMessage(const QString &arg);
-    void setState(ChatMessageStatus::Status arg);
-
 signals:
     void senderChanged();
     void dateTimeChanged();
     void messageChanged();
     void stateChanged();
+
+public slots:
+    void setSender(const QString &arg);
+    void setDateTime(const QString &arg);
+    void setMessage(const QString &arg);
+    void setState(ChatMessageStatus::Status arg);
 
 private:
     QString m_sender;                           //存储该条消息的发送者id

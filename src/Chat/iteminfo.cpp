@@ -1,17 +1,17 @@
-#include <QDebug>
-#include <QDateTime>
 #include "iteminfo.h"
 #include "chatmessage.h"
 #include "chatmanager.h"
 #include "databasemanager.h"
 #include "networkmanager.h"
+#include <QDebug>
+#include <QDateTime>
 
 ItemInfo::ItemInfo(QObject *parent)
-    :   QObject(parent),
-        m_username(""),
-        m_nickname(""),
-        m_headImage(""),
-        m_unreadMessage(0)
+    : QObject(parent),
+      m_username(""),
+      m_nickname(""),
+      m_headImage(""),
+      m_unreadMessage(0)
 {
     m_chatRecord = new ChatMessageList(this);
     m_chatManager = ChatManager::instance();
@@ -83,7 +83,7 @@ void ItemInfo::addTextMessage(const QString &sender, const QString &msg)
     addMessage(MT_TEXT, sender, msg);
 }
 
-void ItemInfo::addMessage(MSG_TYPE type, const QString &sender, const QString &msg)
+void ItemInfo::addMessage(msg_t type, const QString &sender, const QString &msg)
 {
     ChatMessage *message = new ChatMessage(this);
     QString datetime = QDateTime::currentDateTime().toString("yyyyMMdd hhmmss");
@@ -91,22 +91,23 @@ void ItemInfo::addMessage(MSG_TYPE type, const QString &sender, const QString &m
     message->setDateTime(datetime);
     message->setMessage(msg);
     message->setState(ChatMessageStatus::Sending);
-    m_chatRecord->append(message);                                  //加入到消息列表
+    m_chatRecord->append(message);                                      //加入到消息列表
     if (sender == m_chatManager->username())
         m_networkManager->sendChatMessage(type, message, m_username);   //如果为自己发送的，就发送
     else
     {
         message->setState(ChatMessageStatus::Success);
         if (!m_chatManager->chatWindowIsOpenned(sender))
-            setUnreadMessage(unreadMessage() + 1);                  //如果为好友发送的，并且窗口未打开，未读数+1
+            setUnreadMessage(unreadMessage() + 1);                      //如果为好友发送的，并且窗口未打开，未读数+1
     }
-    m_chatManager->appendRecentMessageID(m_username);               //加入到最近消息列表
+    m_chatManager->appendRecentMessageID(m_username);                   //加入到最近消息列表
     emit lastMessageChanged();
 }
 
 void ItemInfo::recallMessage(const QString &sender, const QString &msg)
 {
-
+    Q_UNUSED(sender);
+    Q_UNUSED(msg);
 }
 
 void ItemInfo::setHeadImage(const QString &arg)
@@ -129,7 +130,7 @@ void ItemInfo::setUnreadMessage(int arg)
 
 
 FriendInfo::FriendInfo(QObject *parent)
-    :   ItemInfo(parent)
+    : ItemInfo(parent)
 {
     m_signature = "";
     m_birthday = "";

@@ -1,40 +1,40 @@
-#include <QJsonObject>
-#include <QVariant>
-#include <QDebug>
-#include <QJsonArray>
-#include <QDir>
-#include "myjsonparse.h"
+#include "jsonparse.h"
 #include "iteminfo.h"
 #include "friendmodel.h"
+#include <QJsonObject>
+#include <QVariant>
+#include <QJsonArray>
+#include <QDir>
+#include <QDebug>
 
-MyJsonParse::MyJsonParse(const QJsonDocument &doc)
-    :   m_jsonDoc(doc)
+JsonParse::JsonParse(const QJsonDocument &doc)
+    : m_doc(doc)
 {
 
 }
 
-MyJsonParse::~MyJsonParse()
+JsonParse::~JsonParse()
 {
 
 }
 
-void MyJsonParse::setJsonDocument(const QJsonDocument &doc)
+void JsonParse::setJsonDocument(const QJsonDocument &doc)
 {
     if (!doc.isNull())
-        m_jsonDoc = doc;
+        m_doc = doc;
 }
 
-QJsonDocument MyJsonParse::jsonDocument() const
+QJsonDocument JsonParse::jsonDocument() const
 {
-    return m_jsonDoc;
+    return m_doc;
 }
 
-ItemInfo* MyJsonParse::userInfo()
+ItemInfo* JsonParse::userInfo()
 {
-    if (m_jsonDoc.isObject())
+    if (m_doc.isObject())
     {
         FriendInfo *info = new FriendInfo;
-        QJsonObject object = m_jsonDoc.object();
+        QJsonObject object = m_doc.object();
 
         QJsonValue value = object.value("Username");
         QString username;
@@ -78,12 +78,12 @@ ItemInfo* MyJsonParse::userInfo()
     return nullptr;
 }
 
-void MyJsonParse::createFriend(FriendGroupList *friendGroupList, QMap<QString, ItemInfo *> *friendList)
+void JsonParse::createFriend(FriendGroup *friendGroup, QMap<QString, ItemInfo *> *friendList)
 {
-    QList<FriendGroupModel *> groups;
-    if (m_jsonDoc.isObject())
+    QList<FriendModel *> groups;
+    if (m_doc.isObject())
     {
-        QJsonValue value = m_jsonDoc.object().value("FriendList");
+        QJsonValue value = m_doc.object().value("FriendList");
         if (value.isArray())
         {
             QJsonArray friendGroupArray = value.toArray();       
@@ -98,7 +98,7 @@ void MyJsonParse::createFriend(FriendGroupList *friendGroupList, QMap<QString, I
                     for (auto iter : friendArray)
                     {
                         QJsonObject object = iter.toObject();
-                        FriendInfo *info = new FriendInfo(friendGroupList);
+                        FriendInfo *info = new FriendInfo(friendGroup);
                         QString username;
                         value = object.value("Username");
                         if (value.isString())
@@ -139,22 +139,22 @@ void MyJsonParse::createFriend(FriendGroupList *friendGroupList, QMap<QString, I
                     }
                 }
                 QString group = friendGroupObject.value("Group").toString();
-                FriendGroupModel *friendGroupModel = new FriendGroupModel(group, friends.count(), friends, friendGroupList);
-                groups.append(friendGroupModel);
+                FriendModel *friendModel = new FriendModel(group, friends.count(), friends, friendGroup);
+                groups.append(friendModel);
             }
         }
     }
-    friendGroupList->setData(groups);
+    friendGroup->setData(groups);
 }
 
-bool MyJsonParse::updateInfo(ItemInfo *info)
+bool JsonParse::updateInfo(ItemInfo *info)
 {
     FriendInfo *userInfo = qobject_cast<FriendInfo *>(info);
-    if (!m_jsonDoc.isNull())
+    if (!m_doc.isNull())
     {
-        if (m_jsonDoc.isObject())
+        if (m_doc.isObject())
         {
-            QJsonObject object = m_jsonDoc.object();
+            QJsonObject object = m_doc.object();
 
             object.insert("Nickname", userInfo->nickname());
             object.insert("Gender", userInfo->gender());
@@ -162,7 +162,7 @@ bool MyJsonParse::updateInfo(ItemInfo *info)
             object.insert("HeadImage", userInfo->headImage());
             object.insert("Signature", userInfo->signature());
             object.insert("Birthday", userInfo->birthday());
-            m_jsonDoc = QJsonDocument(object);
+            m_doc = QJsonDocument(object);
         }
         qDebug() << "用户数据上传成功！";
         return true;

@@ -17,11 +17,11 @@ public:
 
     QString icon() const;
 
-public slots:
-    void setIcon(const QString &arg);
-
 signals:
     void iconChanged(const QString &arg);
+
+public slots:
+    void setIcon(const QString &arg);
 
 private:
     QString m_icon;
@@ -53,6 +53,11 @@ public:
     QString text() const;
     void clear();
 
+signals:
+    void widthChanged(int arg);
+    void heightChanged(int arg);
+    void textChanged(const QString &arg);
+
 public slots:
     void setWidth(int arg);
     void setHeight(int arg);
@@ -63,11 +68,6 @@ public slots:
 
 protected:
     void componentComplete();
-
-signals:
-    void widthChanged(int arg);
-    void heightChanged(int arg);
-    void textChanged(const QString &arg);
 
 private:
     friend class SystemTrayIcon;    //让SystemTray能够直接访问m_menu
@@ -94,14 +94,6 @@ public:
     QString toolTip() const;
     MyMenu* menu() const;
 
-public slots:
-    void setIcon(const QString &arg);
-    void setToolTip(const QString &arg);
-    void setMenu(MyMenu *arg);
-    void onVisibleChanged();
-    void onActivated(QSystemTrayIcon::ActivationReason reason);
-    void onExit();
-
 signals:
     void trigger();
     void iconChanged(const QString &arg);
@@ -109,6 +101,14 @@ signals:
     void menuChanged(MyMenu *arg);
     void mouseHovered();
     void mouseExited();
+
+public slots:
+    void setIcon(const QString &arg);
+    void setToolTip(const QString &arg);
+    void setMenu(MyMenu *arg);
+    void onVisibleChanged();
+    void onActivated(QSystemTrayIcon::ActivationReason reason);
+    void onExit();
 
 protected:
     void timerEvent(QTimerEvent *event);

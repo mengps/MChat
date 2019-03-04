@@ -16,7 +16,7 @@ Rectangle
 
     property alias text: tex.text;
     property alias mouseEnable: mouseArea.enabled;
-    property alias fontSize: tex.font.pointSize
+    property alias fontSize: tex.font.pointSize;
     property bool hovered: false;
     property int widthMargin: 10;
     property int heightMargin: 4;

@@ -1,12 +1,12 @@
-﻿#include <QQuickItem>
-#include "framelesswindow.h"
+﻿#include "framelesswindow.h"
+#include <QQuickItem>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
 #endif
 
 FramelessWindow::FramelessWindow(QQuickWindow *parent)
-    :   QQuickWindow(parent)
+    : QQuickWindow(parent)
 {
     m_minimumWidth = 0;
     m_minimumHeight = 0;

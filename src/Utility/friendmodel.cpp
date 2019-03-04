@@ -1,51 +1,57 @@
-#include <QDebug>
 #include "friendmodel.h"
+#include <QDebug>
 
-FriendGroupModel::FriendGroupModel(QObject *parent)
-    :   QObject(parent), m_group("未命名")
+FriendModel::FriendModel(QObject *parent)
+    : QObject(parent),
+      m_group(tr("未命名"))
 {
     m_proxy = new QQmlListProperty<ItemInfo>(this, m_friends);
 }
 
-FriendGroupModel::FriendGroupModel(const QString &group, int onlineNumber,
-                                   const QList<ItemInfo *> &data, QObject *parent)
-    :   QObject(parent), m_group(group), m_onlineNumber(onlineNumber), m_friends(data)
+FriendModel::FriendModel(const QString &group,
+                         int onlineNumber,
+                         const QList<ItemInfo *> &data,
+                         QObject *parent)
+    : QObject(parent),
+      m_group(group),
+      m_onlineNumber(onlineNumber),
+      m_friends(data)
 {
     m_proxy = new QQmlListProperty<ItemInfo>(parent, m_friends);
 }
 
-FriendGroupModel::~FriendGroupModel()
+FriendModel::~FriendModel()
 {
 
 }
 
-QString FriendGroupModel::group() const
+QString FriendModel::group() const
 {
     return m_group;
 }
 
-QQmlListProperty<ItemInfo> FriendGroupModel::friends()
+QQmlListProperty<ItemInfo> FriendModel::friends()
 {
     return *m_proxy;
 }
 
-int FriendGroupModel::onlineNumber() const
+int FriendModel::onlineNumber() const
 {
     return m_onlineNumber;
 }
 
-int FriendGroupModel::totalNumber() const
+int FriendModel::totalNumber() const
 {
     return m_friends.count();
 }
 
-void FriendGroupModel::setOnlineNumber(int num)
+void FriendModel::setOnlineNumber(int num)
 {
     m_onlineNumber = num;
     emit onlineNumberChanged();
 }
 
-void FriendGroupModel::setGroup(const QString &arg)
+void FriendModel::setGroup(const QString &arg)
 {
     if (arg != m_group)
     {
@@ -54,14 +60,14 @@ void FriendGroupModel::setGroup(const QString &arg)
     }
 }
 
-void FriendGroupModel::setData(const QList<ItemInfo *> &data)
+void FriendModel::setData(const QList<ItemInfo *> &data)
 {
     m_friends = data;
     emit totalNumberChanged();
     emit friendsChanged();
 }
 
-void FriendGroupModel::removeAt(int index)
+void FriendModel::removeAt(int index)
 {
     m_friends.removeAt(index);
     qDebug() << "removeAt:" << m_group << "index:" << index;
@@ -70,29 +76,30 @@ void FriendGroupModel::removeAt(int index)
 }
 
 
-FriendGroupList::FriendGroupList(QObject *parent)
-    :   QObject(parent)
+FriendGroup::FriendGroup(QObject *parent)
+    : QObject(parent)
 {
-    m_proxy = new QQmlListProperty<FriendGroupModel>(parent, m_friendGroups);
+    m_proxy = new QQmlListProperty<FriendModel>(parent, m_friendGroups);
 }
 
-FriendGroupList::FriendGroupList(const QList<FriendGroupModel *> &data, QObject *parent)
-    :   QObject(parent), m_friendGroups(data)
+FriendGroup::FriendGroup(const QList<FriendModel *> &data, QObject *parent)
+    : QObject(parent),
+      m_friendGroups(data)
 {
-    m_proxy = new QQmlListProperty<FriendGroupModel>(this, m_friendGroups);
+    m_proxy = new QQmlListProperty<FriendModel>(this, m_friendGroups);
 }
 
-FriendGroupList::~FriendGroupList()
+FriendGroup::~FriendGroup()
 {
 
 }
 
-void FriendGroupList::setData(const QList<FriendGroupModel *> &data)
+void FriendGroup::setData(const QList<FriendModel *> &data)
 {
     m_friendGroups = data;
 }
 
-QQmlListProperty<FriendGroupModel> FriendGroupList::friendGroups()
+QQmlListProperty<FriendModel> FriendGroup::friendGroups()
 {
     return *m_proxy;
 }

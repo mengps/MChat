@@ -21,7 +21,7 @@ FramelessWindow
     minimumHeight: 528
     visible: true
     title: qsTr("主界面")
-    windowIcon: "qrc:/image/winIcon.png"
+    windowIcon: "qrc:/image/winIcon.png";
 
     property var userInfomation: undefined;
     property var introduction: undefined;
@@ -304,7 +304,7 @@ FramelessWindow
             anchors.left: parent.left
             anchors.leftMargin: 10
             mouseEnable: true
-            image: chatManager.userInfo.headImage
+            source: chatManager.userInfo.headImage
 
             Timer
             {

@@ -40,22 +40,6 @@ public:
     bool topHint() const;
     bool taskbarHint() const;
 
-public slots:
-    void setWindowIcon(const QString &arg);
-    void setCoord(const QPoint &arg);
-    void setWidth(int arg);
-    void setHeight(int arg);
-    void setActualWidth(int arg);
-    void setActualHeight(int arg);
-    void setMinimumWidth(int arg);
-    void setMinimumHeight(int arg);
-    void setMaximumWidth(int arg);
-    void setMaximumHeight(int arg);
-    void setMousePenetrate(bool arg);
-    void setTopHint(bool arg);
-    void setTaskbarHint(bool arg);
-    void close();
-
 signals:
     void windowIconChanged(const QString &arg);
     void coordChanged(const QPoint &arg);
@@ -73,6 +57,22 @@ signals:
     void entered();
     void exited();
     void closed();
+
+public slots:
+    void setWindowIcon(const QString &arg);
+    void setCoord(const QPoint &arg);
+    void setWidth(int arg);
+    void setHeight(int arg);
+    void setActualWidth(int arg);
+    void setActualHeight(int arg);
+    void setMinimumWidth(int arg);
+    void setMinimumHeight(int arg);
+    void setMaximumWidth(int arg);
+    void setMaximumHeight(int arg);
+    void setMousePenetrate(bool arg);
+    void setTopHint(bool arg);
+    void setTaskbarHint(bool arg);
+    void close();
 
 protected:
     bool event(QEvent *ev);

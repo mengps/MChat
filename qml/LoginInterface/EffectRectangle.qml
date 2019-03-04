@@ -1,5 +1,19 @@
-import QtQuick 2.0
+import QtQuick 2.12
+import "../index.js" as Render
 
-Item {
+Canvas
+{
+    id: root
 
+    property bool init: false
+
+    onPaint:
+    {
+        if (!init)
+        {
+            init = true;
+            Render.RENDERER.init(root, Render.STRATEGY);
+        }
+        Render.RENDERER.drawFigure();
+    }
 }

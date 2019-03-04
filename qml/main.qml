@@ -3,16 +3,18 @@ import QtQuick.Controls 2.2
 import QtQuick.Window 2.3
 import an.framelessWindow 1.0
 import an.chat 1.0
+import an.utility 1.0
 import "LoginInterface"
+import "FlatWidgets"
 import "MyWidgets"
 
 FramelessWindow
 {
     id: loginInterface
-    width: 430
-    height: 330
-    actualWidth: width + 80
-    actualHeight: height + 80
+    width: 540
+    height: 410
+    actualWidth: width + 100
+    actualHeight: height + 100
     x: (Screen.desktopAvailableWidth - actualWidth) / 2
     y: (Screen.desktopAvailableHeight - actualHeight) / 2
     visible: true
@@ -43,16 +45,21 @@ FramelessWindow
         property: "opacity"
         from: 0
         to: 1
-        duration: 600
+        duration: 700
         easing.type: Easing.InQuad
         onStopped: chatManager.show();
     }
 
-    ParallelAnimation
+    NumberAnimation
     {
         id: endAnimation
         running: false
-
+        target: content
+        property: "width"
+        to: 0
+        duration: 500
+        easing.type: Easing.InQuad
+        onStarted: content.clip = true;
         onStopped:
         {
             if (chatManager.loginStatus === Chat.LoginSuccess)
@@ -61,24 +68,6 @@ FramelessWindow
                 loginInterface.close();
             }
             else Qt.quit();
-        }
-
-        NumberAnimation
-        {
-            target: content
-            property: "rotation"
-            to: 540
-            duration: 500
-            easing.type: Easing.Linear
-        }
-
-        NumberAnimation
-        {
-            target: content
-            property: "scale"
-            to: 0
-            duration: 500
-            easing.type: Easing.Linear
         }
     }
 
@@ -118,27 +107,17 @@ FramelessWindow
         id: content
         width: loginInterface.width
         height: loginInterface.height
+
         focus: true
-        radius: 8
-        color: colorManager.currentColor
-        anchors.centerIn: parent
+        radius: 6
+        opacity: 0.95
+        color: "transparent"
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.right: parent.right
+        anchors.rightMargin: 50
 
         Keys.onPressed:
             if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) logging();
-
-        ColorManager
-        {
-            id: colorManager
-            currentColor: "#FF6666"
-            anchors.top: topRect.top
-            anchors.topMargin: 34
-            anchors.right: topRect.right
-            anchors.rightMargin: 10
-            width: 174
-            height: 0
-            z:2
-            onFocusChanged: if (!focus) hide();
-        }
 
         LoginFailure    //登录失败页面，在最高层，开始不可见
         {
@@ -146,42 +125,81 @@ FramelessWindow
             z: 10
         }
 
+        GlowCircularImage
+        {
+            id: background
+            anchors.fill: parent
+            glowColor: "#C4D6FA"
+            radius: content.radius
+            glowRadius: 10
+            source: "qrc:/image/Background/timg.jpg"
+            antialiasing: true
+            opacity: 0.9
+        }
+
+        MagicPool
+        {
+            id: magicPool
+
+            width: loginInterface.actualWidth
+            height: loginInterface.actualHeight
+
+            function randomMove()
+            {
+                var r_x = Math.random() * parent.width;
+                var r_y = Math.random() * parent.height;
+                magicPool.moveFish(r_x, r_y, false);
+            }
+
+            Timer
+            {
+                interval: 1500
+                repeat: true
+                running: true
+                onTriggered:
+                {
+                    if (Math.random() > 0.6 && !magicPool.moving) magicPool.randomMove();
+                }
+            }
+
+            Component.onCompleted: randomMove();
+        }
+
+
+        MoveMouseArea
+        {
+            anchors.fill: parent
+            target: loginInterface
+
+            onClicked:
+            {
+                magicPool.moveFish(mouse.x, mouse.y, true)
+            }
+        }
+
         Rectangle
         {
             id: topRect
             width: parent.width
-            height: 180
-            z: 1
+            height: 155
             anchors.top: parent.top
             anchors.topMargin: content.radius
             anchors.horizontalCenter: parent.horizontalCenter
-            color: colorManager.currentColor
-
-            MoveMouseArea
-            {
-                anchors.fill: parent
-                target: loginInterface
-            }
-
-            MyParticle
-            {
-                id: particle
-                anchors.fill: parent
-            }
+            color: "transparent"
 
             MyButton
             {
                 id: cancelLogin
                 visible: false
                 text: qsTr("取消登陆")
-                hoverColor: "#55FFCC99"
+                hoverColor: "#FFCC99"
                 radius: 6
                 widthMargin: 16
                 heightMargin: 8
                 border.color: "gray"
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 30
+                anchors.top: parent.top
+                anchors.topMargin: 50
 
                 onClicked:
                 {
@@ -238,18 +256,6 @@ FramelessWindow
                     width: 34
                     height: 24
 
-                    onClicked:
-                    {
-                        if (colorManager.focus)
-                        {
-                            colorManager.focus = false;
-                        }
-                        else
-                        {
-                            colorManager.show();
-                            colorManager.focus = true;
-                        }
-                    }
                     Component.onCompleted:
                     {
                         buttonNormalImage = "qrc:/image/ButtonImage/menu_normal.png";
@@ -302,20 +308,20 @@ FramelessWindow
             id: clientInput
             radius: content.radius
             width: parent.width
-            height: 150
+            height: 260
             z: 0
             anchors.bottom: parent.bottom
             anchors.horizontalCenter: topRect.horizontalCenter
-            color: Qt.lighter("#F9F4D5", 1.3)
+            color: "transparent"
 
             HeadStatus
             {
                 id: headStatus
-                image: chatManager.headImage
-                anchors.top: parent.top
-                anchors.topMargin: 10
-                anchors.left: parent.left
-                anchors.leftMargin: 42
+                width: 75
+                height: 75
+                source: chatManager.headImage
+                anchors.top: clientInput.top
+                anchors.horizontalCenter: parent.horizontalCenter
             }
 
             Item
@@ -323,12 +329,12 @@ FramelessWindow
                 id: usernameEditor
                 width: 195
                 height: 30
-                anchors.top: headStatus.top
-                anchors.left: headStatus.right
-                anchors.leftMargin: 13
+                anchors.top: headStatus.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: parent.horizontalCenter
                 property alias username: usernameField.text
 
-                TextField
+                FlatInput
                 {
                     id: usernameField
                     anchors.fill: parent
@@ -343,12 +349,6 @@ FramelessWindow
                     {
                         regExp: new RegExp("[a-zA-z0-9]*");
                     }
-                    background : Rectangle
-                    {
-                        radius: 4
-                        border.width: 2
-                        border.color: parent.hovered ? "#1583DD" : "#E5E5E5";
-                    }
                 }
 
                 Image
@@ -359,8 +359,15 @@ FramelessWindow
                     anchors.rightMargin: 4
                     width: 22
                     height: 22
-                    source: clicked ? "qrc:/image/WidgetsImage/topArrow.png" : "qrc:/image/WidgetsImage/bottomArrow.png"
+                    source: clicked ? "qrc:/image/WidgetsImage/topArrow.png" : "qrc:/image/WidgetsImage/bottomArrow.png";
                     property bool clicked: false
+                    property bool hovered: false
+
+                    MyToolTip
+                    {
+                        visible: dropDownImage.hovered
+                        text: "历史记录"
+                    }
 
                     MouseArea
                     {
@@ -373,8 +380,16 @@ FramelessWindow
                             if (parent.clicked)
                                 histroyListView.model = chatManager.getLoginHistory();
                         }
-                        onEntered: cursorShape = Qt.PointingHandCursor;
-                        onExited: cursorShape = Qt.ArrowCursor;
+                        onEntered:
+                        {
+                            dropDownImage.hovered = true;
+                            cursorShape = Qt.PointingHandCursor;
+                        }
+                        onExited:
+                        {
+                            dropDownImage.hovered = false;
+                            cursorShape = Qt.ArrowCursor;
+                        }
                     }
                 }
             }
@@ -487,10 +502,11 @@ FramelessWindow
                 width: 195
                 height: 30
                 anchors.top: usernameEditor.bottom
+                anchors.topMargin: 4
                 anchors.left: usernameEditor.left
                 property alias password: passwordField.text
 
-                TextField
+                FlatInput
                 {
                     id: passwordField
                     anchors.fill: parent
@@ -508,42 +524,45 @@ FramelessWindow
                     {
                         regExp: new RegExp("[a-zA-z0-9]*");
                     }
-                    background : Rectangle
+                    Item
                     {
-                        radius: 4
-                        border.width: 2
-                        border.color: parent.hovered ? "#1583DD" : "#E5E5E5";
+                        id: keyboardRect
+                        anchors.right: parent.right
+                        anchors.rightMargin: 4
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: 22
+                        height: 22
+                        property bool hovered: false
 
-                        Rectangle
+                        MyToolTip
                         {
-                            anchors.right: parent.right
-                            anchors.rightMargin: 4
-                            anchors.verticalCenter: parent.verticalCenter
-                            width: 22
-                            height: 22
+                            visible: keyboardRect.hovered
+                            text: qsTr("打开小键盘")
+                        }
 
-                            Image
+                        Image
+                        {
+                            id: keyboard
+                            anchors.fill: parent
+                            source: "qrc:/image/WidgetsImage/keyboard_normal.png"
+                        }
+
+                        MouseArea
+                        {
+                            anchors.fill: parent
+                            hoverEnabled: true
+
+                            onEntered:
                             {
-                                id: img
-                                anchors.fill: parent
-                                source: "qrc:/image/WidgetsImage/keyboard_normal.png"
+                                keyboardRect.hovered = true;
+                                keyboard.source = "qrc:/image/WidgetsImage/keyboard_hover.png";
+                                cursorShape = Qt.PointingHandCursor;
                             }
-
-                            MouseArea
+                            onExited:
                             {
-                                anchors.fill: parent
-                                hoverEnabled: true
-
-                                onEntered:
-                                {
-                                    img.source = "qrc:/image/WidgetsImage/keyboard_hover.png";
-                                    cursorShape = Qt.PointingHandCursor;
-                                }
-                                onExited:
-                                {
-                                    img.source = "qrc:/image/WidgetsImage/keyboard_normal.png";
-                                    cursorShape = Qt.ArrowCursor;
-                                }
+                                keyboardRect.hovered = false;
+                                keyboard.source = "qrc:/image/WidgetsImage/keyboard_normal.png";
+                                cursorShape = Qt.ArrowCursor;
                             }
                         }
                     }
@@ -595,7 +614,7 @@ FramelessWindow
                 text: qsTr("记住密码")
                 checked: chatManager.rememberPassword
                 anchors.top: passwordEditor.bottom
-                anchors.topMargin: 12
+                anchors.topMargin: 15
                 anchors.left: passwordEditor.left
                 anchors.leftMargin: 22
                 onCheckedChanged:
@@ -616,7 +635,7 @@ FramelessWindow
                 text: qsTr("自动登录")
                 checked: chatManager.autoLogin
                 anchors.top: passwordEditor.bottom
-                anchors.topMargin: 12
+                anchors.topMargin: 15
                 anchors.left: remember.right
                 anchors.leftMargin: 10
             }
@@ -627,15 +646,17 @@ FramelessWindow
                 width: 195
                 height: 30
                 anchors.bottom: clientInput.bottom
-                anchors.bottomMargin: 14
-                anchors.left: usernameEditor.left
+                anchors.bottomMargin: 25
+                anchors.horizontalCenter: parent.horizontalCenter
 
-                Rectangle
+                GlowRectangle
                 {
                     id: back
                     anchors.fill: parent
-                    radius: 4
+                    radius: 8
+                    glowRadius: 8
                     color: "#09A3DC"
+                    glowColor: color
 
                     Text
                     {

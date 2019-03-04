@@ -1,7 +1,8 @@
 #ifndef ITEMINFO_H
 #define ITEMINFO_H
+
+#include "protocol.h"
 #include <QObject>
-#include "mymessagedef.h"
 
 class ChatMessage;
 class ChatMessageList;
@@ -51,7 +52,7 @@ signals:
     void lastMessageChanged();
 
 protected:
-    void addMessage(MSG_TYPE type, const QString &sender, const QString &msg);
+    void addMessage(msg_t type, const QString &sender, const QString &msg);
 
 private:
     QString m_username;     //id

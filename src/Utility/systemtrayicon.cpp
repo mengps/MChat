@@ -1,7 +1,7 @@
+#include "systemtrayicon.h"
 #include <QApplication>
 #include <QMenu>
 #include <QAction>
-#include "systemtrayicon.h"
 
 /*#ifdef Q_OS_WIN
 #include <windows.h>
@@ -10,7 +10,7 @@
 #endif*/
 
 MyAction::MyAction(QObject *parent)
-    :   QAction(parent)
+    : QAction(parent)
 {
     setObjectName("MyAction");
 }
@@ -39,7 +39,7 @@ void MyAction::setIcon(const QString &arg)
 }
 
 MySeparator::MySeparator(QObject *parent)
-    :   QObject(parent)
+    : QObject(parent)
 {
     setObjectName("MySeparator");
 }
@@ -50,7 +50,7 @@ MySeparator::~MySeparator()
 }
 
 MyMenu::MyMenu(QQuickItem *parent)
-    :   QQuickItem(parent)
+    : QQuickItem(parent)
 {
     setObjectName("MyMenu");
     m_menu = new QMenu();
@@ -147,7 +147,7 @@ void MyMenu::componentComplete()        //在菜单完成构建后调用，将�
 }
 
 SystemTrayIcon::SystemTrayIcon(QQuickItem *parent)
-    :   QQuickItem(parent)
+    : QQuickItem(parent)
 {
     m_systemTray = new QSystemTrayIcon(this);
 

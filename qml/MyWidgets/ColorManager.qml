@@ -90,5 +90,4 @@ Rectangle
         model: colorList
         delegate: delegate
     }
-
 }

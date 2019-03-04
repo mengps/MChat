@@ -1,15 +1,15 @@
-﻿#include <QDebug>
-#include <QFile>
-#include <QDateTime>
-#include <QJsonObject>
-#include <QJsonDocument>
-#include "chatmanager.h"
+﻿#include "chatmanager.h"
 #include "networkmanager.h"
 #include "iteminfo.h"
 #include "chatmessage.h"
 #include "databasemanager.h"
-#include "myjsonparse.h"
+#include "jsonparse.h"
 #include "friendmodel.h"
+#include <QDebug>
+#include <QFile>
+#include <QDateTime>
+#include <QJsonObject>
+#include <QJsonDocument>
 
 NetworkManager* NetworkManager::instance()
 {
@@ -18,11 +18,11 @@ NetworkManager* NetworkManager::instance()
 }
 
 NetworkManager::NetworkManager(QObject *parent)
-    :   QObject(parent)
+    : QObject(parent)
 {
     m_tcpManager = new TcpManager(this);
 
-    connect(m_tcpManager, &TcpManager::logined, this, &NetworkManager::onLogined);
+    connect(m_tcpManager, &TcpManager::checked, this, &NetworkManager::onLogined);
     connect(m_tcpManager, &TcpManager::infoGot, this, &NetworkManager::onInfoGot);
     connect(m_tcpManager, &TcpManager::loginError, this, &NetworkManager::loginError);
     connect(m_tcpManager, &TcpManager::chatMessageSent, this, [this](const QString &username, ChatMessage *chatMessage)
@@ -38,9 +38,8 @@ NetworkManager::~NetworkManager()
         delete m_jsonParse;
 }
 
-void NetworkManager::checkLoginInfo(const QString &username, const QString &password)
+void NetworkManager::checkLoginInfo()
 {
-    m_tcpManager->readyLogin(username, password);
     m_tcpManager->requestNewConnection();
 }
 
@@ -49,9 +48,9 @@ ItemInfo *NetworkManager::getUserInfo()
     return m_jsonParse->userInfo();
 }
 
-void NetworkManager::createFriend(FriendGroupList *friendGroupList, QMap<QString, ItemInfo *> *friendList)
+void NetworkManager::createFriend(FriendGroup *FriendGroup, QMap<QString, ItemInfo *> *friendList)
 {
-    return m_jsonParse->createFriend(friendGroupList, friendList);
+    return m_jsonParse->createFriend(FriendGroup, friendList);
 }
 
 void NetworkManager::uploadUserInformation()
@@ -82,7 +81,7 @@ void NetworkManager::onInfoGot(const QByteArray &infoJson)
     QJsonDocument myInfo = QJsonDocument::fromJson(infoJson, &error);
     if (!myInfo.isNull() && (error.error == QJsonParseError::NoError))
     {
-        m_jsonParse = new MyJsonParse(myInfo);              //创建json解析器
+        m_jsonParse = new JsonParse(myInfo);              //创建json解析器
         m_tcpManager->startHeartbeat();                     //开始心跳检测
         m_databaseManager = DatabaseManager::instance();
         m_databaseManager->initDatabase();                  //初始化本地数据库
@@ -100,12 +99,12 @@ void NetworkManager::cancelLogin()
     m_tcpManager->abort();
 }
 
-void NetworkManager::sendChatMessage(MSG_TYPE type, ChatMessage *chatMessage, const QString &receiver)
+void NetworkManager::sendChatMessage(msg_t type, ChatMessage *chatMessage, const QString &receiver)
 {
     m_tcpManager->sendChatMessage(type, MO_UPLOAD, receiver.toLatin1(), chatMessage);
 }
 
-void NetworkManager::disposeNewMessage(const QString &sender, MSG_TYPE type, const QVariant &data)
+void NetworkManager::disposeNewMessage(const QString &sender, msg_t type, const QByteArray &data)
 {
     FriendInfo *info = ChatManager::instance()->createFriendInfo(sender);
     switch (type)
@@ -116,8 +115,8 @@ void NetworkManager::disposeNewMessage(const QString &sender, MSG_TYPE type, con
         break;
 
     case MT_TEXT:
-        info->addTextMessage(sender, data.toString());
-        emit hasNewText(sender, data.toString());
+        info->addTextMessage(sender, QString::fromLocal8Bit(data));
+        emit hasNewText(sender, QString::fromLocal8Bit(data));
         break;
 
     default:

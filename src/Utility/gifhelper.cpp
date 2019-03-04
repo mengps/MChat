@@ -1,12 +1,12 @@
+#include "gifhelper.h"
 #include <QDir>
 #include <QDebug>
 #include <QCursor>
 #include <QApplication>
 #include <QDesktopWidget>
-#include "gifhelper.h"
 
 GifHelper::GifHelper(QObject *parent)
-    :   QObject(parent)
+    : QObject(parent)
 {
     m_cachePath = QDir::homePath() + "/MChat/CacheGif/";
 }
@@ -31,7 +31,7 @@ void GifHelper::addGif(QString gif)
     }
     else if (gif.left(3) == "qrc")  gif = gif.mid(3);
 
-    QMovie *movie = new QMovie(gif, "");
+    QMovie *movie = new QMovie(gif);
     movie->setCacheMode(QMovie::CacheAll);
     movie->setSpeed(speed);
     connect(movie, &QMovie::finished, movie, &QMovie::start);   //循环播放

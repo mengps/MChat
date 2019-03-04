@@ -1,8 +1,8 @@
-#include <QDir>
 #include "chatapi.h"
+#include <QDir>
 
 Api::Api(QObject *parent)
-    :   QObject(parent)
+    : QObject(parent)
 {
 }
 

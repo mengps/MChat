@@ -1,5 +1,6 @@
 #ifndef CHATAPI_H
 #define CHATAPI_H
+
 #include <QObject>
 #include <QCursor>
 

@@ -1,11 +1,13 @@
-# MChat
+ï»¿# MChat
 
-### Ò»¸öÓÃÓÚÁÄÌìµÄ¿Í»§¶Ë£¬ÀàËÆÓÚQQ
+###  ä¸€ä¸ªç”¨äºŽèŠå¤©çš„å®¢æˆ·ç«¯ï¼Œç±»ä¼¼äºŽQQ
 
-Ê¹ÓÃQml¿ª·¢
+ä½¿ç”¨Qmlå¼€å‘
 
-¿ª·¢»·¾³windows 7£¬Qt 5.11.0
- 
-·þÎñÆ÷ÔÚ¸ô±ÚMChatServer
+å¼€å‘çŽ¯å¢ƒwindows 7ï¼ŒQt 5.12.0
 
-`×¢Òâ` ¸ÃÈí¼þ½öÓÃÓÚÑ§Ï°£¬¶ø²»ÊÊºÏ×÷ÎªÊµ¼ÊÈí¼þÊ¹ÓÃ
+æœåŠ¡å™¨åœ¨éš”å£MChatServer
+
+------
+
+`æ³¨æ„` è¯¥è½¯ä»¶ä»…ç”¨äºŽå­¦ä¹ ï¼Œè€Œä¸é€‚åˆä½œä¸ºå®žé™…è½¯ä»¶ä½¿ç”¨

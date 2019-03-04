@@ -4,14 +4,14 @@ import QtQuick.Controls.Styles 1.4
 import QtGraphicalEffects 1.0
 import an.chat 1.0
 
-Item
+GlowCircularImage
 {
     id: root
-    width: 80
-    height: 80
+    radius: width / 2
+    glowColor: "black"
+    glowRadius: 8
 
     property bool mouseEnable: false
-    property alias image: img.source
 
     signal clicked();
     signal entered();
@@ -34,7 +34,7 @@ Item
 
     ComboBox
     {
-        id: statu
+        id: status
         anchors.bottom: parent.bottom
         anchors.right: parent.right
         width: 15
@@ -48,12 +48,12 @@ Item
             textColor: "#000"
             background: Rectangle
             {
-                width: statu.width
+                width: status.width
                 height: width
                 radius: width / 2
                 border.color: Qt.darker(color);
-                border.width: statu.hovered ? 2 : 0
-                color: toColor(statu.currentText)
+                border.width: status.hovered ? 2 : 0
+                //color: toColor(status.currentIndex)
             }
         }
        onActivated:
@@ -63,16 +63,9 @@ Item
        }
     }
 
-    CircularImage
-    {
-        id: img
-        anchors.top: parent.top
-        anchors.left: parent.left
-    }
-
     MouseArea
     {
-        id: imgMouseAre
+        id: imageMouseAre
         enabled: root.mouseEnable
         anchors.fill: parent
         hoverEnabled: true

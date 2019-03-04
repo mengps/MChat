@@ -1,9 +1,10 @@
 #ifndef FRIENDMODEL_H
 #define FRIENDMODEL_H
-#include <QQmlListProperty>
-#include "iteminfo.h"
 
-class FriendGroupModel : public QObject
+#include "iteminfo.h"
+#include <QQmlListProperty>
+
+class FriendModel : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString group READ group WRITE setGroup NOTIFY groupChanged)
@@ -12,20 +13,14 @@ class FriendGroupModel : public QObject
     Q_PROPERTY(int totalNumber READ totalNumber NOTIFY totalNumberChanged)
 
 public:
-    FriendGroupModel(QObject *parent = nullptr);
-    FriendGroupModel(const QString &group, int onlineNumber, const QList<ItemInfo *> &other, QObject *parent = nullptr);
-    ~FriendGroupModel();
+    FriendModel(QObject *parent = nullptr);
+    FriendModel(const QString &group, int onlineNumber, const QList<ItemInfo *> &other, QObject *parent = nullptr);
+    ~FriendModel();
 
     QString group() const;
     QQmlListProperty<ItemInfo> friends();
     int onlineNumber() const;
     int totalNumber() const;
-
-public slots:
-    void setGroup(const QString &arg);
-    void setData(const QList<ItemInfo *> &data);
-    void setOnlineNumber(int num);
-    void removeAt(int index);
 
 signals:
     void groupChanged();
@@ -33,35 +28,40 @@ signals:
     void onlineNumberChanged();
     void totalNumberChanged();
 
+public slots:
+    void setGroup(const QString &arg);
+    void setData(const QList<ItemInfo *> &data);
+    void setOnlineNumber(int num);
+    void removeAt(int index);
+
 private:
     QString m_group;
     int m_onlineNumber;
-    int m_totalNumber;
     QQmlListProperty<ItemInfo> *m_proxy;
     QList<ItemInfo *> m_friends;
 };
 
-class FriendGroupList : public QObject
+class FriendGroup : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<FriendGroupModel> friendGroups READ friendGroups NOTIFY friendGroupsChanged)
+    Q_PROPERTY(QQmlListProperty<FriendModel> friendGroups READ friendGroups NOTIFY friendGroupsChanged)
 
 public:
-    FriendGroupList(QObject *parent = nullptr);
-    FriendGroupList(const QList<FriendGroupModel *> &data, QObject *parent = nullptr);
-    ~FriendGroupList();
+    FriendGroup(QObject *parent = nullptr);
+    FriendGroup(const QList<FriendModel *> &data, QObject *parent = nullptr);
+    ~FriendGroup();
 
-    QQmlListProperty<FriendGroupModel> friendGroups();
-
-public slots:
-    void setData(const QList<FriendGroupModel *> &data);
+    QQmlListProperty<FriendModel> friendGroups();
 
 signals:
     void friendGroupsChanged();
 
+public slots:
+    void setData(const QList<FriendModel *> &data);
+
 private:
-    QQmlListProperty<FriendGroupModel> *m_proxy;
-    QList<FriendGroupModel *> m_friendGroups;
+    QQmlListProperty<FriendModel> *m_proxy;
+    QList<FriendModel *> m_friendGroups;
 };
 
 #endif // FRIENDMODEL_H

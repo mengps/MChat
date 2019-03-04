@@ -1,5 +1,5 @@
 import QtQuick 2.7
-import QtGraphicalEffects 1.0
+import QtGraphicalEffects 1.12
 
 Item
 {
@@ -7,13 +7,14 @@ Item
     width: 80
     height: 80
 
-    property int radius: width >> 1;
-    property alias source: imgae.source;
-    property alias mipmap: imgae.mipmap;
+    property int radius: width >> 1;    //默认宽度的一半
+    property alias source: image.source;
+    property alias mipmap: image.mipmap;
+    property alias fillMode: image.fillMode;
 
     Image
     {
-        id: imgae
+        id: image
         sourceSize: Qt.size(parent.width, parent.height)
         mipmap: true
         visible: false
@@ -29,7 +30,7 @@ Item
     OpacityMask
     {
         anchors.fill: parent
-        source: imgae
+        source: image
         maskSource: mask
     }
 }
