@@ -1,5 +1,5 @@
-import QtQuick 2.7
-import an.framelessWindow 1.0
+import QtQuick 2.12
+import an.window 1.0
 import "../MyWidgets"
 
 FramelessWindow
@@ -31,8 +31,8 @@ FramelessWindow
         CusButton
         {
             id: closeButton
-            width: 34
-            height: 24
+            width: 32
+            height: 32
             anchors.right: parent.right
             anchors.rightMargin: 6
             anchors.top: parent.top
@@ -43,7 +43,6 @@ FramelessWindow
                 buttonNormalImage = "qrc:/image/ButtonImage/close_normal.png";
                 buttonPressedImage = "qrc:/image/ButtonImage/close_down.png";
                 buttonHoverImage = "qrc:/image/ButtonImage/close_hover.png";
-                buttonDisableImage = "qrc:/image/ButtonImage/close_disable.png";
             }
         }
 

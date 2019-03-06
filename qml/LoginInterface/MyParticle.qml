@@ -1,5 +1,5 @@
-import QtQuick 2.7
-import QtQuick.Particles 2.0
+import QtQuick 2.12
+import QtQuick.Particles 2.12
 
 Item
 {

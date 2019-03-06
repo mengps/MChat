@@ -1,13 +1,16 @@
-import QtQuick 2.7
-import QtQuick.Controls 2.5
+import QtQuick 2.12
+import QtQuick.Controls 2.12
 
 ToolTip
 {
     id: root
+    font.pointSize: 9
     font.family: "微软雅黑"
     opacity: 0
     background: Rectangle
     {
+        radius: 4
+        color: "#AAFFFFFF"
         border.color: "#888"
         border.width: 1
     }

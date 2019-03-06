@@ -1,8 +1,9 @@
-import QtQuick 2.7
-import QtQuick.Controls 2.2
+import QtQuick 2.12
+import QtQuick.Controls 2.12
 import QtQuick.Window 2.3
-import an.framelessWindow 1.0
 import an.chat 1.0
+import an.window 1.0
+import an.network 1.0
 import an.utility 1.0
 import "LoginInterface"
 import "FlatWidgets"
@@ -11,8 +12,8 @@ import "MyWidgets"
 FramelessWindow
 {
     id: loginInterface
-    width: 540
-    height: 410
+    width: 510
+    height: 400
     actualWidth: width + 100
     actualHeight: height + 100
     x: (Screen.desktopAvailableWidth - actualWidth) / 2
@@ -45,7 +46,7 @@ FramelessWindow
         property: "opacity"
         from: 0
         to: 1
-        duration: 700
+        duration: 600
         easing.type: Easing.InQuad
         onStopped: chatManager.show();
     }
@@ -57,8 +58,8 @@ FramelessWindow
         target: content
         property: "width"
         to: 0
-        duration: 500
-        easing.type: Easing.InQuad
+        duration: 400
+        easing.type: Easing.Linear
         onStarted: content.clip = true;
         onStopped:
         {
@@ -71,35 +72,55 @@ FramelessWindow
         }
     }
 
-    NumberAnimation
+    ParallelAnimation
     {
         id: loggingAnimation
-        target: topRect
-        property: "height"
-        from: 180
-        to: content.height - content.radius
-        duration: 300
-        easing.type: Easing.InOutQuad
+        onStopped: loginInterface.logging();
 
-        onStopped:
+        NumberAnimation
         {
-            cancelLogin.visible = true;
-            topRect.radius = 8;
-            loginInterface.logging();
+            target: topRect
+            property: "height"
+            from: 155
+            to: content.height - content.radius
+            duration: 300
+            easing.type: Easing.Linear
+        }
+
+        NumberAnimation
+        {
+            target: cancelLogin
+            property: "opacity"
+            from: 0
+            to: 1
+            duration: 300
+            easing.type: Easing.Linear
         }
     }
 
-    NumberAnimation
+    ParallelAnimation
     {
         id: cancelAnimation
-        target: topRect
-        property: "height"
-        from: content.height - content.radius
-        to: 180
-        duration: 300
-        easing.type: Easing.InOutQuad
 
-        onStopped: topRect.radius = 0;
+        NumberAnimation
+        {
+            target: topRect
+            property: "height"
+            from: content.height - content.radius
+            to: 155
+            duration: 300
+            easing.type: Easing.Linear
+        }
+
+        NumberAnimation
+        {
+            target: cancelLogin
+            property: "opacity"
+            from: 1
+            to: 0
+            duration: 300
+            easing.type: Easing.Linear
+        }
     }
 
     Rectangle
@@ -107,7 +128,6 @@ FramelessWindow
         id: content
         width: loginInterface.width
         height: loginInterface.height
-
         focus: true
         radius: 6
         opacity: 0.95
@@ -131,7 +151,7 @@ FramelessWindow
             anchors.fill: parent
             glowColor: "#C4D6FA"
             radius: content.radius
-            glowRadius: 10
+            glowRadius: 12
             source: "qrc:/image/Background/timg.jpg"
             antialiasing: true
             opacity: 0.9
@@ -140,7 +160,6 @@ FramelessWindow
         MagicPool
         {
             id: magicPool
-
             width: loginInterface.actualWidth
             height: loginInterface.actualHeight
 
@@ -165,15 +184,93 @@ FramelessWindow
             Component.onCompleted: randomMove();
         }
 
-
         MoveMouseArea
         {
             anchors.fill: parent
+            focus: true
             target: loginInterface
 
             onClicked:
             {
+                focus = true;
                 magicPool.moveFish(mouse.x, mouse.y, true)
+            }
+        }
+
+        Rectangle
+        {
+            id: modeSelect
+            focus: false
+            width: 100
+            height: 64
+            visible: activeFocus
+            radius: 4
+            color: "#DDFEFEFE"
+            x: cusButtons.x - 10
+            y: cusButtons.y + cusButtons.height + 4
+
+            MouseArea
+            {
+                //避免事件往下传递
+                anchors.fill: parent
+            }
+
+            Column
+            {
+                width: 90
+                spacing: 4
+                anchors.centerIn: parent
+
+                FlatRadioButton
+                {
+                    id: internet
+                    width: parent.width
+                    hoverColor: "#9920F5E7"
+                    textColor: radioColor
+                    font.pointSize: 9
+                    checked: true
+                    text: qsTr("互联网模式")
+                    onCheckedChanged:
+                    {
+                        if (checked)
+                        {
+                            networkManager.mode = NetworkMode.Internet;
+                            localInternet.checked = false;
+                        }
+                        else localInternet.checked = true;
+                    }
+
+                    MyToolTip
+                    {
+                        visible: parent.hovered
+                        text: qsTr("  互联网模式\n你将会连接到服务器\n需要联网")
+                    }
+                }
+
+                FlatRadioButton
+                {
+                    id: localInternet
+                    width: parent.width
+                    hoverColor: "#9920F5E7"
+                    textColor: radioColor
+                    font.pointSize: 9
+                    text: qsTr("局域网模式")
+                    onCheckedChanged:
+                    {
+                        if (checked)
+                        {
+                            networkManager.mode = NetworkMode.LocalInternet;
+                            internet.checked = false;
+                        }
+                        else internet.checked = true;
+                    }
+
+                    MyToolTip
+                    {
+                        visible: parent.hovered
+                        text: qsTr("  局域网模式\n你将不会连接到服务器\n但需要接入局域网")
+                    }
+                }
             }
         }
 
@@ -190,13 +287,14 @@ FramelessWindow
             MyButton
             {
                 id: cancelLogin
-                visible: false
+                opacity: 0
                 text: qsTr("取消登陆")
-                hoverColor: "#FFCC99"
                 radius: 6
-                widthMargin: 16
-                heightMargin: 8
-                border.color: "gray"
+                glowRadius: 6
+                widthMargin: 14
+                heightMargin: 6
+                hoverColor: "#FFCCA0"
+                glowColor: hoverColor
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
                 anchors.topMargin: 50
@@ -205,7 +303,6 @@ FramelessWindow
                 {
                     chatManager.loginStatus = Chat.NoLogin;
                     networkManager.cancelLogin();
-                    cancelLogin.visible = false;
                     cancelAnimation.restart();
                 }
             }
@@ -243,6 +340,7 @@ FramelessWindow
 
             Row
             {
+                id: cusButtons
                 width: 102
                 height: 40
                 anchors.right: parent.right
@@ -253,8 +351,8 @@ FramelessWindow
                 CusButton
                 {
                     id: menuButton
-                    width: 34
-                    height: 24
+                    width: 32
+                    height: 32
 
                     Component.onCompleted:
                     {
@@ -262,19 +360,23 @@ FramelessWindow
                         buttonPressedImage = "qrc:/image/ButtonImage/menu_down.png";
                         buttonHoverImage = "qrc:/image/ButtonImage/menu_hover.png";
                     }
+                    onClicked:
+                    {
+                        modeSelect.focus = !modeSelect.focus;
+                    }
 
                     MyToolTip
                     {
                         visible: menuButton.hovered
-                        text: "调整颜色"
+                        text: "打开模式菜单"
                     }
                 }
 
                 CusButton
                 {
                     id: minButton
-                    width: 34
-                    height: 24
+                    width: 32
+                    height: 32
 
                     onClicked: loginInterface.hide();
                     Component.onCompleted:
@@ -283,13 +385,19 @@ FramelessWindow
                         buttonPressedImage = "qrc:/image/ButtonImage/min_down.png";
                         buttonHoverImage = "qrc:/image/ButtonImage/min_hover.png";
                     }
+
+                    MyToolTip
+                    {
+                        visible: minButton.hovered
+                        text: "最小化窗口"
+                    }
                 }
 
                 CusButton
                 {
                     id: closeButton
-                    width: 34
-                    height: 24
+                    width: 32
+                    height: 32
 
                     onClicked: chatManager.quit();
                     Component.onCompleted:
@@ -297,7 +405,12 @@ FramelessWindow
                         buttonNormalImage = "qrc:/image/ButtonImage/close_normal.png";
                         buttonPressedImage = "qrc:/image/ButtonImage/close_down.png";
                         buttonHoverImage = "qrc:/image/ButtonImage/close_hover.png";
-                        buttonDisableImage = "qrc:/image/ButtonImage/close_disable.png";
+                    }
+
+                    MyToolTip
+                    {
+                        visible: closeButton.hovered
+                        text: "关闭窗口"
                     }
                 }
             }
@@ -322,6 +435,17 @@ FramelessWindow
                 source: chatManager.headImage
                 anchors.top: clientInput.top
                 anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            Status
+            {
+                z: 2
+                model: [qsTr("在线"), qsTr("隐身"), qsTr("忙碌")]
+                focus: false
+                anchors.top: headStatus.bottom
+                anchors.topMargin: -14
+                anchors.left: headStatus.right
+                anchors.leftMargin: -14
             }
 
             Item
@@ -354,19 +478,19 @@ FramelessWindow
                 Image
                 {
                     id: dropDownImage
+                    focus: true
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.right: parent.right
                     anchors.rightMargin: 4
                     width: 22
                     height: 22
-                    source: clicked ? "qrc:/image/WidgetsImage/topArrow.png" : "qrc:/image/WidgetsImage/bottomArrow.png";
-                    property bool clicked: false
+                    source: activeFocus ? "qrc:/image/WidgetsImage/topArrow.png" : "qrc:/image/WidgetsImage/bottomArrow.png";
                     property bool hovered: false
 
                     MyToolTip
                     {
                         visible: dropDownImage.hovered
-                        text: "历史记录"
+                        text: "打开登录历史"
                     }
 
                     MouseArea
@@ -376,8 +500,8 @@ FramelessWindow
 
                         onClicked:
                         {
-                            parent.clicked = !parent.clicked;
-                            if (parent.clicked)
+                            dropDownImage.focus = !parent.focus;
+                            if (dropDownImage.activeFocus)
                                 histroyListView.model = chatManager.getLoginHistory();
                         }
                         onEntered:
@@ -396,15 +520,15 @@ FramelessWindow
 
             Rectangle
             {
+                z: 1
                 id: dropDownBox
-                visible: dropDownImage.clicked
+                visible: dropDownImage.activeFocus
                 focus: true
                 clip: true
                 anchors.horizontalCenter: usernameEditor.horizontalCenter
                 anchors.top: usernameEditor.bottom
                 anchors.topMargin: 2
                 radius: 4
-                z: 6
                 width: usernameEditor.width
                 height: 100
                 border.color: "gray"
@@ -412,7 +536,7 @@ FramelessWindow
                 ListView
                 {
                     id: histroyListView
-                    visible: true
+                    visible: parent.visible
                     clip: true
                     anchors.top: parent.top
                     anchors.topMargin: 6
@@ -452,7 +576,7 @@ FramelessWindow
                                 onExited: parent.hovered = false;
                                 onClicked:
                                 {
-                                    dropDownImage.clicked = !dropDownImage.clicked;
+                                    dropDownImage.focus = false;
                                     chatManager.username = modelData;
                                     chatManager.readSettings();
                                 }
@@ -483,7 +607,7 @@ FramelessWindow
                         hovered = true;
                     }
                     onExited: hovered = false;
-                    onClicked: Qt.openUrlExternally("https://ssl.zc.qq.com/v3/index-chs.html");
+                    //onClicked: Qt.openUrlExternally("https://");
 
                     Text
                     {
@@ -544,6 +668,8 @@ FramelessWindow
                         {
                             id: keyboard
                             anchors.fill: parent
+                            antialiasing: true
+                            mipmap: true
                             source: "qrc:/image/WidgetsImage/keyboard_normal.png"
                         }
 
@@ -590,7 +716,7 @@ FramelessWindow
                         parent.hovered = true;
                     }
                     onExited: parent.hovered = false;
-                    onClicked: Qt.openUrlExternally("https://aq.qq.com/cn2/index");
+                    //onClicked: Qt.openUrlExternally("https://");
 
                     Text
                     {
@@ -622,6 +748,12 @@ FramelessWindow
                     if (checked && passwordEditor.password === "")
                         passwordEditor.password = chatManager.password;
                 }
+
+                MyToolTip
+                {
+                    visible: parent.hovered
+                    text: "是否记住密码？"
+                }
             }
 
             MyCheckButton
@@ -638,6 +770,12 @@ FramelessWindow
                 anchors.topMargin: 15
                 anchors.left: remember.right
                 anchors.leftMargin: 10
+
+                MyToolTip
+                {
+                    visible: parent.hovered
+                    text: "是否自动登录？"
+                }
             }
 
             Item
@@ -653,8 +791,8 @@ FramelessWindow
                 {
                     id: back
                     anchors.fill: parent
-                    radius: 8
-                    glowRadius: 8
+                    radius: 6
+                    glowRadius: 6
                     color: "#09A3DC"
                     glowColor: color
 

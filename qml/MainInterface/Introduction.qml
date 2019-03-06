@@ -1,5 +1,5 @@
-import QtQuick 2.7
-import an.framelessWindow 1.0
+import QtQuick 2.12
+import an.window 1.0
 import "../MyWidgets"
 
 FramelessWindow

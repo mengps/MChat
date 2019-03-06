@@ -23,10 +23,10 @@ namespace Chat
     //聊天状态
     enum ChatStatus
     {
-        Online,     //在线
-        Stealth,    //隐身
-        Busy,       //忙碌
-        OffLine     //离线
+        Online = 0,     //在线
+        Stealth,        //隐身
+        Busy,           //忙碌
+        OffLine         //离线
     };
     //停靠状态
     enum DockStatus

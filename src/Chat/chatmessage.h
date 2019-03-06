@@ -18,7 +18,6 @@ namespace ChatMessageStatus
     Q_ENUMS(Status)
 }
 
-
 class ChatMessage : public QObject
 {
     Q_OBJECT

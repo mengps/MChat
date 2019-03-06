@@ -1,6 +1,6 @@
-import QtQuick 2.7
-import QtQuick.Controls 2.2
-import an.framelessWindow 1.0
+import QtQuick 2.12
+import QtQuick.Controls 2.12
+import an.window 1.0
 import an.chat 1.0
 
 FramelessWindow

@@ -1,5 +1,5 @@
-import QtQuick 2.7
-import QtQuick.Controls 2.12 as Con211
+import QtQuick 2.12
+import QtQuick.Controls 2.12 as Con212
 import "../MyWidgets"
 
 Item
@@ -21,7 +21,7 @@ Item
     property alias leftPadding: field.leftPadding
     property alias rightPadding: field.rightPadding
 
-    Con211.TextField
+    Con212.TextField
     {
         id: field
         anchors.fill: parent

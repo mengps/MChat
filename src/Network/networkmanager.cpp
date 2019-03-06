@@ -94,6 +94,15 @@ void NetworkManager::onInfoGot(const QByteArray &infoJson)
     }
 }
 
+void NetworkManager::setMode(NetworkMode::Mode mode)
+{
+    if (mode != m_mode)
+    {
+        m_mode = mode;
+        emit modeChanged();
+    }
+}
+
 void NetworkManager::cancelLogin()
 {
     m_tcpManager->abort();

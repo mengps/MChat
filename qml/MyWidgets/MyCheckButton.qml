@@ -1,11 +1,13 @@
-import QtQuick 2.7
+import QtQuick 2.12
 
 Item
 {
     id: root
+
+    property bool hovered: false
+    property bool checked: false
     property alias text: name.text
     property alias color: name.color
-    property alias checked: rect.checked
     property alias rectWidth: rect.width
     property alias rectHeight: rect.height
 
@@ -14,22 +16,11 @@ Item
         id: rect
         border.color: hovered ? "#728965" : "#92BE6C";
         border.width: 1
-        property bool hovered: false
-        property bool checked: false
 
         Image
         {
             anchors.fill: parent
-            source: rect.checked ? "qrc:/image/WidgetsImage/checked.png" : "";
-        }
-
-        MouseArea
-        {
-            anchors.fill: parent
-            hoverEnabled: true
-            onEntered: rect.hovered = true;
-            onExited: rect.hovered = false;
-            onClicked: rect.checked = !rect.checked;
+            source: root.checked ? "qrc:/image/WidgetsImage/checked.png" : "";
         }
     }
 
@@ -44,5 +35,14 @@ Item
         anchors.left: rect.right
         anchors.leftMargin: 8
         anchors.verticalCenter: rect.verticalCenter
+    }
+
+    MouseArea
+    {
+        anchors.fill: parent
+        hoverEnabled: true
+        onEntered: root.hovered = true;
+        onExited: root.hovered = false;
+        onClicked: root.checked = !root.checked;
     }
 }

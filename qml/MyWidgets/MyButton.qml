@@ -1,16 +1,15 @@
-import QtQuick 2.7
+import QtQuick 2.12
 
-Rectangle
+GlowRectangle
 {
     id: root
     width: tex.width + widthMargin * 2
     height: tex.height + heightMargin * 2
     radius: 4
-    border.color: "#9ACFD6"
     color:
     {
         if (mouseEnable)
-           return hovered ? hoverColor : Qt.lighter(hoverColor, 1.2);
+           return hovered ? hoverColor : Qt.lighter(hoverColor, 1.18);
         else return Qt.darker(hoverColor);
     }
 

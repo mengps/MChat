@@ -1,4 +1,4 @@
-import QtQuick 2.7
+import QtQuick 2.12
 import QtGraphicalEffects 1.12
 
 Item
@@ -7,7 +7,7 @@ Item
     width: 80
     height: 80
 
-    property int radius: width >> 1;    //默认宽度的一半
+    property int radius: width * 0.5;    //默认宽度的一半
     property alias source: image.source;
     property alias mipmap: image.mipmap;
     property alias fillMode: image.fillMode;

@@ -124,7 +124,7 @@ void DatabaseManager::insertChatMessageSlot(const QString &username, ChatMessage
         query.addBindValue(chatMessage->sender());
         query.addBindValue(chatMessage->dateTime());
         query.addBindValue(chatMessage->message());
-        query.addBindValue((int)chatMessage->state());
+        query.addBindValue(int(chatMessage->state()));
         if (query.exec())
         {
             /*qDebug() << "消息" << chatMessage->message() << "插入成功"

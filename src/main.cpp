@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     app.setStyleSheet(styleSheet);
 
     qRegisterMetaType<ChatMessage>("ChatMessage");
-    qmlRegisterType<FramelessWindow>("an.framelessWindow", 1, 0, "FramelessWindow");
+    qmlRegisterType<FramelessWindow>("an.window", 1, 0, "FramelessWindow");
     qmlRegisterType<FriendInfo>("an.chat", 1, 0, "FriendInfo");
     qmlRegisterType<ItemInfo>("an.chat", 1, 0, "ItemInfo");
     qmlRegisterType<FriendGroup>("an.chat", 1, 0, "FriendGroup");
@@ -47,8 +47,12 @@ int main(int argc, char *argv[])
     qmlRegisterType<MySeparator>("an.utility", 1, 0, "MySeparator");
     qmlRegisterType<SystemTrayIcon>("an.utility", 1, 0, "SystemTrayIcon");
     qmlRegisterType<MagicPool>("an.utility", 1, 0, "MagicPool");
-    qmlRegisterUncreatableMetaObject(Chat::staticMetaObject, "an.chat", 1, 0, "Chat", "不能创建Chat对象");
-    qmlRegisterUncreatableMetaObject(ChatMessageStatus::staticMetaObject, "an.chat", 1, 0, "ChatMessageStatus", "不能创建ChatMessageStatus对象");
+    qmlRegisterUncreatableMetaObject(Chat::staticMetaObject,
+                                     "an.chat", 1, 0, "Chat", "不能创建Chat对象");
+    qmlRegisterUncreatableMetaObject(ChatMessageStatus::staticMetaObject,
+                                     "an.chat", 1, 0, "ChatMessageStatus", "不能创建ChatMessageStatus对象");
+    qmlRegisterUncreatableMetaObject(NetworkMode::staticMetaObject,
+                                     "an.network", 1, 0, "NetworkMode", "不能创建NetworkMode对象");
 
     ChatManager *chatManager = ChatManager::instance();
     QQmlApplicationEngine qmlEngine;

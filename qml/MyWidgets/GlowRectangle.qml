@@ -1,4 +1,4 @@
-import QtQuick 2.7
+import QtQuick 2.12
 import QtGraphicalEffects 1.12
 
 Item
@@ -14,8 +14,9 @@ Item
     RectangularGlow
     {
         id: backEffect
+        antialiasing: true
         anchors.fill: backRect
-        glowRadius: 0
+        glowRadius: 1
         spread: 0.2
         cornerRadius: backRect.radius + glowRadius
     }
@@ -23,6 +24,7 @@ Item
     Rectangle
     {
         id: backRect
+        antialiasing: true
         anchors.fill: parent
     }
 }

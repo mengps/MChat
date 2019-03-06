@@ -1,9 +1,9 @@
-import QtQuick 2.7
+import QtQuick 2.12
 import QtGraphicalEffects 1.0
 import Qt.labs.platform 1.0
 import QtQuick.Controls 1.4
-import QtQuick.Window 2.3
-import an.framelessWindow 1.0
+import QtQuick.Window 2.12
+import an.window 1.0
 import "../MyWidgets"
 
 FramelessWindow
@@ -45,8 +45,8 @@ FramelessWindow
             CusButton
             {
                 id: minButton
-                width: 34
-                height: 24
+                width: 32
+                height: 32
 
                 onClicked: root.showMinimized();
                 Component.onCompleted:
@@ -60,8 +60,8 @@ FramelessWindow
             CusButton
             {
                 id: closeButton
-                width: 34
-                height: 24
+                width: 32
+                height: 32
 
                 onClicked: root.close();
                 Component.onCompleted:
@@ -69,7 +69,6 @@ FramelessWindow
                     buttonNormalImage = "qrc:/image/ButtonImage/close_normal.png";
                     buttonPressedImage = "qrc:/image/ButtonImage/close_down.png";
                     buttonHoverImage = "qrc:/image/ButtonImage/close_hover.png";
-                    buttonDisableImage = "qrc:/image/ButtonImage/close_disable.png";
                 }
             }
         }

@@ -32,5 +32,7 @@
         <file>qml/MyWidgets/GlowRectangle.qml</file>
         <file>qml/FlatWidgets/FlatInput.qml</file>
         <file>qml/MyWidgets/GlowCircularImage.qml</file>
+        <file>qml/MyWidgets/Status.qml</file>
+        <file>qml/FlatWidgets/FlatRadioButton.qml</file>
     </qresource>
 </RCC>
