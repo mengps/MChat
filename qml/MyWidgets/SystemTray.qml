@@ -14,11 +14,17 @@ SystemTrayIcon
              ")\n声音: 开启" + "\n消息提醒: 开启" + "\n会话消息: 任务栏闪动";
         else return "MChat";
     }
-    menu:
+    menu: menu2
+
+    Connections
     {
-        if (chatManager.loginStatus === Chat.LoginFinished)
-            return menu1;
-        else return menu2;
+        target: chatManager
+        onLoginStatusChanged:
+        {
+            if (chatManager.loginStatus === Chat.LoginFinished)
+                root.menu = menu1;
+            else root.menu = menu2;
+        }
     }
 
     property MessageTipWindow messageTipWindow;
@@ -142,7 +148,7 @@ SystemTrayIcon
 
         MyMenu
         {
-            text: "设置          >>"
+            text: "设置          "
             MyAction
             {
                 text: "关闭所有声音"

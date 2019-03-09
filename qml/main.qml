@@ -131,7 +131,7 @@ FramelessWindow
         focus: true
         radius: 6
         opacity: 0.95
-        color: "transparent"
+        color: "#C4D6FA"
         anchors.verticalCenter: parent.verticalCenter
         anchors.right: parent.right
         anchors.rightMargin: 50
@@ -279,18 +279,16 @@ FramelessWindow
             id: topRect
             width: parent.width
             height: 155
+            color: "transparent"
             anchors.top: parent.top
             anchors.topMargin: content.radius
             anchors.horizontalCenter: parent.horizontalCenter
-            color: "transparent"
 
             MyButton
             {
                 id: cancelLogin
                 opacity: 0
                 text: qsTr("取消登陆")
-                radius: 6
-                glowRadius: 6
                 widthMargin: 14
                 heightMargin: 6
                 hoverColor: "#FFCCA0"
@@ -301,9 +299,12 @@ FramelessWindow
 
                 onClicked:
                 {
-                    chatManager.loginStatus = Chat.NoLogin;
-                    networkManager.cancelLogin();
-                    cancelAnimation.restart();
+                    if (opacity >= 1.0)
+                    {
+                        chatManager.loginStatus = Chat.NoLogin;
+                        networkManager.cancelLogin();
+                        cancelAnimation.restart();
+                    }
                 }
             }
 
@@ -462,7 +463,7 @@ FramelessWindow
                 {
                     id: usernameField
                     anchors.fill: parent
-                    font.pointSize: 10
+                    font.pointSize: 11
                     font.family: "微软雅黑"
                     selectByMouse: true
                     hoverEnabled: true
@@ -638,7 +639,7 @@ FramelessWindow
                     passwordCharacter: "●"
                     passwordMaskDelay: 800
                     echoMode: TextInput.Password
-                    font.pointSize: 10
+                    font.pointSize: 11
                     font.family: "微软雅黑"
                     selectByMouse: true
                     hoverEnabled: true

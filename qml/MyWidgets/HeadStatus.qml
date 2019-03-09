@@ -5,7 +5,7 @@ GlowCircularImage
     id: root
     radius: width / 2
     glowColor: "black"
-    glowRadius: 16
+    glowRadius: 8
 
     property bool mouseEnable: false
 

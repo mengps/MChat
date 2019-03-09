@@ -79,10 +79,10 @@ Item
 
         Rectangle
         {
-            id: rc
+            id: rect
             width: root.width
             height: root.itemHeight
-            color: (listView.currentIndex == index) ? "#1583DD" : "white"
+            color: (listView.currentIndex == index) ? "#12F2D6" : "white"
             property bool hovered: false
 
             Text
@@ -120,6 +120,7 @@ Item
     {
         id: dropDownBox
         visible: currentBox.clicked
+        radius: 4
         clip: true
         width: root.dropWidth
         height: Math.min(root.dropHeight, listView.contentHeight)

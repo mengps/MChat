@@ -8,8 +8,8 @@ FramelessWindow
 
     width: 220
     height: 120
-    actualWidth: width
-    actualHeight: height
+    actualWidth: width + 14
+    actualHeight: height + 14
     visible: true
     topHint: true
     taskbarHint: true
@@ -22,11 +22,18 @@ FramelessWindow
         target: root
     }
 
-    Rectangle
+    GlowRectangle
     {
-        anchors.fill: parent
-        color: "#88d3d2"
-        radius: 8
+        id: content
+        anchors.centerIn: parent
+        width: root.width
+        height: root.height
+        color: "white"
+        glowColor: "#12F2D6"
+        radius: 6
+        glowRadius: 5
+        antialiasing: true
+        opacity: 0.85
 
         CusButton
         {

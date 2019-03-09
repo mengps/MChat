@@ -7,12 +7,13 @@ FramelessWindow
     id: root
     width: 250
     height: 120
-    actualHeight: height
-    actualWidth: width
+    actualHeight: height + 8
+    actualWidth: width + 8
     topHint: true
     visible: true
 
     property var info;  //ItemInfo info
+    property alias gradient: rect.gradient
 
     function fadeAway()
     {
@@ -36,30 +37,35 @@ FramelessWindow
         running: false
         property: "opacity"
         to: 0
-        duration: 300
+        duration: 400
+        easing.type: Easing.InQuad
         onStopped: root.close();
     }
 
-    Image
+    GlowRectangle
     {
-        id: img
-        source: info.headImage
-        width: root.height
-        height: width
-        mipmap: true
-        fillMode: Image.PreserveAspectCrop
-    }
+        id: rect
+        glowRadius: 4
+        glowColor: "white"
+        width: root.width
+        height: root.height
+        anchors.centerIn: parent
 
-    Rectangle
-    {
-        anchors.left: img.right
-        anchors.right: parent.right
-        height: parent.height
+        Image
+        {
+            id: image
+            source: info.headImage
+            width: root.height
+            height: width
+            anchors.verticalCenter: parent.verticalCenter
+            mipmap: true
+            fillMode: Image.PreserveAspectCrop
+        }
 
         Text
         {
             id: nickname
-            anchors.left: parent.left
+            anchors.left: image.right
             anchors.leftMargin: 15
             anchors.right: parent.right
             anchors.top: parent.top
@@ -73,7 +79,7 @@ FramelessWindow
         Text
         {
             id: signature
-            anchors.left: parent.left
+            anchors.left: image.right
             anchors.leftMargin: 5
             anchors.right: parent.right
             anchors.top: nickname.bottom
@@ -88,7 +94,7 @@ FramelessWindow
         Text
         {
             id: level
-            anchors.left: parent.left
+            anchors.left: image.right
             anchors.leftMargin: 5
             anchors.top: signature.bottom
             anchors.topMargin: 5
@@ -101,8 +107,10 @@ FramelessWindow
         MyLevel
         {
             level: info.level
-            anchors.left: parent.left
+            anchors.left: image.right
             anchors.leftMargin: 4
+            anchors.right: parent.right
+            anchors.rightMargin: 4
             anchors.top: level.bottom
         }
     }

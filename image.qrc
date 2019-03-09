@@ -8,7 +8,7 @@
         <file>image/Background/6.jpg</file>
         <file>image/Background/7.jpg</file>
         <file>image/Background/8.jpg</file>
-        <file>image/ButtonImage/close_disable.png</file>
+        <file>image/Background/timg.jpg</file>
         <file>image/ButtonImage/close_down.png</file>
         <file>image/ButtonImage/close_hover.png</file>
         <file>image/ButtonImage/close_normal.png</file>
@@ -51,18 +51,6 @@
         <file>image/HeadImage/head14.jpg</file>
         <file>image/HeadImage/head15.jpg</file>
         <file>image/HeadImage/head16.jpg</file>
-        <file>image/Bubble/bubble_fly_left.png</file>
-        <file>image/Bubble/bubble_fly_right.png</file>
-        <file>image/Bubble/bubble_normal_left.png</file>
-        <file>image/Bubble/bubble_normal_right.png</file>
-        <file>image/Bubble/bubble_pray_left.png</file>
-        <file>image/Bubble/bubble_pray_right.png</file>
-        <file>image/Bubble/bubble_hippo_left.png</file>
-        <file>image/Bubble/bubble_hippo_right.png</file>
-        <file>image/Bubble/bubble_cat_left.png</file>
-        <file>image/Bubble/bubble_cat_right.png</file>
-        <file>image/Bubble/bubble_mouse_left.png</file>
-        <file>image/Bubble/bubble_mouse_right.png</file>
         <file>image/HeadImage/head17.jpg</file>
         <file>image/HeadImage/head18.jpg</file>
         <file>image/FacesImage/0.gif</file>
@@ -260,7 +248,6 @@
         <file>image/FacesImage/135.png</file>
         <file>image/FacesImage/136.png</file>
         <file>image/ParticleImage/blueStar.png</file>
-        <file>image/WidgetsImage/addFriend_hover.png</file>
         <file>image/WidgetsImage/addFriend_normal.png</file>
         <file>image/WidgetsImage/bottomArrow.png</file>
         <file>image/WidgetsImage/checked.png</file>
@@ -318,6 +305,6 @@
         <file>image/FacesImage/170.png</file>
         <file>image/FacesImage/171.png</file>
         <file>image/FacesImage/172.png</file>
-        <file>image/Background/timg.jpg</file>
+        <file>image/WidgetsImage/addFriend_down.png</file>
     </qresource>
 </RCC>

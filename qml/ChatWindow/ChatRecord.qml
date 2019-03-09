@@ -1,5 +1,5 @@
 import QtQuick 2.12
-import QtQuick.Controls 2.12
+import QtQuick.Controls 2.4
 import an.chat 1.0
 import "../MyWidgets"
 
@@ -22,7 +22,7 @@ Item
         Item
         {
             width: listView.width
-            height: bubble.height
+            height: textRect.height
             property bool isOther: chatManager.username != sender;
 
             CircularImage
@@ -38,7 +38,7 @@ Item
             AnimatedImage
             {
                 id: stateImage
-                x: bubble.x - 24
+                x: textRect.x - 24
                 y: 12
                 playing: true
                 width: 16
@@ -88,18 +88,13 @@ Item
                 }
             }
 
-            BorderImage
+            Rectangle
             {
-                id: bubble
+                id: textRect
                 clip: true
                 x: isOther ? headImage.x + headImage.width + 8 : headImage.x - width - 8
-                source: isOther ? "qrc:/image/Bubble/bubble_mouse_left.png" : "qrc:/image/Bubble/bubble_cat_right.png";
                 width: tex.width + 30
                 height: tex.height + 30
-                border.left: isOther ? 15 : 26
-                border.top: 22
-                border.right: isOther ? 25 : 14
-                border.bottom: 18
 
                 MyTextEdit
                 {

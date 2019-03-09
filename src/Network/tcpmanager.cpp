@@ -3,7 +3,6 @@
 #include "tcpmanager.h"
 #include <QFile>
 #include <QTimer>
-#include <QThread>
 #include <QDataStream>
 #include <QCryptographicHash>
 
@@ -47,7 +46,7 @@ TcpManager::TcpManager(QObject *parent)
     });
     connect(m_heartbeat, &QTimer::timeout, this, [this]()
     {
-        sendMessage(MT_HEARTBEAT);
+        sendMessage(MT_HEARTBEAT, MO_NULL, SERVER_ID, HEARTBEAT);
     });
     connect(m_messageTimeout, &QTimer::timeout, this, &TcpManager::messageTimeoutHandle);
 }
@@ -91,7 +90,7 @@ void TcpManager::checkLoginInfo()
     auto username  = ChatManager::instance()->username();
     auto password = ChatManager::instance()->password();
     auto data = username + "%%" + password;
-    sendMessage(MT_CHECK, MO_NULL, QByteArray(), data.toLocal8Bit());
+    sendMessage(MT_CHECK, MO_NULL, SERVER_ID, data.toLocal8Bit());
 }
 
 void TcpManager::onStateChanged(QAbstractSocket::SocketState state)
@@ -120,7 +119,7 @@ void TcpManager::processNextSendMessage()
         QDataStream out(&block, QIODevice::WriteOnly);
         out.setVersion(QDataStream::Qt_5_9);
         Message *message = m_messageQueue.dequeue();
-        out << message;
+        out << *message;
         m_sendData = block;
         m_sendDataBytes = block.size();
         if (MSG_IS_USER(get_type(*message)))        //本次处理的是用户消息
@@ -184,6 +183,7 @@ void TcpManager::processRecvMessage()
         QDataStream in(&m_recvData, QIODevice::ReadOnly);
         in.setVersion(QDataStream::Qt_5_9);
         in >> header;
+        qDebug() << header;
 
         if (header.isEmpty()) return;
 
@@ -209,52 +209,63 @@ void TcpManager::processRecvMessage()
     auto md5 = QCryptographicHash::hash(rawData, QCryptographicHash::Md5);
     auto data = QByteArray::fromBase64(rawData);
     if (md5 != get_md5(m_recvHeader)) return;
-    else qDebug() << "md5 一致，消息为：\"" + data + "\"，大小：" + QString::number(m_recvData.size());
 
-    if (get_option(m_recvHeader) == MO_UPLOAD)
+    qDebug() << "md5 一致，消息为：" << data;
+    qDebug() << "大小为：" << size;
+
+    if (get_option(m_recvHeader) == MO_NULL)    //来自服务器的都为NULL
     {
+        auto username = ChatManager::instance()->username();
         switch (get_type(m_recvHeader))
         {
         case MT_CHECK:
-            emit checked(data == CHECK_SUCCESS ? true : false);
+            if (get_sender(m_recvHeader) == SERVER_ID && get_receiver(m_recvHeader) == username)
+                emit checked(data == CHECK_SUCCESS ? true : false);
             break;
 
         case MT_USERINFO:
-            emit infoGot(data);
+            qDebug() << "userinfo";
+            if (get_sender(m_recvHeader) == SERVER_ID && get_receiver(m_recvHeader) == username)
+                emit infoGot(data);
             break;
 
         case MT_SHAKE:
             qDebug() << "收到一条窗口震动来自："
                      << QString(get_sender(m_recvHeader));
-            emit hasNewMessage(QString(get_sender(m_recvHeader)), MT_SHAKE, QByteArray());
+            if (get_receiver(m_recvHeader) == username)
+                emit hasNewMessage(QString(get_sender(m_recvHeader)), MT_SHAKE, QByteArray());
             break;
 
         case MT_TEXT:
             qDebug() << "收到一条新消息来自："
                      << QString(get_sender(m_recvHeader))
                      << "消息为：" + QString::fromLocal8Bit(data);
-            emit hasNewMessage(QString(get_sender(m_recvHeader)), MT_TEXT, data);
+            if (get_receiver(m_recvHeader) == username)
+                emit hasNewMessage(QString(get_sender(m_recvHeader)), MT_TEXT, data);
             break;
 
         case MT_IMAGE:
             qDebug() << "收到一条图片来自："
                      << QString(get_sender(m_recvHeader))
                      << "消息为：" + QString::fromLocal8Bit(data);
-            emit hasNewMessage(QString(get_sender(m_recvHeader)), MT_IMAGE, data);
+            if (get_receiver(m_recvHeader) == username)
+                emit hasNewMessage(QString(get_sender(m_recvHeader)), MT_IMAGE, data);
             break;
 
         case MT_HEADIMAGE:
             qDebug() << "收到新头像来自："
                      << QString(get_sender(m_recvHeader))
                      << "消息为：" + QString::fromLocal8Bit(data);
-            emit hasNewMessage(QString(get_sender(m_recvHeader)), MT_HEADIMAGE, data);
+            if (get_receiver(m_recvHeader) == username)
+                emit hasNewMessage(QString(get_sender(m_recvHeader)), MT_HEADIMAGE, data);
             break;
 
         case MT_UNKNOW:
             qDebug() << "收到一条未知消息来自："
                      << QString(get_sender(m_recvHeader))
                      << "消息为：" + QString::fromLocal8Bit(data);
-            emit hasNewMessage(QString(get_sender(m_recvHeader)), MT_TEXT, data);
+            if (get_receiver(m_recvHeader) == username)
+                emit hasNewMessage(QString(get_sender(m_recvHeader)), MT_TEXT, data);
             break;
 
         default:

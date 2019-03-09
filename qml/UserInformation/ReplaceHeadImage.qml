@@ -12,18 +12,25 @@ FramelessWindow
 
     width: 300
     height: 410
-    actualWidth: width
-    actualHeight: height
+    actualWidth: width + 14
+    actualHeight: height + 14
     x: (Screen.desktopAvailableWidth - actualWidth) / 2
     y: (Screen.desktopAvailableHeight - actualHeight) / 2
     visible: true
     taskbarHint: true
 
-    Rectangle
+    GlowRectangle
     {
-        anchors.fill: parent
-        color: "#444"
-        radius: 5
+        id: backContent
+        anchors.centerIn: parent
+        width: root.width
+        height: root.height
+        color: "#666"
+        glowColor: color
+        radius: 6
+        glowRadius: 5
+        antialiasing: true
+        opacity: 0.85
 
         MoveMouseArea
         {

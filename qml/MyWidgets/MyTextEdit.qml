@@ -53,11 +53,13 @@ TextEdit
     {
         id: menu
         focus: false
-        background: Rectangle
+        background: GlowRectangle
         {
+            radius: 4
             implicitWidth: 140
             implicitHeight: 110
             color: "#F9FCFE"
+            glowColor: color
         }
         enter: Transition
         {

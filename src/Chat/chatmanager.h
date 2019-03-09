@@ -2,6 +2,7 @@
 #define CHATMANAGER_H
 
 #include "iteminfo.h"
+#include "Utility/friendmodel.h"
 #include <QObject>
 #include <QPointer>
 #include <QList>
@@ -60,7 +61,7 @@ class ChatManager : public QObject
     Q_PROPERTY(QString username READ username WRITE setUsername NOTIFY usernameChanged)
     Q_PROPERTY(QString password READ password WRITE setPassword NOTIFY passwordChanged)
     Q_PROPERTY(ItemInfo* userInfo READ userInfo CONSTANT)
-    Q_PROPERTY(FriendGroup* friendGroup READ friendGroup CONSTANT)
+    Q_PROPERTY(QQmlListProperty<FriendModel> friendGroups READ friendGroups CONSTANT)
     Q_PROPERTY(QQmlListProperty<ItemInfo> recentMessageID READ recentMessageID NOTIFY recentMessageIDChanged)
 
 public:
@@ -79,7 +80,7 @@ public:
     QString username() const;
     QString password() const;
     ItemInfo* userInfo() const;
-    FriendGroup* friendGroup() const;
+    QQmlListProperty<FriendModel> friendGroups() const;
     QQmlListProperty<ItemInfo> recentMessageID() const;
 
     Q_INVOKABLE QStringList getLoginHistory();                              //获取登录历史

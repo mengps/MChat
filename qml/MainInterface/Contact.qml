@@ -13,18 +13,18 @@ Item
 
        Rectangle
        {
-           id: rec
+           id: subRect
            width: root.width
-           height: 35
+           height: 40
            clip: true
-           color: hovered ?  "#bbb" : "#00ffffff"
+           color: hovered ?  "#ACBBBBBB" : "transparent"
 
            property bool hovered: false
            property var introduction: undefined;
 
            CircularImage
            {
-               id: subImg
+               id: subImage
                width: parent.height - 5
                height: width
                mipmap: true
@@ -36,13 +36,21 @@ Item
 
            Text
            {
-               anchors.left: subImg.right
+               id: subSignature
+               anchors.left: subImage.right
                anchors.leftMargin: 10
                anchors.verticalCenter: parent.verticalCenter
                font.family: "微软雅黑"
                font.pointSize: 10
                verticalAlignment: Text.AlignVCenter
                text: "<b>" + nickname + "</b>" + " 签名：" + "<font color=\"red\" size=\"2\">" + signature + "</font>"
+           }
+
+           MyToolTip
+           {
+               id: signatureTip
+               visible: false
+               text: signature
            }
 
            MouseArea
@@ -59,21 +67,25 @@ Item
                }
                onPositionChanged:
                {
-                   if (subImg.contains(Qt.point(mouse.x - 10, mouse.y)))
+                   if (subImage.contains(Qt.point(mouse.x - 10, mouse.y)))
                    {
-                       if (rec.introduction == undefined)
-                           rec.introduction = mainInterface.createIntroduction(
-                                       rec.ListView.view.introductionY - listView.contentY + rec.y + 130, modelData);
-                       else rec.introduction.show();
+                       signatureTip.visible = false;
+                       if (subRect.introduction == undefined)
+                           subRect.introduction = mainInterface.createIntroduction(
+                                       subRect.ListView.view.introductionY - listView.contentY + subRect.y + 130, modelData);
+                       else subRect.introduction.show();
                    }
-                   else if (rec.introduction != undefined)
-                       rec.introduction.fadeAway();
+                   else if (subRect.introduction != undefined)
+                       subRect.introduction.fadeAway();
+                   else if (subSignature.contains(Qt.point(mouse.x - 10 + subImage.width, mouse.y)))
+                       signatureTip.visible = true;
                }
                onExited:
                {
                    parent.hovered = false;
-                   if (rec.introduction != undefined)
-                       rec.introduction.fadeAway();
+                   signatureTip.visible = false;
+                   if (subRect.introduction != undefined)
+                       subRect.introduction.fadeAway();
                }
            }
        }
@@ -96,23 +108,24 @@ Item
             Rectangle
             {
                 id: rect
-                height: img.height
+                height: image.height + 8
                 width: parent.width
-                color: parent.hovered ?  "#ccc" : "#00ffffff"
+                color: parent.hovered ?  "#ACBBBBBB" : "transparent"
 
                 Image
                 {
-                    id: img
+                    id: image
                     anchors.left: parent.left
                     anchors.leftMargin: 5
+                    anchors.verticalCenter: parent.verticalCenter
                     source: item.clicked ? "qrc:/image/WidgetsImage/bottomArrow.png" : "qrc:/image/WidgetsImage/rightArrow.png"
                 }
 
                 Text
                 {
-                    anchors.left: img.right
+                    anchors.left: image.right
                     anchors.leftMargin: 5
-                    anchors.verticalCenter: img.verticalCenter
+                    anchors.verticalCenter: parent.verticalCenter
                     text: group + "<font color=\"black\" size=\"2\">" + "&nbsp;&nbsp;&nbsp;&nbsp;"
                           + onlineNumber + "/" + totalNumber +  "</font>"
                     font.family: "微软雅黑"
@@ -179,7 +192,7 @@ Item
         anchors.bottomMargin: 10
         spacing: 2
         delegate: objDelegate
-        model: chatManager.friendGroupList.friendGroups
+        model: chatManager.friendGroups
         ScrollBar.vertical: ScrollBar
         {
             width: 12

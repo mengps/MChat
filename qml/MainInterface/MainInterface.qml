@@ -9,14 +9,14 @@ import "../UserInformation"
 FramelessWindow
 {
     id: mainInterface
-    width: 280
+    width: 290
     height: 680
-    actualWidth: width + 20    //边框 20 x 20
-    actualHeight: height + 20
+    actualWidth: width + 24    //边框 24 x 24
+    actualHeight: height + 24
     topHint: true
     x: Screen.desktopAvailableWidth - actualWidth - 50
     y: 0
-    minimumWidth: 280
+    minimumWidth: 290
     maximumWidth: 608
     minimumHeight: 528
     visible: true
@@ -91,20 +91,21 @@ FramelessWindow
     {
         var chatComp = Qt.createComponent("qrc:/qml/UserInformation/UserInformation.qml");
         if (chatComp.status === Component.Ready)
-            var obj = chatComp.createObject(mainInterface);
-        else print()
+            var obj = chatComp.createObject(mainInterface, { "gradient" : content.gradient });
        return obj;
     }
 
     function createIntroduction(argY, info)
     {
-        var x = mainInterface.x - 245;
-        if (mainInterface.x <= 245)
-            x = mainInterface.x + mainInterface.actualWidth - 5;
+        var x = mainInterface.x - 260;
+        if (mainInterface.x <= 260)
+            x = mainInterface.x + mainInterface.actualWidth + 5;
         var component = Qt.createComponent("Introduction.qml");
         if (component.status === Component.Ready)
             var obj = component.createObject(mainInterface,
-                { "x" : x, "y" : argY + mainInterface.y + 10, "info" : info });
+                                             { "x" : x,
+                                               "y" : argY + mainInterface.y + 10,
+                                               "info" : info });
         return obj;
     }
 
@@ -207,14 +208,49 @@ FramelessWindow
         onReleased: cursorShape = Qt.ArrowCursor;
     }
 
-    Rectangle
+    Image
+    {
+        id: background
+        clip: true
+        width: mainInterface.width - 8
+        height: mainInterface.height - 8
+        anchors.centerIn: parent
+        antialiasing: true
+        opacity: 0.95
+        fillMode: Image.PreserveAspectCrop
+        source: chatManager.userInfo.background;
+    }
+
+    GlowRectangle
     {
         id: content
-        radius: 8
-        clip: true
+        color: "transparent"
+        anchors.centerIn: parent
         width: mainInterface.width
         height: mainInterface.height
-        anchors.centerIn: parent
+        glowColor: background.status == Image.Null ? "#12F2D6" : "#8812F2D6";
+        radius: 6
+        glowRadius: 6
+        antialiasing: true
+        opacity: 0.9
+        gradient: Gradient
+        {
+            GradientStop
+            {
+               position: 0.000
+               color: "#BBEEFA"
+            }
+            GradientStop
+            {
+               position: 0.500
+               color: "#00EA75"
+            }
+            GradientStop
+            {
+               position: 1.000
+               color: "#BBEEFA"
+            }
+        }
 
         ResizeMouseArea
         {
@@ -223,24 +259,14 @@ FramelessWindow
             target: mainInterface
         }
 
-        Image
-        {
-            id: background
-            anchors.fill: parent
-            mipmap: true
-            fillMode: Image.PreserveAspectCrop
-            source: chatManager.userInfo.background;
-        }
-
         Row
         {
             id: controlButtons
             width: 102
             height: 40
             anchors.right: parent.right
-            anchors.rightMargin: 6
             anchors.top: parent.top
-            anchors.topMargin: 6
+            anchors.topMargin: 4
 
             CusButton
             {
@@ -299,11 +325,13 @@ FramelessWindow
         HeadStatus
         {
             id: headStatus
+            width: 75
+            height: 75
+            source: chatManager.userInfo.headImage
             anchors.top: controlButtons.bottom
             anchors.left: parent.left
             anchors.leftMargin: 10
             mouseEnable: true
-            source: chatManager.userInfo.headImage
 
             Timer
             {
@@ -339,6 +367,17 @@ FramelessWindow
             }
         }
 
+        Status
+        {
+            z: 2
+            model: [qsTr("在线"), qsTr("隐身"), qsTr("忙碌"), qsTr("离线")]
+            focus: false
+            anchors.top: headStatus.bottom
+            anchors.topMargin: -14
+            anchors.left: headStatus.right
+            anchors.leftMargin: -14
+        }
+
         Text
         {
             id: nickname
@@ -351,33 +390,35 @@ FramelessWindow
             text: chatManager.userInfo.nickname
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            font.pointSize: 13
+            font.pointSize: 14
             font.family: "微软雅黑"
             font.bold: true
-            color: "#FF0080"
+            color: "white"
             elide: Text.ElideRight
         }
 
         Rectangle
         {
             id: level
-            width: 32
-            height: 15
+            width: leverlText.implicitWidth + 10
+            height: leverlText.implicitHeight + 8
             radius: 2
             anchors.left: nickname.right
             anchors.leftMargin: 10
             anchors.top: nickname.top
             anchors.topMargin: 5
-            color: hovered ? "#88333333" : "#00FFFFFF";
+            color: hovered ? "#ACBBBBBB" : "transparent";
             property bool hovered: false
 
             Text
             {
+                id: leverlText
                 anchors.centerIn: parent
+                antialiasing: true
                 style: Text.Outline
                 color: "#FFF200"
                 styleColor: "#B86030"
-                font.family: "新宋体"
+                font.family: "Consolas"
                 text: "LV" + chatManager.userInfo.level
             }
 
@@ -407,7 +448,7 @@ FramelessWindow
             anchors.bottom: parent.bottom
             anchors.horizontalCenter: parent.horizontalCenter
             currentIndex: tabBar.currentIndex
-            opacity: 0.8
+            opacity: 0.80
 
             Page
             {
@@ -432,50 +473,65 @@ FramelessWindow
         {
             id: tabBar
             focus: true
-            focusPolicy: Qt.ClickFocus
             width: parent.width
             height: 40
-            opacity: 0.66
             anchors.top: headStatus.bottom
             anchors.topMargin: 20
+            opacity: 0.66
+            focusPolicy: Qt.ClickFocus
             currentIndex: swipeView.currentIndex
 
             TabButton
             {
+                antialiasing: true
+                font.family: "微软雅黑"
                 text: qsTr("联系人")
             }
 
             TabButton
             {
+                antialiasing: true
+                font.family: "微软雅黑"
                 text: qsTr("聊天列表")
             }
         }
-
 
         Rectangle
         {
             id: toolBar
             anchors.bottom: parent.bottom
             anchors.left: parent.left
-            radius: 6
-            color: "#58AFAFAF"
+            color: "#98AFAFAF"
             width: parent.width
             height: 36
 
             Row
             {
                 width: 210
-                height: 24
+                height: parent.height
                 spacing: 15
                 anchors.centerIn: parent
 
-                Image
+                CusButton
                 {
                     id: addFriend
-                    width: 20
-                    height: 24
-                    mipmap: true
-                    source: "qrc:/image/WidgetsImage/addFriend_normal.png";
+                    width: 32
+                    height: parent.height
+                    onClicked:
+                    {
+                    }
+                    Component.onCompleted:
+                    {
+                        buttonNormalImage = "qrc:/image/WidgetsImage/addFriend_normal.png";
+                        buttonPressedImage = "qrc:/image/WidgetsImage/addFriend_down.png";
+                        buttonHoverImage = "qrc:/image/WidgetsImage/addFriend_normal.png";
+                    }
+
+                    MyToolTip
+                    {
+                        visible: parent.hovered
+                        text: "添加好友"
+                    }
                 }
             }
         }

@@ -5,7 +5,8 @@ GlowRectangle
     id: root
     width: tex.width + widthMargin * 2
     height: tex.height + heightMargin * 2
-    radius: 4
+    radius: 6
+    glowRadius: 6
     color:
     {
         if (mouseEnable)

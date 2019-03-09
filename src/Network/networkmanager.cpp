@@ -64,7 +64,8 @@ void NetworkManager::onLogined(bool ok)
     if (ok)
     {
         qDebug() << "验证通过";
-        m_tcpManager->sendMessage(MT_USERINFO, MO_DOWNLOAD, ChatManager::instance()->username().toLatin1());
+        m_tcpManager->sendMessage(MT_USERINFO, MO_DOWNLOAD,
+                                  ChatManager::instance()->username().toLatin1(), USERINFO);
     }
     else
     {

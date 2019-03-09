@@ -7,6 +7,7 @@ Item
 
     property alias color: backRect.color;
     property alias radius: backRect.radius;
+    property alias gradient: backRect.gradient;
     property alias spread: backEffect.spread;
     property alias glowColor: backEffect.color;
     property alias glowRadius: backEffect.glowRadius;

@@ -33,12 +33,8 @@ public slots:
     //开始心跳
     void startHeartbeat();
     //用于发送聊天消息的
-    void sendChatMessage(msg_t type, msg_option_t option,
-                         const QByteArray &receiver,
-                         ChatMessage *chatMessage);
-    void sendMessage(msg_t type, msg_option_t option = MO_NULL,
-                     const QByteArray &receiver = QByteArray(),
-                     const QByteArray &data = QByteArray());
+    void sendChatMessage(msg_t type, msg_option_t option, const QByteArray &receiver, ChatMessage *chatMessage);
+    void sendMessage(msg_t type, msg_option_t option, const QByteArray &receiver, const QByteArray &data);
 
 private slots:
     void continueWrite(qint64 sentSize);

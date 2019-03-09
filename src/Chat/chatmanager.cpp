@@ -125,9 +125,9 @@ ItemInfo* ChatManager::userInfo() const
     return m_userInfo;
 }
 
-FriendGroup* ChatManager::friendGroup() const
+QQmlListProperty<FriendModel> ChatManager::friendGroups() const
 {
-    return m_friendGroup;
+    return m_friendGroup->friendGroups();
 }
 
 QQmlListProperty<ItemInfo> ChatManager::recentMessageID() const

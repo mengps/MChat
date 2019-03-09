@@ -108,26 +108,27 @@ FramelessWindow
     Image
     {
         id: background
-        width: chatWindow.width
-        height: chatWindow.height
-        x: 30
-        y: 30
+        clip: true
+        width: chatWindow.width - 8
+        height: chatWindow.height - 8
+        anchors.centerIn: parent
+        antialiasing: true
         opacity: 0.95
-        mipmap: true
         fillMode: Image.PreserveAspectCrop
         source: chatManager.userInfo.background;
     }
 
-    Rectangle
+    GlowRectangle
     {
         id: content
-        x: 30
-        y: 30
+        color: "transparent"
+        glowColor: background.status == Image.Null ? "#12F2D6" : "#8812F2D6";
+        radius: 6
+        glowRadius: 5
+        anchors.centerIn: parent
         width: chatWindow.width
         height: chatWindow.height
         focus: true
-        color: "#AAFFFFFF"
-
         Keys.onEscapePressed: chatWindow.close();
 
         ResizeMouseArea
@@ -214,9 +215,7 @@ FramelessWindow
             anchors.topMargin: 20
             anchors.bottom: toolBar.top
             anchors.left: toolBar.left
-            anchors.leftMargin: 8
             anchors.right: toolBar.right
-            anchors.rightMargin: 8
         }
 
         Rectangle
@@ -298,12 +297,12 @@ FramelessWindow
         Rectangle
         {
             id: toolBar
-            radius: 6
             color: "#58FFFFFF"
-            width: parent.width
-            height: 30
             x: 0
             y: parent.height - 150
+            width: parent.width - 8
+            height: 30
+            anchors.horizontalCenter: parent.horizontalCenter
 
             Row
             {
@@ -629,7 +628,7 @@ FramelessWindow
                 onCursorPositionChanged:
                 {
                     if (cursorRectangle.x >= width)
-                        sendMessage.insert(cursorPosition, "&#10&#10"); //一个&#10不起作用，不知为何
+                        sendMessage.insert(cursorPosition, "&#10");
                     var relY = flick.y + cursorRectangle.y + cursorRectangle.height / 2 - flick.contentY;
                     if ((relY <= (flick.y + flick.height)) && (relY >= flick.y))
                     {

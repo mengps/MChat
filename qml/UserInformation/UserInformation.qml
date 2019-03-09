@@ -10,8 +10,8 @@ FramelessWindow
 
     width: 320
     height: 600
-    actualWidth: width
-    actualHeight: height
+    actualWidth: width + 24
+    actualHeight: height + 24
     title: qsTr("个人资料")
     x: (Screen.desktopAvailableWidth - actualWidth) / 2
     y: (Screen.desktopAvailableHeight - actualHeight) / 2
@@ -22,6 +22,7 @@ FramelessWindow
     property bool custom: false;
     property bool hasModify: false;
     property int index: customBackgroundComboBox.index;
+    property alias gradient: content.gradient
     property var headImageWidget: undefined;
     property var saveInformation: undefined;
     property var backgroundImage: ["", "qrc:/image/Background/5.jpg", "qrc:/image/Background/6.jpg",
@@ -48,27 +49,31 @@ FramelessWindow
         return obj;
     }
 
-    Rectangle
+    Image
     {
-        anchors.fill: parent
+        id: background
         clip: true
-        radius: 5
-        gradient: Gradient
-        {
-            GradientStop { position: 0.0; color: "#F3E3E4" }
-            GradientStop { position: 1.0; color: "#F02835" }
-        }
-        Keys.onEscapePressed: root.close()
+        width: root.width - 8
+        height: root.height - 8
+        anchors.centerIn: parent
+        antialiasing: true
+        opacity: 0.95
+        fillMode: Image.PreserveAspectCrop
+        source: chatManager.userInfo.background;
+    }
 
-        Image
-        {
-            id: background
-            visible: root.custom
-            source: root.backgroundImage[root.index]
-            mipmap: true
-            fillMode: Image.PreserveAspectCrop
-            anchors.fill: parent
-        }
+    GlowRectangle
+    {
+        id: content
+        anchors.centerIn: parent
+        width: root.width
+        height: root.height
+        color: "transparent"
+        glowColor: background.status == Image.Null ? "#12F2D6" : "#8812F2D6";
+        radius: 6
+        glowRadius: 5
+        antialiasing: true
+        Keys.onEscapePressed: root.close()
 
         MoveMouseArea
         {
@@ -163,14 +168,15 @@ FramelessWindow
             verticalAlignment: Text.AlignVCenter
         }
 
-        CircularImage
+        HeadStatus
         {
             id: headImageEditor
-            source: chatManager.userInfo.headImage
-            radius: 50
+            width: 75
+            height: 75
             anchors.top: parent.top
             anchors.topMargin: 45
             anchors.horizontalCenter: genderComboBox.horizontalCenter
+            source: chatManager.userInfo.headImage
 
             MouseArea
             {
@@ -184,7 +190,7 @@ FramelessWindow
                     {
                         var component = Qt.createComponent("ReplaceHeadImage.qml");
                         if (component.status === Component.Ready)
-                            root.headImageWidget = component.createObject(root);
+                            root.headImageWidget = component.createObject(root, { "gradient" : root.gradient });
                     }
                     else root.headImageWidget.show();
                 }
@@ -237,6 +243,8 @@ FramelessWindow
                 font.pointSize: 10
                 font.family: "微软雅黑"
                 selectByMouse: true
+                selectedTextColor: "black"
+                selectionColor: "#FDDD5C"
                 hoverEnabled: true
                 clip: true
                 text: chatManager.userInfo.nickname
@@ -332,6 +340,8 @@ FramelessWindow
                     regExp: new RegExp("[0-9]{4}");
                 }
                 selectByMouse: true
+                selectedTextColor: "black"
+                selectionColor: "#FDDD5C"
                 hoverEnabled: true
                 clip: true
                 text: birthday.date.getFullYear();
@@ -360,6 +370,8 @@ FramelessWindow
                     regExp: new RegExp("[0-9]{2}");
                 }
                 selectByMouse: true
+                selectedTextColor: "black"
+                selectionColor: "#FDDD5C"
                 hoverEnabled: true
                 clip: true
                 text:
@@ -394,6 +406,8 @@ FramelessWindow
                     regExp: new RegExp("[0-9]{2}");
                 }
                 selectByMouse: true
+                selectedTextColor: "black"
+                selectionColor: "#FDDD5C"
                 hoverEnabled: true
                 clip: true
                 text:
