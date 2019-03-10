@@ -25,7 +25,9 @@ FramelessWindow
     property alias gradient: content.gradient
     property var headImageWidget: undefined;
     property var saveInformation: undefined;
-    property var backgroundImage: ["", "qrc:/image/Background/5.jpg", "qrc:/image/Background/6.jpg",
+    property var backgroundImage: ["", "qrc:/image/Background/2.jpg",
+                                   "qrc:/image/Background/3.jpg","qrc:/image/Background/4.jpg",
+                                   "qrc:/image/Background/5.jpg", "qrc:/image/Background/6.jpg",
                                    "qrc:/image/Background/7.jpg", "qrc:/image/Background/8.jpg",
                                    "qrc:/image/Background/9.jpg", "qrc:/image/Background/10.jpg"];
 
@@ -450,15 +452,18 @@ FramelessWindow
             anchors.left: customBackground.right
             anchors.leftMargin: 5
             anchors.top: customBackground.top
-            index: 0
-            model: ["无背景", "背景1", "背景2", "背景3", "背景4", "背景5", "背景6"]
+            index: 0;
+            model: ["无背景", "背景1", "背景2", "背景3", "背景4", "背景5", "背景6",
+                    "背景7", "背景8", "背景9", "本地图片"]
+            Component.onCompleted:
+            {
+                var x = root.backgroundImage.indexOf(chatManager.userInfo.background);
+                if (x != -1)
+                    index = x;
+            }
             onIndexChanged:
             {
-                if (index > 0)
-                {
-                    root.custom = true;
-                }
-                else root.custom = false;
+                chatManager.userInfo.background = root.backgroundImage[index];
             }
             onComboBoxEdited: root.hasModify = true;
             KeyNavigation.up: clicked ? comboBox : dateField;

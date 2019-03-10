@@ -440,7 +440,7 @@ FramelessWindow
         SwipeView
         {
             id: swipeView
-            width: parent.width
+            width: tabBar.width
             clip: true
             focus: true
             interactive: false
@@ -448,7 +448,7 @@ FramelessWindow
             anchors.bottom: parent.bottom
             anchors.horizontalCenter: parent.horizontalCenter
             currentIndex: tabBar.currentIndex
-            opacity: 0.80
+            opacity: 0.75
 
             Page
             {
@@ -473,11 +473,12 @@ FramelessWindow
         {
             id: tabBar
             focus: true
-            width: parent.width
+            width: parent.width - 8
             height: 40
             anchors.top: headStatus.bottom
             anchors.topMargin: 20
-            opacity: 0.66
+            anchors.horizontalCenter: parent.horizontalCenter
+            opacity: 0.55
             focusPolicy: Qt.ClickFocus
             currentIndex: swipeView.currentIndex
 
@@ -500,9 +501,10 @@ FramelessWindow
         {
             id: toolBar
             anchors.bottom: parent.bottom
-            anchors.left: parent.left
+            anchors.horizontalCenter: parent.horizontalCenter
             color: "#98AFAFAF"
-            width: parent.width
+            opacity: 0.55
+            width: tabBar.width
             height: 36
 
             Row

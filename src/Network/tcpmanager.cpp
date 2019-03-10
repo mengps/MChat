@@ -24,7 +24,7 @@ TcpManager::TcpManager(QObject *parent)
     connect(this, &TcpManager::bytesWritten, this, &TcpManager::continueWrite);
     connect(this, &TcpManager::readyRead, this, [this]()
     {
-        m_recvData = readAll();
+        m_recvData += readAll();
         processRecvMessage();
     }, Qt::DirectConnection);
     connect(this, &TcpManager::stateChanged, this, &TcpManager::onStateChanged);
@@ -46,7 +46,8 @@ TcpManager::TcpManager(QObject *parent)
     });
     connect(m_heartbeat, &QTimer::timeout, this, [this]()
     {
-        sendMessage(MT_HEARTBEAT, MO_NULL, SERVER_ID, HEARTBEAT);
+        if (!m_hasMessageProcessing)    //如果没有消息在发送中，就发送心跳包
+            sendMessage(MT_HEARTBEAT, MO_NULL, SERVER_ID, HEARTBEAT);
     });
     connect(m_messageTimeout, &QTimer::timeout, this, &TcpManager::messageTimeoutHandle);
 }

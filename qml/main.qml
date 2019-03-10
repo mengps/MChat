@@ -81,7 +81,7 @@ FramelessWindow
         {
             target: topRect
             property: "height"
-            from: 155
+            from: 120
             to: content.height - content.radius
             duration: 300
             easing.type: Easing.Linear
@@ -107,7 +107,7 @@ FramelessWindow
             target: topRect
             property: "height"
             from: content.height - content.radius
-            to: 155
+            to: 120
             duration: 300
             easing.type: Easing.Linear
         }
@@ -278,7 +278,7 @@ FramelessWindow
         {
             id: topRect
             width: parent.width
-            height: 155
+            height: 120
             color: "transparent"
             anchors.top: parent.top
             anchors.topMargin: content.radius
@@ -422,7 +422,7 @@ FramelessWindow
             id: clientInput
             radius: content.radius
             width: parent.width
-            height: 260
+            height: 290
             z: 0
             anchors.bottom: parent.bottom
             anchors.horizontalCenter: topRect.horizontalCenter
@@ -435,6 +435,7 @@ FramelessWindow
                 height: 75
                 source: chatManager.headImage
                 anchors.top: clientInput.top
+                anchors.topMargin: 5
                 anchors.horizontalCenter: parent.horizontalCenter
             }
 
@@ -455,7 +456,7 @@ FramelessWindow
                 width: 195
                 height: 30
                 anchors.top: headStatus.bottom
-                anchors.topMargin: 10
+                anchors.topMargin: 30
                 anchors.horizontalCenter: parent.horizontalCenter
                 property alias username: usernameField.text
 
@@ -627,7 +628,7 @@ FramelessWindow
                 width: 195
                 height: 30
                 anchors.top: usernameEditor.bottom
-                anchors.topMargin: 4
+                anchors.topMargin: 6
                 anchors.left: usernameEditor.left
                 property alias password: passwordField.text
 
@@ -770,7 +771,7 @@ FramelessWindow
                 anchors.top: passwordEditor.bottom
                 anchors.topMargin: 15
                 anchors.left: remember.right
-                anchors.leftMargin: 10
+                anchors.leftMargin: 14
 
                 MyToolTip
                 {
@@ -785,7 +786,7 @@ FramelessWindow
                 width: 195
                 height: 30
                 anchors.bottom: clientInput.bottom
-                anchors.bottomMargin: 25
+                anchors.bottomMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 GlowRectangle
