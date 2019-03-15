@@ -8,11 +8,11 @@ ChatMessage::ChatMessage(QObject *parent)
 }
 
 ChatMessage::ChatMessage(const ChatMessage &chatMessage, QObject *parent)
-    : QObject(parent),
-      m_sender(chatMessage.m_sender),
-      m_dateTime(chatMessage.m_dateTime),
-      m_message(chatMessage.m_message),
-      m_state(chatMessage.m_state)
+    : QObject(parent)
+    , m_sender(chatMessage.m_sender)
+    , m_dateTime(chatMessage.m_dateTime)
+    , m_message(chatMessage.m_message)
+    , m_state(chatMessage.m_state)
 {
 
 }
@@ -20,6 +20,11 @@ ChatMessage::ChatMessage(const ChatMessage &chatMessage, QObject *parent)
 ChatMessage::~ChatMessage()
 {
 
+}
+
+QString ChatMessage::sender() const
+{
+    return m_sender;
 }
 
 void ChatMessage::setSender(const QString &arg)
@@ -31,6 +36,11 @@ void ChatMessage::setSender(const QString &arg)
     }
 }
 
+QString ChatMessage::dateTime() const
+{
+    return m_dateTime;
+}
+
 void ChatMessage::setDateTime(const QString &arg)
 {
     if (m_dateTime != arg)
@@ -38,6 +48,11 @@ void ChatMessage::setDateTime(const QString &arg)
         m_dateTime = arg;
         dateTimeChanged();
     }
+}
+
+QString ChatMessage::message() const
+{
+    return m_message;
 }
 
 void ChatMessage::setMessage(const QString &arg)
@@ -49,6 +64,11 @@ void ChatMessage::setMessage(const QString &arg)
     }
 }
 
+ChatMessageStatus::Status ChatMessage::state() const
+{
+    return m_state;
+}
+
 void ChatMessage::setState(ChatMessageStatus::Status arg)
 {
     if (m_state != arg)
@@ -58,25 +78,6 @@ void ChatMessage::setState(ChatMessageStatus::Status arg)
     }
 }
 
-QString ChatMessage::sender() const
-{
-    return m_sender;
-}
-
-QString ChatMessage::dateTime() const
-{
-    return m_dateTime;
-}
-
-QString ChatMessage::message() const
-{
-    return m_message;
-}
-
-ChatMessageStatus::Status ChatMessage::state() const
-{
-    return m_state;
-}
 
 //ChatMessageList
 ChatMessageList::ChatMessageList(QObject *parent)

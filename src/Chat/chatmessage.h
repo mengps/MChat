@@ -33,21 +33,22 @@ public:
     ~ChatMessage();
 
     QString sender() const;
+    void setSender(const QString &arg);
+
     QString dateTime() const;
+    void setDateTime(const QString &arg);
+
     QString message() const;
+    void setMessage(const QString &arg);
+
     ChatMessageStatus::Status state() const;
+    void setState(ChatMessageStatus::Status arg);
 
 signals:
     void senderChanged();
     void dateTimeChanged();
     void messageChanged();
     void stateChanged();
-
-public slots:
-    void setSender(const QString &arg);
-    void setDateTime(const QString &arg);
-    void setMessage(const QString &arg);
-    void setState(ChatMessageStatus::Status arg);
 
 private:
     QString m_sender;                           //存储该条消息的发送者id
@@ -66,15 +67,13 @@ public:
     ChatMessageList(const QList<ChatMessage *> &data, QObject *parent = nullptr);
     ~ChatMessageList();
 
+   void setData(const QList<ChatMessage *> &data);
    QQmlListProperty<ChatMessage> messageList();
 
    Q_INVOKABLE int count() const;
    Q_INVOKABLE void append(const ChatMessage &msg);
    Q_INVOKABLE void append(ChatMessage *msg);
    Q_INVOKABLE ChatMessage* last();
-
-public slots:
-    void setData(const QList<ChatMessage *> &data);
 
 signals:
     void messageListChanged();

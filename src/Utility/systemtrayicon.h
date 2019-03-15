@@ -16,12 +16,10 @@ public:
     ~MyAction();
 
     QString icon() const;
+    void setIcon(const QString &arg);
 
 signals:
     void iconChanged(const QString &arg);
-
-public slots:
-    void setIcon(const QString &arg);
 
 private:
     QString m_icon;
@@ -49,22 +47,23 @@ public:
     ~MyMenu();
 
     int width() const;
+    void setWidth(int arg);
+
     int height() const;
+    void setHeight(int arg);
+
     QString text() const;
+    void setText(const QString &arg);
+
+    void addSeparator();
+    void addAction(MyAction *action);
+    void addMenu(MyMenu *menu);
     void clear();
 
 signals:
     void widthChanged(int arg);
     void heightChanged(int arg);
     void textChanged(const QString &arg);
-
-public slots:
-    void setWidth(int arg);
-    void setHeight(int arg);
-    void setText(const QString &arg);
-    void addSeparator();
-    void addAction(MyAction *action);
-    void addMenu(MyMenu *menu);
 
 protected:
     void componentComplete();
@@ -90,9 +89,15 @@ public:
 
     int x() const;
     int y() const;
+
     QString icon() const;
+    void setIcon(const QString &arg);
+
     QString toolTip() const;
+    void setToolTip(const QString &arg);
+
     MyMenu* menu() const;
+    void setMenu(MyMenu *arg);
 
 signals:
     void trigger();
@@ -103,9 +108,6 @@ signals:
     void mouseExited();
 
 public slots:
-    void setIcon(const QString &arg);
-    void setToolTip(const QString &arg);
-    void setMenu(MyMenu *arg);
     void onVisibleChanged();
     void onActivated(QSystemTrayIcon::ActivationReason reason);
     void onExit();

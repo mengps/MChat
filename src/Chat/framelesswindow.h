@@ -17,9 +17,10 @@ class FramelessWindow : public QQuickWindow
     Q_PROPERTY(int minimumHeight READ minimumHeight WRITE setMinimumHeight NOTIFY minimumHeightChanged)
     Q_PROPERTY(int maximumWidth READ maximumWidth WRITE setMaximumWidth NOTIFY maximumWidthChanged)
     Q_PROPERTY(int maximumHeight READ maximumHeight WRITE setMaximumHeight NOTIFY maximumHeightChanged)
-    Q_PROPERTY(bool mousePenetrate READ mousePenetrate WRITE setMousePenetrate NOTIFY mousePenetrateChanged)
     //是否穿透鼠标
-    Q_PROPERTY(bool topHint READ topHint WRITE setTopHint NOTIFY topHintChanged)    //是否显示在最前
+    Q_PROPERTY(bool mousePenetrate READ mousePenetrate WRITE setMousePenetrate NOTIFY mousePenetrateChanged)
+    //是否显示在最前
+    Q_PROPERTY(bool topHint READ topHint WRITE setTopHint NOTIFY topHintChanged)
     Q_PROPERTY(bool taskbarHint READ taskbarHint WRITE setTaskbarHint NOTIFY taskbarHintChanged)
 
 public:
@@ -27,18 +28,43 @@ public:
     ~FramelessWindow();
 
     QString windowIcon() const;
+    void setWindowIcon(const QString &arg);
+
     QPoint coord() const;
+    void setCoord(const QPoint &arg);
+
     int width() const;
+    void setWidth(int arg);
+
     int height() const;
+    void setHeight(int arg);
+
     int actualWidth() const;
+    void setActualWidth(int arg);
+
     int actualHeight() const;
+    void setActualHeight(int arg);
+
     int minimumWidth() const;
+    void setMinimumWidth(int arg);
+
     int minimumHeight() const;
+    void setMinimumHeight(int arg);
+
     int maximumWidth() const;
+    void setMaximumWidth(int arg);
+
     int maximumHeight() const;
+    void setMaximumHeight(int arg);
+
     bool mousePenetrate() const;
+    void setMousePenetrate(bool arg);
+
     bool topHint() const;
+    void setTopHint(bool arg);
+
     bool taskbarHint() const;
+    void setTaskbarHint(bool arg);
 
 signals:
     void windowIconChanged(const QString &arg);
@@ -54,33 +80,21 @@ signals:
     void mousePenetrateChanged();
     void topHintChanged();
     void taskbarHintChanged();
+
     void entered();
     void exited();
     void closed();
 
 public slots:
-    void setWindowIcon(const QString &arg);
-    void setCoord(const QPoint &arg);
-    void setWidth(int arg);
-    void setHeight(int arg);
-    void setActualWidth(int arg);
-    void setActualHeight(int arg);
-    void setMinimumWidth(int arg);
-    void setMinimumHeight(int arg);
-    void setMaximumWidth(int arg);
-    void setMaximumHeight(int arg);
-    void setMousePenetrate(bool arg);
-    void setTopHint(bool arg);
-    void setTaskbarHint(bool arg);
     void close();
 
 protected:
     bool event(QEvent *ev);
 
 private:
+    QString m_windowIcon;
     int m_width;
     int m_height;
-    QString m_windowIcon;
     int m_minimumWidth;
     int m_minimumHeight;
     int m_maximumWidth;

@@ -18,21 +18,23 @@ public:
     ~FriendModel();
 
     QString group() const;
-    QQmlListProperty<ItemInfo> friends();
+    void setGroup(const QString &arg);
+
     int onlineNumber() const;
+    void setOnlineNumber(int num);
+
     int totalNumber() const;
+
+    void setData(const QList<ItemInfo *> &data);
+    QQmlListProperty<ItemInfo> friends();
+
+    Q_INVOKABLE void removeAt(int index);
 
 signals:
     void groupChanged();
     void friendsChanged();
     void onlineNumberChanged();
     void totalNumberChanged();
-
-public slots:
-    void setGroup(const QString &arg);
-    void setData(const QList<ItemInfo *> &data);
-    void setOnlineNumber(int num);
-    void removeAt(int index);
 
 private:
     QString m_group;
@@ -52,12 +54,10 @@ public:
     ~FriendGroup();
 
     QQmlListProperty<FriendModel> friendGroups();
+    void setData(const QList<FriendModel *> &data);
 
 signals:
     void friendGroupsChanged();
-
-public slots:
-    void setData(const QList<FriendModel *> &data);
 
 private:
     QQmlListProperty<FriendModel> *m_proxy;

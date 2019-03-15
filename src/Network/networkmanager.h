@@ -18,13 +18,13 @@ namespace NetworkMode
     Q_ENUMS(Mode)
 }
 
-class JsonParse;
-class ItemInfo;
 class ChatMessage;
+class DatabaseManager;
 class FriendGroup;
+class ItemInfo;
+class JsonParser;
 class TcpManager;
 class UdpManager;
-class DatabaseManager;
 class NetworkManager : public QObject
 {
     Q_OBJECT
@@ -36,6 +36,7 @@ public:
     ~NetworkManager();
 
     NetworkMode::Mode mode() const { return m_mode; }
+    void setMode(NetworkMode::Mode mode);
 
     Q_INVOKABLE void cancelLogin();
     Q_INVOKABLE void sendChatMessage(msg_t type, ChatMessage *chatMessage, const QString &receiver);
@@ -55,7 +56,6 @@ public slots:
 
     void onLogined(bool ok);
     void onInfoGot(const QByteArray &infoJson);
-    void setMode(NetworkMode::Mode mode);
 
 private slots:
     void disposeNewMessage(const QString &sender, msg_t type, const QByteArray &data);
@@ -66,7 +66,7 @@ private:
     QPointer<TcpManager> m_tcpManager;
     QPointer<UdpManager> m_udpManager;
     DatabaseManager *m_databaseManager;
-    JsonParse *m_jsonParse;
+    JsonParser *m_jsonParser;
     NetworkMode::Mode m_mode = NetworkMode::Internet;   //默认局域网
 };
 

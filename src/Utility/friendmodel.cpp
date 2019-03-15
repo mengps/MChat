@@ -2,20 +2,17 @@
 #include <QDebug>
 
 FriendModel::FriendModel(QObject *parent)
-    : QObject(parent),
-      m_group(tr("未命名"))
+    : QObject(parent), m_group(tr("未命名"))
 {
     m_proxy = new QQmlListProperty<ItemInfo>(this, m_friends);
 }
 
-FriendModel::FriendModel(const QString &group,
-                         int onlineNumber,
-                         const QList<ItemInfo *> &data,
-                         QObject *parent)
-    : QObject(parent),
-      m_group(group),
-      m_onlineNumber(onlineNumber),
-      m_friends(data)
+FriendModel::FriendModel(const QString &group, int onlineNumber,
+                         const QList<ItemInfo *> &data, QObject *parent)
+    : QObject(parent)
+    , m_group(group)
+    , m_onlineNumber(onlineNumber)
+    , m_friends(data)
 {
     m_proxy = new QQmlListProperty<ItemInfo>(parent, m_friends);
 }

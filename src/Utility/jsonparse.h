@@ -1,14 +1,15 @@
 #ifndef JSONPARSE_H
 #define JSONPARSE_H
+
 #include <QJsonDocument>
 
 class ItemInfo;
 class FriendGroup;
-class JsonParse
+class JsonParser
 {
 public :
-    JsonParse(const QJsonDocument &doc);
-    ~JsonParse();
+    JsonParser(const QJsonDocument &doc);
+    ~JsonParser();
 
     void setJsonDocument(const QJsonDocument &doc);
     QJsonDocument jsonDocument() const;

@@ -196,7 +196,7 @@ void FramelessWindow::setMousePenetrate(bool arg)
     if (m_mousePenetrate != arg)
     {
 #if defined(Q_OS_WIN)
-        HWND my_hwnd = (HWND)this->winId ();
+        HWND my_hwnd = HWND(this->winId());
         if(arg)
         {
             SetWindowLong(my_hwnd, GWL_EXSTYLE,

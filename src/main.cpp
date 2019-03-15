@@ -1,13 +1,14 @@
-﻿#include "iteminfo.h"
+﻿#include "chatapi.h"
 #include "chatmanager.h"
 #include "chatmessage.h"
-#include "framelesswindow.h"
-#include "networkmanager.h"
 #include "friendmodel.h"
-#include "gifhelper.h"
-#include "chatapi.h"
-#include "systemtrayicon.h"
+#include "framelesswindow.h"
+#include "imageHelper.h"
+#include "iteminfo.h"
 #include "magicpool.h"
+#include "networkmanager.h"
+#include "systemtrayicon.h"
+
 #include <QApplication>
 #include <QQmlContext>
 #include <QQmlApplicationEngine>
@@ -33,7 +34,12 @@ int main(int argc, char *argv[])
                          " QMenu::separator{ height: 1px; margin: 6px 2px 6px 2px; background: #B2C0CD; }";
     app.setStyleSheet(styleSheet);
 
+    qRegisterMetaType<msg_t>("msg_t");
+    qRegisterMetaType<msg_flag_t>("msg_flag_t");
+    qRegisterMetaType<msg_size_t>("msg_size_t");
+    qRegisterMetaType<msg_option_t>("msg_option_t");
     qRegisterMetaType<ChatMessage>("ChatMessage");
+
     qmlRegisterType<FramelessWindow>("an.window", 1, 0, "FramelessWindow");
     qmlRegisterType<FriendInfo>("an.chat", 1, 0, "FriendInfo");
     qmlRegisterType<ItemInfo>("an.chat", 1, 0, "ItemInfo");
@@ -41,7 +47,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<FriendModel>("an.chat", 1, 0, "FriendModel");
     qmlRegisterType<ChatMessage>("an.chat", 1, 0, "ChatMessage");
     qmlRegisterType<ChatMessageList>("an.chat", 1, 0, "ChatMessageList");
-    qmlRegisterType<GifHelper>("an.utility", 1, 0, "GifHelper");
+    qmlRegisterType<ImageHelper>("an.utility", 1, 0, "ImageHelper");
     qmlRegisterType<MyMenu>("an.utility", 1, 0, "MyMenu");
     qmlRegisterType<MyAction>("an.utility", 1, 0, "MyAction");
     qmlRegisterType<MySeparator>("an.utility", 1, 0, "MySeparator");

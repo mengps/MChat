@@ -1,10 +1,11 @@
-#include <QDir>
 #include "chatmanager.h"
 #include "chatmessage.h"
 #include "databasemanager.h"
-#include <QDebug>
+
 #include <QSqlError>
 #include <QThread>
+#include <QDir>
+#include <QDebug>
 
 DatabaseManager* DatabaseManager::instance()
 {
@@ -29,7 +30,8 @@ DatabaseManager::DatabaseManager(QObject *parent)
 void DatabaseManager::initDatabaseSlot()
 {
     m_database = QSqlDatabase::addDatabase("QSQLITE");
-    m_database.setDatabaseName(QDir::homePath() + "/MChat/ChatRecord" + "/MSG" + ChatManager::instance()->username() + ".db");
+    m_database.setDatabaseName(QDir::homePath() + "/MChat/ChatRecord" + "/MSG" +
+                               ChatManager::instance()->username() + ".db");
     m_database.setUserName("MChat");
     m_database.setHostName("localhost");
     m_database.setPassword("123456");
@@ -130,7 +132,6 @@ void DatabaseManager::insertChatMessageSlot(const QString &username, ChatMessage
             /*qDebug() << "消息" << chatMessage->message() << "插入成功"
                      << "sender :" << chatMessage->sender()
                      << "时间 :" << chatMessage->dateTime();*/
-            closeDatabaseSlot();
         }
         else
         {
@@ -167,7 +168,6 @@ void DatabaseManager::getChatMessageSlot(const QString &username, int count, Cha
                 chatMessage.setState(state);
                 QMetaObject::invokeMethod(chatMessageList, "append", Q_ARG(ChatMessage, chatMessage));  //跨线程使用这个
             }
-            closeDatabaseSlot();
         }
         else
         {

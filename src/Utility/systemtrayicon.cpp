@@ -1,7 +1,8 @@
 #include "systemtrayicon.h"
+
 #include <QApplication>
-#include <QMenu>
 #include <QAction>
+#include <QMenu>
 
 /*#ifdef Q_OS_WIN
 #include <windows.h>

@@ -20,19 +20,17 @@
         <file>qml/UserInformation/SaveInformation.qml</file>
         <file>qml/ChatWindow/ChatRecord.qml</file>
         <file>qml/ChatWindow/ChatWindow.qml</file>
-        <file>qml/MyWidgets/MyTextEdit.qml</file>
         <file>qml/MyWidgets/FacesManager.qml</file>
         <file>qml/MyWidgets/ColorManager.qml</file>
         <file>qml/MyWidgets/ResizeMouseArea.qml</file>
         <file>qml/MainInterface/RecentMessage.qml</file>
         <file>qml/MyWidgets/SystemTray.qml</file>
         <file>qml/MyWidgets/MessageTipWindow.qml</file>
-        <file>qml/index.js</file>
-        <file>qml/LoginInterface/EffectRectangle.qml</file>
         <file>qml/MyWidgets/GlowRectangle.qml</file>
         <file>qml/FlatWidgets/FlatInput.qml</file>
         <file>qml/MyWidgets/GlowCircularImage.qml</file>
         <file>qml/MyWidgets/Status.qml</file>
         <file>qml/FlatWidgets/FlatRadioButton.qml</file>
+        <file>qml/MyWidgets/MyTextArea.qml</file>
     </qresource>
 </RCC>

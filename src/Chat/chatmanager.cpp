@@ -1,16 +1,17 @@
 #include "chatmanager.h"
-#include "iteminfo.h"
-#include "framelesswindow.h"
 #include "databasemanager.h"
-#include "networkmanager.h"
+#include "framelesswindow.h"
 #include "friendmodel.h"
+#include "iteminfo.h"
+#include "networkmanager.h"
 #include "systemtrayicon.h"
+
+#include <QApplication>
 #include <QDir>
-#include <QSettings>
 #include <QQmlComponent>
 #include <QQmlContext>
 #include <QQmlApplicationEngine>
-#include <QApplication>
+#include <QSettings>
 
 ChatManager* ChatManager::instance()
 {
@@ -19,11 +20,11 @@ ChatManager* ChatManager::instance()
 }
 
 ChatManager::ChatManager(QObject *parent)
-    : QObject(parent),
-      m_username("843261040"),
-      m_password("00000000000"),
-      m_rememberPassword(false),
-      m_autoLogin(false)
+    : QObject(parent)
+    , m_username("843261040")
+    , m_password("00000000000")
+    , m_rememberPassword(false)
+    , m_autoLogin(false)
 {
     m_networkManager = NetworkManager::instance();
     m_rencentMessageIDProxy = new QQmlListProperty<ItemInfo>(this, m_recentMessageID);
@@ -90,51 +91,6 @@ Chat::LoginStatus ChatManager::loginStatus() const
     return m_loginStatus;
 }
 
-Chat::ChatStatus ChatManager::chatStatus() const
-{
-    return m_chatStatus;
-}
-
-bool ChatManager::rememberPassword() const
-{
-    return m_rememberPassword;
-}
-
-bool ChatManager::autoLogin() const
-{
-    return m_autoLogin;
-}
-
-QString ChatManager::headImage() const
-{
-    return m_headImage;
-}
-
-QString ChatManager::username() const
-{
-    return m_username;
-}
-
-QString ChatManager::password() const
-{
-    return m_password;
-}
-
-ItemInfo* ChatManager::userInfo() const
-{
-    return m_userInfo;
-}
-
-QQmlListProperty<FriendModel> ChatManager::friendGroups() const
-{
-    return m_friendGroup->friendGroups();
-}
-
-QQmlListProperty<ItemInfo> ChatManager::recentMessageID() const
-{
-    return *m_rencentMessageIDProxy;
-}
-
 void ChatManager::setLoginStatus(Chat::LoginStatus arg)
 {
     m_loginStatus = arg;
@@ -163,6 +119,12 @@ void ChatManager::setLoginStatus(Chat::LoginStatus arg)
     else return;
 }
 
+Chat::ChatStatus ChatManager::chatStatus() const
+{
+    return m_chatStatus;
+}
+
+
 void ChatManager::setChatStatus(Chat::ChatStatus arg)
 {
     if (arg != m_chatStatus)
@@ -171,6 +133,11 @@ void ChatManager::setChatStatus(Chat::ChatStatus arg)
         // postChatStatus(arg);
         emit chatStatusChanged(arg);
     }
+}
+
+bool ChatManager::rememberPassword() const
+{
+    return m_rememberPassword;
 }
 
 void ChatManager::setRememberPassword(bool arg)
@@ -182,6 +149,11 @@ void ChatManager::setRememberPassword(bool arg)
     }
 }
 
+bool ChatManager::autoLogin() const
+{
+    return m_autoLogin;
+}
+
 void ChatManager::setAutoLogin(bool arg)
 {
     if (m_autoLogin != arg)
@@ -189,6 +161,11 @@ void ChatManager::setAutoLogin(bool arg)
         m_autoLogin = arg;
         emit autoLoginChanged(arg);
     }
+}
+
+QString ChatManager::headImage() const
+{
+    return m_headImage;
 }
 
 void ChatManager::setHeadImage(const QString &arg)
@@ -200,6 +177,11 @@ void ChatManager::setHeadImage(const QString &arg)
     }
 }
 
+QString ChatManager::username() const
+{
+    return m_username;
+}
+
 void ChatManager::setUsername(const QString &arg)
 {
     if (m_username != arg)
@@ -209,6 +191,11 @@ void ChatManager::setUsername(const QString &arg)
     }
 }
 
+QString ChatManager::password() const
+{
+    return m_password;
+}
+
 void ChatManager::setPassword(const QString &arg)
 {
     if (m_password != arg)
@@ -216,6 +203,21 @@ void ChatManager::setPassword(const QString &arg)
         m_password = arg;
         emit passwordChanged(arg);
     }
+}
+
+ItemInfo* ChatManager::userInfo() const
+{
+    return m_userInfo;
+}
+
+QQmlListProperty<FriendModel> ChatManager::friendGroups() const
+{
+    return m_friendGroup->friendGroups();
+}
+
+QQmlListProperty<ItemInfo> ChatManager::recentMessageID() const
+{
+    return *m_rencentMessageIDProxy;
 }
 
 void ChatManager::onLoginFinshed(bool ok)

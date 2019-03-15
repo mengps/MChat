@@ -39,14 +39,14 @@ private:
 
 private:
     qreal m_bodyHeight;
-    qreal m_fishRadius; // fish head r
+    qreal m_fishRadius;         // fish head r
     qreal m_finLen;
+    qreal m_mainAngle;
+    qreal m_wave;
     int m_headAlpha;
     int m_bodyAlpha;
-    int M_finAlpha;
-    qreal m_mainAngle;
+    int m_finAlpha;
     int m_curValue;
-    qreal m_wave;
 
     QVariantAnimation *m_animation;
     bool m_startFin;

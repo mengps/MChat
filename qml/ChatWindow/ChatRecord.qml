@@ -1,5 +1,5 @@
 import QtQuick 2.12
-import QtQuick.Controls 2.4
+import QtQuick.Controls 2.12
 import an.chat 1.0
 import "../MyWidgets"
 
@@ -25,13 +25,15 @@ Item
             height: textRect.height
             property bool isOther: chatManager.username != sender;
 
-            CircularImage
+            GlowCircularImage
             {
                 id: headImage
-                x: isOther ? 10 : parent.width - width - 10
+                x: isOther ? 16 : parent.width - width - 16
                 width: 32
                 height: 32
-                mipmap: true
+                glowColor: "black"
+                radius: 16
+                glowRadius: 4
                 source: isOther ? other.headImage : chatManager.userInfo.headImage
             }
 
@@ -88,20 +90,22 @@ Item
                 }
             }
 
-            Rectangle
+            GlowRectangle
             {
                 id: textRect
-                clip: true
+                radius: 10
+                glowRadius: 10
+                color: "#88FFFFFF"
+                glowColor: color
                 x: isOther ? headImage.x + headImage.width + 8 : headImage.x - width - 8
-                width: tex.width + 30
-                height: tex.height + 30
+                width: text.width + 10
+                height: text.height + 6
 
-                MyTextEdit
+                MyTextArea
                 {
-                    id: tex
+                    id: text
                     anchors.centerIn: parent
                     text: message
-                    textFormat: Text.RichText
                     selectByMouse: true
                     selectionColor: "#09A3DC"
                     readOnly: true
@@ -113,7 +117,10 @@ Item
                     property real maxWidth: 400
 
                     onFocusChanged: select(0, 0)
-                    onWidthChanged: if (width >= maxWidth) width = maxWidth;
+                    Component.onCompleted:
+                    {
+                        if (width >= maxWidth) width = maxWidth;
+                    }
                 }
             }
         }

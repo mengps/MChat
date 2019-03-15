@@ -3,9 +3,10 @@
 
 #include "iteminfo.h"
 #include "Utility/friendmodel.h"
+
+#include <QList>
 #include <QObject>
 #include <QPointer>
-#include <QList>
 #include <QQmlListProperty>
 
 namespace Chat
@@ -43,12 +44,13 @@ namespace Chat
     Q_ENUMS(DockStatus)
 }
 
-class QQmlApplicationEngine;
+
 class ChatMessage;
-class SystemTrayIcon;
 class FramelessWindow;
 class FriendGroup;
 class NetworkManager;
+class QQmlApplicationEngine;
+class SystemTrayIcon;
 class ChatManager : public QObject
 {
     Q_OBJECT
@@ -73,12 +75,26 @@ public:
     bool loadMainInterface();
 
     Chat::LoginStatus loginStatus() const;
+    void setLoginStatus(Chat::LoginStatus arg);
+
     Chat::ChatStatus chatStatus() const;
+    void setChatStatus(Chat::ChatStatus arg);
+
     bool rememberPassword() const;
+    void setRememberPassword(bool arg);
+
     bool autoLogin() const;
+    void setAutoLogin(bool arg);
+
     QString headImage() const;
+    void setHeadImage(const QString &arg);
+
     QString username() const;
+    void setUsername(const QString &arg);
+
     QString password() const;
+    void setPassword(const QString &arg);
+
     ItemInfo* userInfo() const;
     QQmlListProperty<FriendModel> friendGroups() const;
     QQmlListProperty<ItemInfo> recentMessageID() const;
@@ -89,33 +105,21 @@ public:
     Q_INVOKABLE void appendRecentMessageID(const QString &username);        //添加一个用户到最近消息列表
     Q_INVOKABLE FriendInfo* createFriendInfo(const QString &username);      //创建/获取一个好友信息
 
+    Q_INVOKABLE void show();                                    //显示界面
+    Q_INVOKABLE void quit();                                    //退出程序
     Q_INVOKABLE void closeAllOpenedChat();                      //关闭所有打开的窗口
     Q_INVOKABLE void readSettings();                            //读取基本设置
     Q_INVOKABLE void writeSettings();                           //写入基本设置
-    Q_INVOKABLE void show();                                    //显示主界面
-    Q_INVOKABLE void quit();                                    //退出程序
 
 signals:
-    //登录状态改变时发出
     void loginStatusChanged(Chat::LoginStatus arg);
-    //用户状态改变时发出
     void chatStatusChanged(Chat::ChatStatus arg);
-    //记住密码改变时发出
     void rememberPasswordChanged(bool arg);
     void autoLoginChanged(bool arg);
     void headImageChanged(const QString &arg);
     void usernameChanged(const QString &arg);
     void passwordChanged(const QString &arg);
     void recentMessageIDChanged();
-
-public slots:
-    void setLoginStatus(Chat::LoginStatus arg);
-    void setChatStatus(Chat::ChatStatus arg);
-    void setRememberPassword(bool arg);
-    void setAutoLogin(bool arg);
-    void setHeadImage(const QString &arg);
-    void setUsername(const QString &arg);
-    void setPassword(const QString &arg);
 
 private slots:
     void onLoginFinshed(bool ok);

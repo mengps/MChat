@@ -1,35 +1,36 @@
-#include "jsonparse.h"
-#include "iteminfo.h"
 #include "friendmodel.h"
-#include <QJsonObject>
-#include <QVariant>
-#include <QJsonArray>
+#include "iteminfo.h"
+#include "jsonparse.h"
+
 #include <QDir>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QVariant>
 #include <QDebug>
 
-JsonParse::JsonParse(const QJsonDocument &doc)
+JsonParser::JsonParser(const QJsonDocument &doc)
     : m_doc(doc)
 {
 
 }
 
-JsonParse::~JsonParse()
+JsonParser::~JsonParser()
 {
 
 }
 
-void JsonParse::setJsonDocument(const QJsonDocument &doc)
+void JsonParser::setJsonDocument(const QJsonDocument &doc)
 {
     if (!doc.isNull())
         m_doc = doc;
 }
 
-QJsonDocument JsonParse::jsonDocument() const
+QJsonDocument JsonParser::jsonDocument() const
 {
     return m_doc;
 }
 
-ItemInfo* JsonParse::userInfo()
+ItemInfo* JsonParser::userInfo()
 {
     if (m_doc.isObject())
     {
@@ -78,7 +79,7 @@ ItemInfo* JsonParse::userInfo()
     return nullptr;
 }
 
-void JsonParse::createFriend(FriendGroup *friendGroup, QMap<QString, ItemInfo *> *friendList)
+void JsonParser::createFriend(FriendGroup *friendGroup, QMap<QString, ItemInfo *> *friendList)
 {
     QList<FriendModel *> groups;
     if (m_doc.isObject())
@@ -147,7 +148,7 @@ void JsonParse::createFriend(FriendGroup *friendGroup, QMap<QString, ItemInfo *>
     friendGroup->setData(groups);
 }
 
-bool JsonParse::updateInfo(ItemInfo *info)
+bool JsonParser::updateInfo(ItemInfo *info)
 {
     FriendInfo *userInfo = qobject_cast<FriendInfo *>(info);
     if (!m_doc.isNull())

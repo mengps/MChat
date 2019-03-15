@@ -1,9 +1,9 @@
 #ifndef DATABASEMANAGER_H
 #define DATABASEMANAGER_H
 
+#include <QObject>
 #include <QSqlDatabase>
 #include <QSqlQuery>
-#include <QObject>
 
 class ChatMessage;
 class ChatMessageList;
@@ -15,19 +15,19 @@ public:
     static DatabaseManager* instance();
     ~DatabaseManager();
 
-private slots:
-    void initDatabaseSlot();
-    void openDatabaseSlot();
-    void closeDatabaseSlot();
-    void insertChatMessageSlot(const QString &username, ChatMessage *chatMessage);
-    void getChatMessageSlot(const QString &username, int count, ChatMessageList *chatMessageList);
-
 signals:    //所有的操作使用信号进行
     void initDatabase();
     void openDatabase();
     void closeDatabase();
     void insertChatMessage(const QString &username, ChatMessage *chatMessage);
     void getChatMessage(const QString &username, int count, ChatMessageList *chatMessageList);
+
+private slots:
+    void initDatabaseSlot();
+    void openDatabaseSlot();
+    void closeDatabaseSlot();
+    void insertChatMessageSlot(const QString &username, ChatMessage *chatMessage);
+    void getChatMessageSlot(const QString &username, int count, ChatMessageList *chatMessageList);
 
 private:
     DatabaseManager(QObject *parent = nullptr);

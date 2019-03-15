@@ -16,13 +16,13 @@ SOURCES += \
     src/Network/tcpmanager.cpp \
     src/Utility/jsonparse.cpp \
     src/Utility/friendmodel.cpp \
-    src/Utility/gifhelper.cpp \
     src/Utility/systemtrayicon.cpp \
     src/Utility/chatapi.cpp \
     src/DataBase/databasemanager.cpp \
     ../ChatServer/src/protocol.cpp \
     src/Utility/magicfish.cpp \
-    src/Utility/magicpool.cpp
+    src/Utility/magicpool.cpp \
+    src/Utility/imageHelper.cpp
 
 HEADERS += \
     src/Chat/framelesswindow.h \
@@ -33,12 +33,12 @@ HEADERS += \
     src/Network/tcpmanager.h \
     src/Utility/jsonparse.h \
     src/Utility/friendmodel.h \
-    src/Utility/gifhelper.h \
     src/Utility/systemtrayicon.h \
     src/Utility/chatapi.h \
     src/DataBase/databasemanager.h \
     src/Utility/magicfish.h \
-    src/Utility/magicpool.h
+    src/Utility/magicpool.h \
+    src/Utility/imageHelper.h
 
 RESOURCES += \
     qml.qrc \

@@ -2,11 +2,12 @@
 #define TCPMANAGER_H
 
 #include "protocol.h"
-#include <QTcpSocket>
-#include <QQueue>
 
-class QTimer;
+#include <QQueue>
+#include <QTcpSocket>
+
 class ChatMessage;
+class QTimer;
 class TcpManager : public QTcpSocket
 {
     Q_OBJECT
@@ -16,6 +17,8 @@ public:
     ~TcpManager();
 
 signals:
+    //退出连接
+    void abortConnection();
     //校检结束后发出
     void checked(bool ok);
     //用户信息获取后发出
@@ -26,8 +29,6 @@ signals:
     void chatMessageSent(const QString &username, ChatMessage *chatMessage);
     //有新消息时发出
     void hasNewMessage(const QString &sender, msg_t type, const QByteArray &data);
-
-public slots:
     //建立一个新的连接/重新连接
     void requestNewConnection();
     //开始心跳
@@ -37,6 +38,11 @@ public slots:
     void sendMessage(msg_t type, msg_option_t option, const QByteArray &receiver, const QByteArray &data);
 
 private slots:
+    void requestNewConnectionSlot();
+    void startHeartbeatSlot();
+    void sendChatMessageSlot(msg_t type, msg_option_t option, const QByteArray &receiver, ChatMessage *chatMessage);
+    void sendMessageSlot(msg_t type, msg_option_t option, const QByteArray &receiver, const QByteArray &data);
+
     void continueWrite(qint64 sentSize);
     void messageTimeoutHandle();    //消息超时处理
     void onStateChanged(QAbstractSocket::SocketState state);

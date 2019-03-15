@@ -35,8 +35,8 @@ Item
         width: parent.width
         height: root.itemHeight
         radius: 4
-        border.width: (hovered || root.focus) ? 2 : 1
-        border.color: (hovered || root.focus) ? "#1583DD" : "gray"
+        border.width: (hovered || root.activeFocus) ? 2 : 1
+        border.color: (hovered || root.activeFocus) ? "#1583DD" : "gray"
         property bool clicked: false
         property bool hovered: false
 
@@ -80,9 +80,9 @@ Item
         Rectangle
         {
             id: rect
-            width: root.width
+            width: listView.width
             height: root.itemHeight
-            color: (listView.currentIndex == index) ? "#12F2D6" : "white"
+            color: (listView.currentIndex == index) ? "#09A3DC" : "white"
             property bool hovered: false
 
             Text
@@ -121,20 +121,27 @@ Item
         id: dropDownBox
         visible: currentBox.clicked
         radius: 4
-        clip: true
         width: root.dropWidth
-        height: Math.min(root.dropHeight, listView.contentHeight)
-        border.color: visible ? "#1583DD" : "transparent"
+        height: Math.min(root.dropHeight, root.itemHeight * listView.count)
+        border.color: "#1583DD"
+        border.width: 2
+        clip: true
         anchors.left: parent.left
         anchors.top: currentBox.bottom
+        anchors.topMargin: 2
         Keys.onUpPressed: listView.decrementCurrentIndex()
         Keys.onDownPressed: listView.incrementCurrentIndex()
-        onFocusChanged: if (!focus) currentBox.clicked = false;
+        onFocusChanged: if (!activeFocus) currentBox.clicked = false;
 
         ListView
         {
             id: listView
-            anchors.fill: parent
+            width: parent.width - 4
+            anchors.top: parent.top
+            anchors.topMargin: 4
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 4
+            anchors.horizontalCenter: parent.horizontalCenter
             delegate: delegate
             ScrollBar.vertical: ScrollBar
             {

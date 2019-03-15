@@ -1,9 +1,10 @@
 #ifndef CHATAPI_H
 #define CHATAPI_H
 
-#include <QObject>
 #include <QCursor>
+#include <QObject>
 
+class QQuickTextDocument;
 class Api : public QObject
 {
     Q_OBJECT
@@ -13,6 +14,7 @@ public:
 
     Q_INVOKABLE bool exists(const QString &arg);
     Q_INVOKABLE QString baseName(const QString &arg);
+    Q_INVOKABLE QString toPlainText(QQuickTextDocument *doc);
 
 public slots:
     QPoint cursorPosition();

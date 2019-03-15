@@ -25,24 +25,25 @@ public:
     ~ItemInfo();
 
     QString username() const;
+    void setUsername(const QString &arg);
+
     QString nickname() const;
+    void setNickname(const QString &arg);
+
     QString headImage() const;
+    void setHeadImage(const QString &arg);
+
     int unreadMessage() const;
+    void setUnreadMessage(int arg);
+
     ChatMessage* lastMessage() const;
     ChatMessageList* chatRecord() const;
 
-public slots:
-    void setUsername(const QString &arg);
-    void setNickname(const QString &arg);
-    void setHeadImage(const QString &arg);
-    void setUnreadMessage(int arg);
-
-    void loadRecord();
-
+    Q_INVOKABLE void loadRecord();
     //在消息记录中添加一条消息
-    void addTextMessage(const QString &sender, const QString &msg);
+    Q_INVOKABLE void addTextMessage(const QString &sender, const QString &msg);
     //在消息记录中撤回一条消息
-    void recallMessage(const QString &sender, const QString &msg);
+    Q_INVOKABLE void recallMessage(const QString &sender, const QString &msg);
 
 signals:
     void usernameChanged(const QString &arg);
@@ -75,26 +76,30 @@ class FriendInfo : public ItemInfo
     Q_PROPERTY(QString birthday READ birthday WRITE setBirthday NOTIFY birthdayChanged)
     Q_PROPERTY(QString gender READ gender WRITE setGender NOTIFY genderChanged)
     Q_PROPERTY(int level READ level WRITE setLevel NOTIFY levelChanged)
+    Q_PROPERTY(int age READ age NOTIFY ageChanged)
 
 public:
     FriendInfo(QObject *parent = nullptr);
     ~FriendInfo();
 
     QString background() const;
+    void setBackground(const QString &arg);
+
     QString signature() const;
+    void setSignature(const QString &arg);
+
     QString birthday() const;
+    void setBirthday(const QString &arg);
+
     QString gender() const;
+    void setGender(const QString &arg);
+
     int level() const;
+    void setLevel(int arg);
+
     int age() const;
 
 public slots:
-    void setBackground(const QString &arg);
-    void setSignature(const QString &arg);
-    void setBirthday(const QString &arg);
-    void setGender(const QString &arg);
-    void setLevel(int arg);
-
-
     //在消息记录中添加一条窗口抖动消息
     void addShakeMessage(const QString &sender);
 
@@ -104,6 +109,7 @@ signals:
     void birthdayChanged(const QString &arg);
     void genderChanged(const QString &arg);
     void levelChanged(int arg);
+    void ageChanged(int arg);
 
 private:
     QString m_background;   //背景

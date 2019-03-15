@@ -1,17 +1,18 @@
-#include "iteminfo.h"
 #include "chatmessage.h"
 #include "chatmanager.h"
 #include "databasemanager.h"
+#include "iteminfo.h"
 #include "networkmanager.h"
-#include <QDebug>
+
 #include <QDateTime>
+#include <QDebug>
 
 ItemInfo::ItemInfo(QObject *parent)
-    : QObject(parent),
-      m_username(""),
-      m_nickname(""),
-      m_headImage(""),
-      m_unreadMessage(0)
+    : QObject(parent)
+    , m_username("")
+    , m_nickname("")
+    , m_headImage("")
+    , m_unreadMessage(0)
 {
     m_chatRecord = new ChatMessageList(this);
     m_chatManager = ChatManager::instance();
@@ -131,12 +132,13 @@ void ItemInfo::setUnreadMessage(int arg)
 
 FriendInfo::FriendInfo(QObject *parent)
     : ItemInfo(parent)
+    , m_background("qrc:/image/Background/7.jpg")
+    , m_signature("")
+    , m_birthday("")
+    , m_gender("")
+    , m_level(0)
 {
-    m_signature = "";
-    m_birthday = "";
-    m_gender = "";
-    m_level = 0;
-    m_background = "qrc:/image/Background/7.jpg";
+
 }
 
 FriendInfo::~FriendInfo()
@@ -212,6 +214,13 @@ void FriendInfo::setLevel(int arg)
         m_level = arg;
         emit levelChanged(arg);
     }
+}
+
+int FriendInfo::age() const
+{
+    QDate birth = QDate::fromString(m_birthday, "yyyy-mm-dd");
+    int age = QDate::currentDate().year() - birth.year();
+    return age > 0 ? age : 0;
 }
 
 void FriendInfo::addShakeMessage(const QString &sender)

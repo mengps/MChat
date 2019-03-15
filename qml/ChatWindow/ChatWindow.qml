@@ -214,6 +214,7 @@ FramelessWindow
             anchors.top: head.bottom
             anchors.topMargin: 20
             anchors.bottom: toolBar.top
+            anchors.bottomMargin: 15
             anchors.left: toolBar.left
             anchors.right: toolBar.right
         }
@@ -259,7 +260,7 @@ FramelessWindow
             anchors.bottomMargin: 4
             anchors.horizontalCenter: toolBar.horizontalCenter
 
-            onFocusChanged: if (!focus) hide();
+            onFocusChanged: if (!activeFocus) hide();
 
             function show()
             {
@@ -505,12 +506,10 @@ FramelessWindow
                         selectFolder: false
                         selectMultiple: false
                         modality: Qt.WindowModal
-                        property string file: ""
                         nameFilters: ["图像文件 (*.jpg *.png *.jpeg *.bmp *.gif)"]
                         onAccepted:
                         {
-                            file = fileUrl;
-                            sendMessage.addImage(fileDialog.file)
+                            sendMessage.insertImage(fileDialog.fileUrl)
                         }
                     }
 
@@ -606,7 +605,7 @@ FramelessWindow
                 color: "#EFFFFF"
             }
 
-            MyTextEdit
+            TextArea.flickable: MyTextArea
             {
                 id: sendMessage
                 font.family: "微软雅黑"
@@ -678,6 +677,7 @@ FramelessWindow
                 }
                 else
                 {
+                    console.log(Api.toPlainText(sendMessage.textDocument))
                     chatMessage.appendMsg(chatManager.username, sendMessage.text);
                     sendMessage.cleanup();
                 }

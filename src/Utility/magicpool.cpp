@@ -4,12 +4,12 @@
 #include <QPainter>
 
 MagicPool::MagicPool(QQuickPaintedItem *parent)
-    : QQuickPaintedItem(parent),
-      m_moving(false),
-      m_startCircle(false),
-      m_circleRadius(4),
-      m_circleAlpha(150),
-      m_moveStep(0.0)
+    : QQuickPaintedItem(parent)
+    , m_moving(false)
+    , m_startCircle(false)
+    , m_circleRadius(4)
+    , m_circleAlpha(150)
+    , m_moveStep(0.0)
 {
     m_circleTimer = new QTimer(this);
     m_circleTimer->setInterval(20);
@@ -18,6 +18,7 @@ MagicPool::MagicPool(QQuickPaintedItem *parent)
     m_moveTimer = new QTimer(this);
     m_moveTimer->setInterval(20);
     connect(m_moveTimer, &QTimer::timeout, this, &MagicPool::updateMove);
+
     m_fish = new MagicFish(this);
     m_fish->setSize(QSize(100, 100));
 }
@@ -122,7 +123,7 @@ qreal MagicPool::calcIncludedAngle(const QPointF &center, const QPointF &head, c
     qreal tmp_angle = qRadiansToDegrees(qAcos(cos_abc));
     qreal direction = (center.x() - touch.x()) * (head.y() - touch.y()) -
                       (center.y() - touch.y()) * (head.x() - touch.x());
-    if(direction == 0)
+    if(direction == 0.000)
     {
         if(abc >= 0)
         {
@@ -135,7 +136,7 @@ qreal MagicPool::calcIncludedAngle(const QPointF &center, const QPointF &head, c
     }
     else
     {
-        if(direction > 0)
+        if(direction > 0.000)
         {
             return -tmp_angle;
         }
@@ -150,6 +151,7 @@ QPointF MagicPool::calcPoint(const QPointF &pos, qreal length, qreal angle)
 {
     qreal delta_x = qCos(qDegreesToRadians(angle)) * length;
     qreal delta_y = qSin(qDegreesToRadians(angle - 180)) * length;
+
     return QPointF(pos + QPointF(delta_x, delta_y));
 }
 

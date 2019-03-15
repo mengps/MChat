@@ -1,10 +1,11 @@
 ﻿#include "chatmanager.h"
 #include "chatmessage.h"
 #include "tcpmanager.h"
+
+#include <QCryptographicHash>
+#include <QDataStream>
 #include <QFile>
 #include <QTimer>
-#include <QDataStream>
-#include <QCryptographicHash>
 
 TcpManager::TcpManager(QObject *parent)
     : QTcpSocket(parent)
@@ -20,6 +21,15 @@ TcpManager::TcpManager(QObject *parent)
     m_heartbeat->setInterval(30000);
     m_messageTimeout = new QTimer(this);
     m_messageTimeout->setInterval(3000);
+
+    connect(this, &TcpManager::abortConnection, this, [this]
+    {
+        abort();
+    });
+    connect(this, &TcpManager::requestNewConnection, this, &TcpManager::requestNewConnectionSlot);
+    connect(this, &TcpManager::startHeartbeat, this, &TcpManager::startHeartbeatSlot);
+    connect(this, &TcpManager::sendChatMessage, this, &TcpManager::sendChatMessageSlot);
+    connect(this, &TcpManager::sendMessage, this, &TcpManager::sendMessageSlot);
 
     connect(this, &TcpManager::bytesWritten, this, &TcpManager::continueWrite);
     connect(this, &TcpManager::readyRead, this, [this]()
@@ -47,7 +57,7 @@ TcpManager::TcpManager(QObject *parent)
     connect(m_heartbeat, &QTimer::timeout, this, [this]()
     {
         if (!m_hasMessageProcessing)    //如果没有消息在发送中，就发送心跳包
-            sendMessage(MT_HEARTBEAT, MO_NULL, SERVER_ID, HEARTBEAT);
+            sendMessageSlot(MT_HEARTBEAT, MO_NULL, SERVER_ID, HEARTBEAT);
     });
     connect(m_messageTimeout, &QTimer::timeout, this, &TcpManager::messageTimeoutHandle);
 }
@@ -56,19 +66,19 @@ TcpManager::~TcpManager()
 {
 }
 
-void TcpManager::requestNewConnection()
+void TcpManager::requestNewConnectionSlot()
 {
     abort();
     connectToHost(server_ip, server_port, QAbstractSocket::ReadWrite);
 }
 
-void TcpManager::startHeartbeat()
+void TcpManager::startHeartbeatSlot()
 {
     if (!m_heartbeat->isActive())
         m_heartbeat->start();
 }
 
-void TcpManager::sendMessage(msg_t type, msg_option_t option, const QByteArray &receiver, const QByteArray &data)
+void TcpManager::sendMessageSlot(msg_t type, msg_option_t option, const QByteArray &receiver, const QByteArray &data)
 {
     QByteArray base64 = data.toBase64();
     QByteArray md5 = QCryptographicHash::hash(base64, QCryptographicHash::Md5);
@@ -80,10 +90,10 @@ void TcpManager::sendMessage(msg_t type, msg_option_t option, const QByteArray &
     processNextSendMessage();
 }
 
-void TcpManager::sendChatMessage(msg_t type, msg_option_t option, const QByteArray &receiver, ChatMessage *chatMessage)
+void TcpManager::sendChatMessageSlot(msg_t type, msg_option_t option, const QByteArray &receiver, ChatMessage *chatMessage)
 {
     m_chatMessageQueue.enqueue(chatMessage);
-    sendMessage(type, option, receiver, chatMessage->message().toLocal8Bit());
+    sendMessageSlot(type, option, receiver, chatMessage->message().toLocal8Bit());
 }
 
 void TcpManager::checkLoginInfo()
@@ -91,7 +101,7 @@ void TcpManager::checkLoginInfo()
     auto username  = ChatManager::instance()->username();
     auto password = ChatManager::instance()->password();
     auto data = username + "%%" + password;
-    sendMessage(MT_CHECK, MO_NULL, SERVER_ID, data.toLocal8Bit());
+    sendMessageSlot(MT_CHECK, MO_NULL, SERVER_ID, data.toLocal8Bit());
 }
 
 void TcpManager::onStateChanged(QAbstractSocket::SocketState state)
@@ -107,7 +117,6 @@ void TcpManager::onStateChanged(QAbstractSocket::SocketState state)
     }
 
     default:
-        qDebug() << "无法连接到服务器。";
         break;
     }
 }
@@ -133,7 +142,7 @@ void TcpManager::processNextSendMessage()
         delete message;
 
         write(block);
-        flush();        //立即发送消息
+        flush();
     }
 }
 
@@ -189,7 +198,7 @@ void TcpManager::processRecvMessage()
         if (header.isEmpty()) return;
 
         m_recvHeader = header;
-        m_recvData.remove(0, header.getSize());
+        m_recvData.remove(0, header.getSize() + 4);
 
         //如果成功读取了一个完整的消息头，但flag不一致(即：不是我的消息)
        if (get_flag(m_recvHeader) != MSG_FLAG)
@@ -251,14 +260,6 @@ void TcpManager::processRecvMessage()
                      << "消息为：" + QString::fromLocal8Bit(data);
             if (get_receiver(m_recvHeader) == username)
                 emit hasNewMessage(QString(get_sender(m_recvHeader)), MT_IMAGE, data);
-            break;
-
-        case MT_HEADIMAGE:
-            qDebug() << "收到新头像来自："
-                     << QString(get_sender(m_recvHeader))
-                     << "消息为：" + QString::fromLocal8Bit(data);
-            if (get_receiver(m_recvHeader) == username)
-                emit hasNewMessage(QString(get_sender(m_recvHeader)), MT_HEADIMAGE, data);
             break;
 
         case MT_UNKNOW:

@@ -2,37 +2,43 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import an.utility 1.0
 
-TextEdit
+TextArea
 {
     id: editor
+    antialiasing: true
+    textFormat: Text.RichText
     selectionColor: "#3399FF"
-    textFormat: TextEdit.RichText   //使用富文本
     selectByMouse: true
     selectByKeyboard: true
     wrapMode: TextEdit.Wrap
-    property alias cachePath: gifHelper.cachePath
 
-    function addImage(src, w, h)
+    function insertImage(src)
     {
-        var index1 = src.lastIndexOf(".");
-        var index2 = src.length;
-        var suffix = src.substring(index1 + 1, index2);  //后缀名
-        if (suffix === "gif" || suffix === "GIF")   //如果为动图
-        {
-            gifHelper.addGif(src)
-            var baseName = Api.baseName(src);
-            editor.insert(editor.cursorPosition, "<img src=\"file:///" +
-                          gifHelper.cachePath + baseName + "/0" + ".png" +
-                          "\" height=" + w + " width=" + h + ">");  //插入第一帧的图片
-        }
-        else  editor.insert(editor.cursorPosition,
-                            "<img src=\"" + src + "\" height=" + w + " width=" + h + ">")
+        imageHelper.insertImage(src);
     }
 
     function cleanup()
     {
         editor.remove(0, length)
-        gifHelper.cleanup();
+        imageHelper.cleanup();
+    }
+
+    Component.onCompleted: imageHelper.processImage(text);
+
+    ImageHelper
+    {
+        id: imageHelper
+        document: editor.textDocument
+        cursorPosition: editor.cursorPosition
+        selectionStart: editor.selectionStart
+        selectionEnd: editor.selectionEnd
+
+        onNeedUpdate:
+        {
+            let alpha = editor.color.a;
+            editor.color.a = alpha - 0.01;
+            editor.color.a = alpha;
+        }
     }
 
     MouseArea
@@ -71,11 +77,7 @@ TextEdit
                 from: 0
                 to: 1
                 duration: 400
-                onStopped:
-                {
-                    editor.activeFocus = true;
-                    editor.focus = true;
-                }
+                onStopped: editor.focus = true;
             }
         }
 
@@ -209,19 +211,4 @@ TextEdit
             }
         }
     }
-
-    GifHelper
-    {
-        id: gifHelper
-
-        onUpdateGif:
-        {
-            var pos = editor.cursorPosition;
-            var selstart = editor.selectionStart;
-            var selend = editor.selectionEnd;
-            editor.text = editor.text.replace(oldData, newData);
-            editor.cursorPosition = pos;
-            editor.select(selstart, selend);
-        }
-    }  
 }
