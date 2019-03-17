@@ -1,8 +1,5 @@
-#ifndef CHATMANAGER_H
+﻿#ifndef CHATMANAGER_H
 #define CHATMANAGER_H
-
-#include "iteminfo.h"
-#include "Utility/friendmodel.h"
 
 #include <QList>
 #include <QObject>
@@ -44,10 +41,12 @@ namespace Chat
     Q_ENUMS(DockStatus)
 }
 
-
 class ChatMessage;
-class FramelessWindow;
+class FriendInfo;
+class FriendModel;
 class FriendGroup;
+class FramelessWindow;
+class ItemInfo;
 class NetworkManager;
 class QQmlApplicationEngine;
 class SystemTrayIcon;

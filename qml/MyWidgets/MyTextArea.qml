@@ -25,6 +25,17 @@ TextArea
 
     Component.onCompleted: imageHelper.processImage(text);
 
+    Keys.onPressed:
+    {
+        //如果按下了ctrl + v 粘贴
+        if ((event.key === Qt.Key_V) && (event.modifiers & Qt.ControlModifier))
+        {
+            event.accepted = true;
+            editor.paste();
+            imageHelper.processImage(editor.text);
+        }
+    }
+
     ImageHelper
     {
         id: imageHelper
@@ -61,8 +72,9 @@ TextArea
         focus: false
         background: GlowRectangle
         {
-            radius: 4
-            implicitWidth: 140
+            radius: 5
+            glowRadius: 5
+            implicitWidth: 104
             implicitHeight: 110
             color: "#F9FCFE"
             glowColor: color
@@ -205,6 +217,7 @@ TextArea
                         {
                             menu.close();
                             editor.paste();
+                            imageHelper.processImage(editor.text);
                         }
                     }
                 }

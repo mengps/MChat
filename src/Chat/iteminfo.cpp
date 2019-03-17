@@ -60,7 +60,7 @@ void ItemInfo::setNickname(const QString &arg)
     if (arg != m_nickname)
     {
         m_nickname = arg;
-        emit nicknameChanged(arg);
+        emit nicknameChanged();
     }
 }
 
@@ -69,7 +69,7 @@ void ItemInfo::setUsername(const QString &arg)
     if (m_username != arg)
     {
         m_username = arg;
-        emit usernameChanged(arg);
+        emit usernameChanged();
     }
 }
 
@@ -116,7 +116,7 @@ void ItemInfo::setHeadImage(const QString &arg)
     if (m_headImage != arg)
     {
         m_headImage = arg;
-        emit headImageChanged(arg);
+        emit headImageChanged();
     }
 }
 
@@ -125,13 +125,14 @@ void ItemInfo::setUnreadMessage(int arg)
     if (m_unreadMessage != arg)
     {
         m_unreadMessage = arg;
-        emit unreadMessageChanged(arg);
+        emit unreadMessageChanged();
     }
 }
 
 
 FriendInfo::FriendInfo(QObject *parent)
     : ItemInfo(parent)
+    , m_status(Chat::OffLine)
     , m_background("qrc:/image/Background/7.jpg")
     , m_signature("")
     , m_birthday("")
@@ -144,6 +145,20 @@ FriendInfo::FriendInfo(QObject *parent)
 FriendInfo::~FriendInfo()
 {
 
+}
+
+Chat::ChatStatus FriendInfo::chatStatus() const
+{
+    return m_status;
+}
+
+void FriendInfo::setChatStatus(Chat::ChatStatus status)
+{
+    if (status != m_status)
+    {
+        m_status = status;
+        emit chatStatusChanged();
+    }
 }
 
 QString FriendInfo::background() const
@@ -176,7 +191,7 @@ void FriendInfo::setBackground(const QString &arg)
     if (m_background != arg)
     {
         m_background = arg;
-        emit backgroundChanged(arg);
+        emit backgroundChanged();
     }
 }
 
@@ -185,7 +200,7 @@ void FriendInfo::setSignature(const QString &arg)
     if (m_signature != arg)
     {
         m_signature = arg;
-        emit signatureChanged(arg);
+        emit signatureChanged();
     }
 }
 
@@ -194,7 +209,7 @@ void FriendInfo::setBirthday(const QString &arg)
     if(m_birthday != arg)
     {
         m_birthday = arg;
-        emit birthdayChanged(arg);
+        emit birthdayChanged();
     }
 }
 
@@ -203,7 +218,7 @@ void FriendInfo::setGender(const QString &arg)
     if (m_gender != arg)
     {
         m_gender = arg;
-        emit genderChanged(arg);
+        emit genderChanged();
     }
 }
 
@@ -212,7 +227,7 @@ void FriendInfo::setLevel(int arg)
     if (m_level != arg)
     {
         m_level = arg;
-        emit levelChanged(arg);
+        emit levelChanged();
     }
 }
 

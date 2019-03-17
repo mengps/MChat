@@ -68,9 +68,6 @@ ItemInfo* JsonParser::userInfo()
         value = object.value("Birthday");
         if (value.isString())
             info->setBirthday(value.toString());
-        value = object.value("UnreadMessage");
-        if (value.isDouble())
-            info->setUnreadMessage(value.toInt());
         value = object.value("Level");
         if (value.isDouble())
             info->setLevel(value.toInt());

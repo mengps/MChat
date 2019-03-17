@@ -159,7 +159,7 @@ void DatabaseManager::getChatMessageSlot(const QString &username, int count, Cha
                 QString sender = query.value(1).toString();
                 QString datetime = query.value(2).toString();
                 QString data = query.value(3).toString();
-                ChatMessageStatus::Status state = static_cast<ChatMessageStatus::Status>(query.value(4).toInt());
+                ChatMessageStatus::Status state = ChatMessageStatus::Status(query.value(4).toInt());
 
                 ChatMessage chatMessage;
                 chatMessage.setSender(sender);

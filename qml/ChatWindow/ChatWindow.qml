@@ -109,9 +109,10 @@ FramelessWindow
     {
         id: background
         clip: true
+        x: 34
+        y: 34
         width: chatWindow.width - 8
         height: chatWindow.height - 8
-        anchors.centerIn: parent
         antialiasing: true
         opacity: 0.95
         fillMode: Image.PreserveAspectCrop
@@ -125,7 +126,8 @@ FramelessWindow
         glowColor: background.status == Image.Null ? "#12F2D6" : "#8812F2D6";
         radius: 6
         glowRadius: 5
-        anchors.centerIn: parent
+        x: 30
+        y: 30
         width: chatWindow.width
         height: chatWindow.height
         focus: true
@@ -260,7 +262,7 @@ FramelessWindow
             anchors.bottomMargin: 4
             anchors.horizontalCenter: toolBar.horizontalCenter
 
-            onFocusChanged: if (!activeFocus) hide();
+            onFocusChanged: if (!focus) hide();
 
             function show()
             {
@@ -298,12 +300,63 @@ FramelessWindow
         Rectangle
         {
             id: toolBar
-            color: "#58FFFFFF"
+            color: "#68FFFFFF"
             x: 0
             y: parent.height - 150
             width: parent.width - 8
             height: 30
             anchors.horizontalCenter: parent.horizontalCenter
+
+            property real minY: 100
+            property real maxY: parent.height - 150
+
+            MouseArea
+            {
+                x: 0
+                y: 0
+                width: parent.width
+                height: 8
+                hoverEnabled: true
+                property point startPoint: Qt.point(0, 0);
+                property point fixedPont: Qt.point(0, 0);
+
+                onEntered: cursorShape = Qt.SizeVerCursor;
+                onExited: cursorShape = Qt.ArrowCursor;
+                onPressed: startPoint = Qt.point(mouseX, mouseY);
+                onPositionChanged:
+                {
+                    if(pressed)
+                    {
+                        var offsetY = mouse.y - startPoint.y;
+                        if (toolBar.y + offsetY >= toolBar.minY && toolBar.y + offsetY <= toolBar.maxY)
+                            toolBar.y += offsetY;
+                    }
+                }
+            }
+
+            MouseArea
+            {
+                x: 0
+                y: parent.height - 8
+                width: parent.width
+                height: 8
+                hoverEnabled: true
+                property point startPoint: Qt.point(0, 0);
+                property point fixedPont: Qt.point(0, 0);
+
+                onEntered: cursorShape = Qt.SizeVerCursor;
+                onExited: cursorShape = Qt.ArrowCursor;
+                onPressed: startPoint = Qt.point(mouseX, mouseY);
+                onPositionChanged:
+                {
+                    if(pressed)
+                    {
+                        var offsetY = mouse.y - startPoint.y;
+                        if (toolBar.y + offsetY >= toolBar.minY && toolBar.y + offsetY <= toolBar.maxY)
+                            toolBar.y += offsetY;
+                    }
+                }
+            }
 
             Row
             {
@@ -586,24 +639,11 @@ FramelessWindow
             id: flick
             clip: true
             focus: true
-            interactive: false
             anchors.top: toolBar.bottom
-            anchors.topMargin: 5
             anchors.left: parent.left
-            anchors.leftMargin: 8
             anchors.right: parent.right
-            anchors.rightMargin: 8
             anchors.bottom: close.top
-            anchors.bottomMargin: 5
-            contentWidth: sendMessage.contentWidth
-            contentHeight: sendMessage.contentHeight
-
-            Rectangle
-            {
-                anchors.fill: parent
-                opacity: 0.6
-                color: "#EFFFFF"
-            }
+            flickableDirection: Flickable.VerticalFlick
 
             TextArea.flickable: MyTextArea
             {
@@ -611,9 +651,11 @@ FramelessWindow
                 font.family: "微软雅黑"
                 opacity: 0.9
                 focus: true
-                width: chatWindow.width - 31
+                leftPadding: 16
+                rightPadding: 16
+                topPadding: 16
+                bottomPadding: 16
                 color: colorManager.currentColor
-                height: Math.max(paintedHeight, flick.height)
 
                 function qucikEnter()
                 {

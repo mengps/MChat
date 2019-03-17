@@ -30,7 +30,7 @@ void ImageHelper::insertImage(const QUrl &url)
     QString filename = url.toString();
     int width = qMin(m_maxWidth, image.width());
     int height = qMin(m_maxHeight, image.height());
-    if (filename.left(3) == "qrc")  //
+    if (filename.left(3) == "qrc")  //自己的图片大小限制25 x 25
     {
         width = 25;
         height = 25;

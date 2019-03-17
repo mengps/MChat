@@ -1,12 +1,13 @@
 #ifndef ITEMINFO_H
 #define ITEMINFO_H
 
+#include "chatmanager.h"
 #include "protocol.h"
+
 #include <QObject>
 
 class ChatMessage;
 class ChatMessageList;
-class ChatManager;
 class DatabaseManager;
 class NetworkManager;
 class ItemInfo : public QObject
@@ -46,10 +47,10 @@ public:
     Q_INVOKABLE void recallMessage(const QString &sender, const QString &msg);
 
 signals:
-    void usernameChanged(const QString &arg);
-    void nicknameChanged(const QString &arg);
-    void headImageChanged(const QString &arg);
-    void unreadMessageChanged(int arg);
+    void usernameChanged();
+    void nicknameChanged();
+    void headImageChanged();
+    void unreadMessageChanged();
     void lastMessageChanged();
 
 protected:
@@ -71,6 +72,7 @@ class FriendInfo : public ItemInfo
 {
     Q_OBJECT
 
+    Q_PROPERTY(Chat::ChatStatus chatStatus READ chatStatus WRITE setChatStatus NOTIFY chatStatusChanged)
     Q_PROPERTY(QString background READ background WRITE setBackground NOTIFY backgroundChanged)
     Q_PROPERTY(QString signature READ signature WRITE setSignature NOTIFY signatureChanged)
     Q_PROPERTY(QString birthday READ birthday WRITE setBirthday NOTIFY birthdayChanged)
@@ -81,6 +83,9 @@ class FriendInfo : public ItemInfo
 public:
     FriendInfo(QObject *parent = nullptr);
     ~FriendInfo();
+
+    Chat::ChatStatus chatStatus() const;
+    void setChatStatus(Chat::ChatStatus status);
 
     QString background() const;
     void setBackground(const QString &arg);
@@ -104,14 +109,16 @@ public slots:
     void addShakeMessage(const QString &sender);
 
 signals:
-    void backgroundChanged(const QString &arg);
-    void signatureChanged(const QString &arg);
-    void birthdayChanged(const QString &arg);
-    void genderChanged(const QString &arg);
-    void levelChanged(int arg);
-    void ageChanged(int arg);
+    void chatStatusChanged();
+    void backgroundChanged();
+    void signatureChanged();
+    void birthdayChanged();
+    void genderChanged();
+    void levelChanged();
+    void ageChanged();
 
 private:
+    Chat::ChatStatus m_status;
     QString m_background;   //背景
     QString m_signature;    //签名
     QString m_birthday;     //生日

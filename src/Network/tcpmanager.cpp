@@ -201,11 +201,11 @@ void TcpManager::processRecvMessage()
         m_recvData.remove(0, header.getSize() + 4);
 
         //如果成功读取了一个完整的消息头，但flag不一致(即：不是我的消息)
-       if (get_flag(m_recvHeader) != MSG_FLAG)
-       {
-           m_recvHeader = MessageHeader();
-           return;
-       }
+        if (get_flag(m_recvHeader) != MSG_FLAG)
+        {
+            m_recvHeader = MessageHeader();
+            return;
+        }
     }
 
     //如果数据大小不足一条消息
