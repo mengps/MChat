@@ -1,7 +1,9 @@
 #ifndef NETWORKMANAGER_H
 #define NETWORKMANAGER_H
 
-#include "tcpmanager.h"
+#include "chatmanager.h"
+#include "protocol.h"
+
 #include <QObject>
 #include <QPointer>
 
@@ -38,8 +40,18 @@ public:
     NetworkMode::Mode mode() const { return m_mode; }
     void setMode(NetworkMode::Mode mode);
 
+    ItemInfo* getUserInfo();
+    void checkLoginInfo();
+    void createFriend(FriendGroup *FriendGroup, QMap<QString, ItemInfo *> *friendList);
+
+    //用于取消登陆(终止连接)
     Q_INVOKABLE void cancelLogin();
-    Q_INVOKABLE void sendChatMessage(msg_t type, ChatMessage *chatMessage, const QString &receiver);
+    //用于更新用户信息
+    Q_INVOKABLE void updateInfomation();
+    //发送状态改变的消息
+    Q_INVOKABLE void sendStateChange(Chat::ChatStatus status);
+    //发送聊天的消息
+    Q_INVOKABLE void sendChatMessage(const QString &receiver, ChatMessage *chatMessage);
 
 signals:
     void modeChanged();
@@ -48,12 +60,7 @@ signals:
     void hasNewShake(const QString &sender);
     void hasNewText(const QString &sender, const QString &message);
 
-public slots:    
-    ItemInfo* getUserInfo();
-    void checkLoginInfo();
-    void createFriend(FriendGroup *FriendGroup, QMap<QString, ItemInfo *> *friendList);
-    void uploadUserInformation();
-
+public slots:
     void onLogined(bool ok);
     void onInfoGot(const QByteArray &infoJson);
 

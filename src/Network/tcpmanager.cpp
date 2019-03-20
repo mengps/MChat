@@ -90,10 +90,10 @@ void TcpManager::sendMessageSlot(msg_t type, msg_option_t option, const QByteArr
     processNextSendMessage();
 }
 
-void TcpManager::sendChatMessageSlot(msg_t type, msg_option_t option, const QByteArray &receiver, ChatMessage *chatMessage)
+void TcpManager::sendChatMessageSlot(const QByteArray &receiver, ChatMessage *chatMessage)
 {
     m_chatMessageQueue.enqueue(chatMessage);
-    sendMessageSlot(type, option, receiver, chatMessage->message().toLocal8Bit());
+    sendMessageSlot(MT_TEXT, MO_UPLOAD, receiver, chatMessage->message().toLocal8Bit());
 }
 
 void TcpManager::checkLoginInfo()
@@ -198,7 +198,7 @@ void TcpManager::processRecvMessage()
         if (header.isEmpty()) return;
 
         m_recvHeader = header;
-        m_recvData.remove(0, header.getSize() + 4);
+        m_recvData.remove(0, header.getSize() + 4); //QByteArray 4 字节大小
 
         //如果成功读取了一个完整的消息头，但flag不一致(即：不是我的消息)
         if (get_flag(m_recvHeader) != MSG_FLAG)
@@ -238,6 +238,16 @@ void TcpManager::processRecvMessage()
             if (get_sender(m_recvHeader) == SERVER_ID && get_receiver(m_recvHeader) == username)
                 emit infoGot(data);
             break;
+
+        case MT_STATECHANGE:
+        {
+            qDebug() << "收到一条状态变化来自："
+                     << QString(get_sender(m_recvHeader));
+            /*QMutexLocker locker(&m_mutex);
+            int status = ChatManager::instance()->chatStatus();*/
+            emit hasNewMessage(QString(get_sender(m_recvHeader)), MT_STATECHANGE, data);
+            break;
+        }
 
         case MT_SHAKE:
             qDebug() << "收到一条窗口震动来自："

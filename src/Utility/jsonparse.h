@@ -17,7 +17,7 @@ public :
 public:
     ItemInfo* userInfo();
     void createFriend(FriendGroup *friendGroup, QMap<QString, ItemInfo *> *friendList);
-    bool updateInfo(ItemInfo *info);
+    QByteArray infoToJson(ItemInfo *info);
 
 private:
     QJsonDocument m_doc;

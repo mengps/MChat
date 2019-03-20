@@ -145,29 +145,33 @@ void JsonParser::createFriend(FriendGroup *friendGroup, QMap<QString, ItemInfo *
     friendGroup->setData(groups);
 }
 
-bool JsonParser::updateInfo(ItemInfo *info)
+QByteArray JsonParser::infoToJson(ItemInfo *info)
 {
     FriendInfo *userInfo = qobject_cast<FriendInfo *>(info);
-    if (!m_doc.isNull())
+    if (m_doc.isObject())
     {
-        if (m_doc.isObject())
+        QJsonObject object;
+        object.insert("Username", userInfo->username());
+        object.insert("Nickname", userInfo->nickname());
+        object.insert("Gender", userInfo->gender());
+        object.insert("Background", userInfo->background());
+        object.insert("Password", ChatManager::instance()->password());
+        QString headImage = userInfo->headImage();
+        if (headImage.left(6) == "file:/")
         {
-            QJsonObject object = m_doc.object();
-
-            object.insert("Nickname", userInfo->nickname());
-            object.insert("Gender", userInfo->gender());
-            object.insert("Background", userInfo->background());
-            object.insert("HeadImage", userInfo->headImage());
-            object.insert("Signature", userInfo->signature());
-            object.insert("Birthday", userInfo->birthday());
-            m_doc = QJsonDocument(object);
+            headImage = QFileInfo(headImage).fileName();
         }
-        qDebug() << "用户数据上传成功！";
-        return true;
+        object.insert("HeadImage", headImage);
+        object.insert("Signature", userInfo->signature());
+        object.insert("Birthday", userInfo->birthday());
+        object.insert("Level", userInfo->level());
+        QJsonDocument doc = QJsonDocument(object);
+        qDebug() << __func__ << "成功!";
+        return doc.toJson();
     }
     else
     {
-        qDebug() << "用户数据上传失败！";
-        return false;
+        qDebug() << __func__ << "失败!";
+        return QByteArray();
     }
 }

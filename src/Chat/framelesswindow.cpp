@@ -231,7 +231,7 @@ void FramelessWindow::setTaskbarHint(bool arg)
     if (m_taskbarHint != arg)
     {
         if(arg)
-            setFlags(flags() & (~Qt::Tool) | Qt::Window);
+            setFlags(flags() & ((~Qt::Tool) | Qt::Window));
         else
             setFlags(flags() | Qt::Tool);
         m_taskbarHint = arg;

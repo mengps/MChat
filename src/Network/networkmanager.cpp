@@ -5,6 +5,7 @@
 #include "iteminfo.h"
 #include "jsonparse.h"
 #include "networkmanager.h"
+#include "tcpmanager.h"
 
 #include <QDateTime>
 #include <QFile>
@@ -67,10 +68,11 @@ void NetworkManager::createFriend(FriendGroup *FriendGroup, QMap<QString, ItemIn
     return m_jsonParser->createFriend(FriendGroup, friendList);
 }
 
-void NetworkManager::uploadUserInformation()
+void NetworkManager::updateInfomation()
 {
     FriendInfo *userInfo = qobject_cast<FriendInfo *>(ChatManager::instance()->userInfo());
-    m_jsonParser->updateInfo(userInfo);
+    QByteArray data = m_jsonParser->infoToJson(userInfo);
+    m_tcpManager->sendMessage(MT_USERINFO, MO_UPLOAD, SERVER_ID, data);
 }
 
 void NetworkManager::onLogined(bool ok)
@@ -114,16 +116,25 @@ void NetworkManager::cancelLogin()
     m_tcpManager->abortConnection();
 }
 
-void NetworkManager::sendChatMessage(msg_t type, ChatMessage *chatMessage, const QString &receiver)
+void NetworkManager::sendStateChange(Chat::ChatStatus status)
 {
-    m_tcpManager->sendChatMessage(type, MO_UPLOAD, receiver.toLatin1(), chatMessage);
+    m_tcpManager->sendMessage(MT_STATECHANGE, MO_UPLOAD, SERVER_ID, QByteArray::number(status));
+}
+
+void NetworkManager::sendChatMessage(const QString &receiver, ChatMessage *chatMessage)
+{
+    m_tcpManager->sendChatMessage(receiver.toLatin1(), chatMessage);
 }
 
 void NetworkManager::disposeNewMessage(const QString &sender, msg_t type, const QByteArray &data)
 {
-    FriendInfo *info = ChatManager::instance()->createFriendInfo(sender);
+    FriendInfo *info = qobject_cast<FriendInfo *>(ChatManager::instance()->createFriendInfo(sender));
     switch (type)
     {
+    case MT_STATECHANGE:
+        info->setChatStatus(int(data.toInt()));
+        break;
+
     case MT_SHAKE:
         info->addShakeMessage(sender);
         emit hasNewShake(sender);

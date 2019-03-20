@@ -14,6 +14,7 @@ public:
 
     Q_INVOKABLE bool exists(const QString &arg);
     Q_INVOKABLE QString baseName(const QString &arg);
+    Q_INVOKABLE QString grayImage(const QString &src);
     Q_INVOKABLE QString toPlainText(QQuickTextDocument *doc);
 
 public slots:

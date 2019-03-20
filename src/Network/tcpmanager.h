@@ -3,6 +3,7 @@
 
 #include "protocol.h"
 
+#include <QMutex>
 #include <QQueue>
 #include <QTcpSocket>
 
@@ -34,13 +35,13 @@ signals:
     //开始心跳
     void startHeartbeat();
     //用于发送聊天消息的
-    void sendChatMessage(msg_t type, msg_option_t option, const QByteArray &receiver, ChatMessage *chatMessage);
+    void sendChatMessage(const QByteArray &receiver, ChatMessage *chatMessage);
     void sendMessage(msg_t type, msg_option_t option, const QByteArray &receiver, const QByteArray &data);
 
 private slots:
     void requestNewConnectionSlot();
     void startHeartbeatSlot();
-    void sendChatMessageSlot(msg_t type, msg_option_t option, const QByteArray &receiver, ChatMessage *chatMessage);
+    void sendChatMessageSlot(const QByteArray &receiver, ChatMessage *chatMessage);
     void sendMessageSlot(msg_t type, msg_option_t option, const QByteArray &receiver, const QByteArray &data);
 
     void continueWrite(qint64 sentSize);
@@ -53,6 +54,7 @@ private:
     void processRecvMessage();
 
 private:
+    QMutex m_mutex;
     QTimer *m_heartbeat;
     QTimer *m_messageTimeout;
     qint64 m_sendDataBytes;

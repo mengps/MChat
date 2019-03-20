@@ -72,7 +72,7 @@ class FriendInfo : public ItemInfo
 {
     Q_OBJECT
 
-    Q_PROPERTY(Chat::ChatStatus chatStatus READ chatStatus WRITE setChatStatus NOTIFY chatStatusChanged)
+    Q_PROPERTY(int chatStatus READ chatStatus WRITE setChatStatus NOTIFY chatStatusChanged)
     Q_PROPERTY(QString background READ background WRITE setBackground NOTIFY backgroundChanged)
     Q_PROPERTY(QString signature READ signature WRITE setSignature NOTIFY signatureChanged)
     Q_PROPERTY(QString birthday READ birthday WRITE setBirthday NOTIFY birthdayChanged)
@@ -84,8 +84,8 @@ public:
     FriendInfo(QObject *parent = nullptr);
     ~FriendInfo();
 
-    Chat::ChatStatus chatStatus() const;
-    void setChatStatus(Chat::ChatStatus status);
+    int chatStatus() const;
+    void setChatStatus(int status);
 
     QString background() const;
     void setBackground(const QString &arg);
@@ -118,7 +118,7 @@ signals:
     void ageChanged();
 
 private:
-    Chat::ChatStatus m_status;
+    int m_status;
     QString m_background;   //背景
     QString m_signature;    //签名
     QString m_birthday;     //生日

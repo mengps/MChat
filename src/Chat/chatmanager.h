@@ -102,7 +102,7 @@ public:
     Q_INVOKABLE FramelessWindow* addChatWindow(const QString &username);    //增加一个聊天窗口
     Q_INVOKABLE bool chatWindowIsOpenned(const QString &username);          //判断聊天窗口事是否已经打开
     Q_INVOKABLE void appendRecentMessageID(const QString &username);        //添加一个用户到最近消息列表
-    Q_INVOKABLE FriendInfo* createFriendInfo(const QString &username);      //创建/获取一个好友信息
+    Q_INVOKABLE ItemInfo *createFriendInfo(const QString &username);      //创建/获取一个好友信息
 
     Q_INVOKABLE void show();                                    //显示界面
     Q_INVOKABLE void quit();                                    //退出程序

@@ -94,7 +94,7 @@ void ItemInfo::addMessage(msg_t type, const QString &sender, const QString &msg)
     message->setState(ChatMessageStatus::Sending);
     m_chatRecord->append(message);                                      //加入到消息列表
     if (sender == m_chatManager->username())
-        m_networkManager->sendChatMessage(type, message, m_username);   //如果为自己发送的，就发送
+        m_networkManager->sendChatMessage(m_username, message);   //如果为自己发送的，就发送
     else
     {
         message->setState(ChatMessageStatus::Success);
@@ -147,12 +147,12 @@ FriendInfo::~FriendInfo()
 
 }
 
-Chat::ChatStatus FriendInfo::chatStatus() const
+int FriendInfo::chatStatus() const
 {
     return m_status;
 }
 
-void FriendInfo::setChatStatus(Chat::ChatStatus status)
+void FriendInfo::setChatStatus(int status)
 {
     if (status != m_status)
     {

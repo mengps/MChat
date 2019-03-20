@@ -130,8 +130,12 @@ void ChatManager::setChatStatus(Chat::ChatStatus arg)
     if (arg != m_chatStatus)
     {
         m_chatStatus = arg;
-        // postChatStatus(arg);
-        emit chatStatusChanged(arg);
+        if (m_loginStatus == Chat::LoginFinished)
+        {
+            //发送状态改变
+            m_networkManager->sendStateChange(arg);
+        }
+        emit chatStatusChanged(arg); 
     }
 }
 
@@ -301,13 +305,13 @@ void ChatManager::deleteChatWindow()
     chatWindow = nullptr;
 }
 
-FriendInfo* ChatManager::createFriendInfo(const QString &username)
+ItemInfo* ChatManager::createFriendInfo(const QString &username)
 {
     if (m_friendList.contains(username))
-        return qobject_cast<FriendInfo *>(m_friendList[username]);
+        return m_friendList[username];
     else
     {
-        FriendInfo *info = new FriendInfo(this);
+        ItemInfo *info = new FriendInfo(this);
         info->setUsername(username);
         //设置一般的用户属性
         m_friendList[username] = info;

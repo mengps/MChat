@@ -37,7 +37,7 @@ FramelessWindow
         chatManager.userInfo.nickname = nicknameEditor.text;
         chatManager.userInfo.gender = genderComboBox.model[genderComboBox.index];
         chatManager.userInfo.signature = signatureInput.text;
-        networkManager.uploadUserInformation();
+        networkManager.updateInfomation();
         root.close();
     }
 
