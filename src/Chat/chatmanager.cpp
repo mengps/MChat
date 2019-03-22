@@ -56,7 +56,8 @@ bool ChatManager::loadLoginInterface()
             return false;
         }
 
-        QQmlComponent component1(m_qmlEngine, QUrl("qrc:/qml/MyWidgets/SystemTray.qml"));    //给应用一个全局的托盘
+        //给应用一个全局的托盘
+        QQmlComponent component1(m_qmlEngine, QUrl("qrc:/qml/MyWidgets/SystemTray.qml"));
         QObject *object1 = component1.create();
         m_systemTray = qobject_cast<SystemTrayIcon *>(object1);
         m_qmlEngine->rootContext()->setContextProperty("systemTray", m_systemTray);
@@ -231,6 +232,7 @@ void ChatManager::onLoginFinshed(bool ok)
         m_userInfo = m_networkManager->getUserInfo();
         m_friendGroup = new FriendGroup(this);
         m_networkManager->createFriend(m_friendGroup, &m_friendList);
+        m_networkManager->sendStateChange(m_chatStatus);
         setLoginStatus(Chat::LoginSuccess);
     }
     else setLoginStatus(Chat::LoginFailure);

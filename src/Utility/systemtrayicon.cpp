@@ -3,6 +3,7 @@
 #include <QApplication>
 #include <QAction>
 #include <QMenu>
+#include <QQmlFile>
 
 /*#ifdef Q_OS_WIN
 #include <windows.h>
@@ -55,6 +56,7 @@ MyMenu::MyMenu(QQuickItem *parent)
 {
     setObjectName("MyMenu");
     m_menu = new QMenu();
+    setVisible(false);
 }
 
 MyMenu::~MyMenu()
@@ -149,6 +151,7 @@ void MyMenu::componentComplete()        //在菜单完成构建后调用，将�
 
 SystemTrayIcon::SystemTrayIcon(QQuickItem *parent)
     : QQuickItem(parent)
+    , m_menu(nullptr)
 {
     m_systemTray = new QSystemTrayIcon(this);
 
@@ -193,10 +196,13 @@ void SystemTrayIcon::setIcon(const QString &arg)
 {
     if(m_icon != arg)
     {
-        QString str = arg;
-        if( str.mid (0, 3) == "qrc")
-            str = str.mid (3, str.count() - 3);
-        m_systemTray->setIcon(QIcon(str));
+        if (arg.isEmpty())
+        {
+            QPixmap p(32, 32);
+            p.fill(Qt::transparent);
+            m_systemTray->setIcon(QIcon(p));
+        }
+        else m_systemTray->setIcon(QIcon(QQmlFile::urlToLocalFileOrQrc(arg)));
         m_icon = arg;
         emit iconChanged(arg);
     }

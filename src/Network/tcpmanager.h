@@ -45,7 +45,8 @@ private slots:
     void sendMessageSlot(msg_t type, msg_option_t option, const QByteArray &receiver, const QByteArray &data);
 
     void continueWrite(qint64 sentSize);
-    void messageTimeoutHandle();    //消息超时处理
+    //消息超时处理
+    void messageTimeoutHandle();
     void onStateChanged(QAbstractSocket::SocketState state);
 
 private:
@@ -55,6 +56,7 @@ private:
 
 private:
     QMutex m_mutex;
+    QString m_username;
     QTimer *m_heartbeat;
     QTimer *m_messageTimeout;
     qint64 m_sendDataBytes;
@@ -62,10 +64,10 @@ private:
     QByteArray m_recvData;
     MessageHeader m_recvHeader;
 
-    QQueue<Message *> m_messageQueue;
+    QQueue<Message *> m_messageQueue;           //所有消息都必须排队
     bool m_hasMessageProcessing;                //指示是否有消息在处理中
 
-    QQueue<ChatMessage *> m_chatMessageQueue;   //专用于聊天消息
+    QQueue<ChatMessage *> m_chatMessageQueue;   //专用于聊天消息的队列
     QByteArray m_curReceiver;
     ChatMessage *m_curChatMessage;
 };

@@ -1,6 +1,7 @@
 #ifndef DATABASEMANAGER_H
 #define DATABASEMANAGER_H
 
+#include <QMutex>
 #include <QObject>
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -37,6 +38,7 @@ private:
     QString getTableName(const QString &username);        //通过用户ID获取表名
 
 private:
+    QMutex m_mutex;
     QSqlDatabase m_database;
 };
 

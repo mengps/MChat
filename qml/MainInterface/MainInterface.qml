@@ -25,6 +25,9 @@ FramelessWindow
 
     property var userInfomation: undefined;
     property var introduction: undefined;
+    property var addFriendPage: undefined;
+    property var friendRequestPage: undefined;
+
     property bool isDock: false;
     property int dockState: Chat.UnDock;
     property point startPoint: Qt.point(0, 0)
@@ -89,9 +92,9 @@ FramelessWindow
 
     function createUserInfomation()
     {
-        var chatComp = Qt.createComponent("qrc:/qml/UserInformation/UserInformation.qml");
-        if (chatComp.status === Component.Ready)
-            var obj = chatComp.createObject(mainInterface, { "gradient" : content.gradient });
+        var component = Qt.createComponent("qrc:/qml/UserInformation/UserInformation.qml", mainInterface);
+        if (component.status === Component.Ready)
+            var obj = component.createObject(mainInterface, { "gradient" : content.gradient });
        return obj;
     }
 
@@ -100,13 +103,29 @@ FramelessWindow
         var x = mainInterface.x - 260;
         if (mainInterface.x <= 260)
             x = mainInterface.x + mainInterface.actualWidth + 5;
-        var component = Qt.createComponent("Introduction.qml");
+        var component = Qt.createComponent("Introduction.qml", mainInterface);
         if (component.status === Component.Ready)
             var obj = component.createObject(mainInterface,
                                              { "x" : x,
                                                "y" : argY + mainInterface.y + 10,
                                                "info" : info });
         return obj;
+    }
+
+    function createAddFriendPage()
+    {
+        var component = Qt.createComponent("qrc:/qml/MainInterface/AddFriend.qml", mainInterface);
+        if (component.status === Component.Ready)
+            var obj = component.createObject(mainInterface, { "gradient" : content.gradient });
+       return obj;
+    }
+
+    function createFriendRequestPage(username)
+    {
+        var component = Qt.createComponent("qrc:/qml/MainInterface/FriendRequest.qml", mainInterface);
+        if (component.status === Component.Ready)
+            var obj = component.createObject(mainInterface, { "gradient" : content.gradient });
+       return obj;
     }
 
     function display()
@@ -228,7 +247,7 @@ FramelessWindow
         anchors.centerIn: parent
         width: mainInterface.width
         height: mainInterface.height
-        glowColor: background.status == Image.Null ? "#12F2D6" : "#8812F2D6";
+        glowColor: background.status == Image.Null ? "#12F2D6" : "#AA12F2D6";
         radius: 6
         glowRadius: 6
         antialiasing: true
@@ -517,10 +536,13 @@ FramelessWindow
                 CusButton
                 {
                     id: addFriend
-                    width: 32
+                    width: 28
                     height: parent.height
                     onClicked:
                     {
+                        if (addFriendPage == undefined)
+                            addFriendPage = createAddFriendPage();
+                        else addFriendPage.show();
                     }
                     Component.onCompleted:
                     {

@@ -132,7 +132,7 @@ void ItemInfo::setUnreadMessage(int arg)
 
 FriendInfo::FriendInfo(QObject *parent)
     : ItemInfo(parent)
-    , m_status(Chat::OffLine)
+    , m_status(Chat::Offline)
     , m_background("qrc:/image/Background/7.jpg")
     , m_signature("")
     , m_birthday("")

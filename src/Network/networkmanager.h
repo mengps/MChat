@@ -1,4 +1,4 @@
-#ifndef NETWORKMANAGER_H
+﻿#ifndef NETWORKMANAGER_H
 #define NETWORKMANAGER_H
 
 #include "chatmanager.h"
@@ -23,6 +23,7 @@ namespace NetworkMode
 class ChatMessage;
 class DatabaseManager;
 class FriendGroup;
+class FriendInfo;
 class ItemInfo;
 class JsonParser;
 class TcpManager;
@@ -48,6 +49,10 @@ public:
     Q_INVOKABLE void cancelLogin();
     //用于更新用户信息
     Q_INVOKABLE void updateInfomation();
+    //发送获取指定用户信息
+    Q_INVOKABLE void requestUserInfo(const QString &username);
+    //发送添加好友的请求
+    Q_INVOKABLE void requestAddFriend(const QString &username);
     //发送状态改变的消息
     Q_INVOKABLE void sendStateChange(Chat::ChatStatus status);
     //发送聊天的消息
@@ -57,6 +62,8 @@ signals:
     void modeChanged();
     void loginError(const QString &error);
     void loginFinshed(bool ok);
+    void hasSearchResult(FriendInfo *info);
+    void hasFriendRequest(const QString &username);
     void hasNewShake(const QString &sender);
     void hasNewText(const QString &sender, const QString &message);
 

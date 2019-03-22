@@ -16,17 +16,6 @@ SystemTrayIcon
     }
     menu: menu2
 
-    Connections
-    {
-        target: chatManager
-        onLoginStatusChanged:
-        {
-            if (chatManager.loginStatus === Chat.LoginFinished)
-                root.menu = menu1;
-            else root.menu = menu2;
-        }
-    }
-
     property MessageTipWindow messageTipWindow;
 
     onTrigger: chatManager.show();
@@ -48,16 +37,16 @@ SystemTrayIcon
 
     function createMessageTipWindow()
     {
-        var chatComp = Qt.createComponent("MessageTipWindow.qml");
-        if (chatComp.status === Component.Ready)
-            var window = chatComp.createObject(root);
-        else print(chatComp.errorString())
+        var component = Qt.createComponent("MessageTipWindow.qml");
+        if (component.status === Component.Ready)
+            var window = component.createObject(root);
+        else print(component.errorString())
         messageTipWindow = window;
     }
 
     function flickerImage(sender_info)
     {
-        root.icon = sender_info.headImage;
+        flicker.icon = sender_info.headImage;
         flicker.restart();
     }
 
@@ -67,26 +56,14 @@ SystemTrayIcon
         root.icon = "qrc:/image/winIcon.png";
     }
 
-    Timer
+    Connections
     {
-        id: flicker
-        running: false
-        repeat: true
-        interval: 500
-        property string oldIcon;
-
-        onTriggered:
+        target: chatManager
+        onLoginStatusChanged:
         {
-            if (root.icon == "")
-            {
-                root.icon = oldIcon;
-                oldIcon = "";
-            }
-            else
-            {
-                oldIcon = root.icon;
-                root.icon = "";
-            }
+            if (chatManager.loginStatus === Chat.LoginFinished)
+                root.menu = menu1;
+            else root.menu = menu2;
         }
     }
 
@@ -113,6 +90,22 @@ SystemTrayIcon
             var sender_info = chatManager.createFriendInfo(sender);
             stopFlicker();
             messageTipWindow.popbackMessage(sender_info)
+        }
+    }
+
+    Timer
+    {
+        id: flicker
+        running: false
+        repeat: true
+        interval: 500
+        property string icon;
+
+        onTriggered:
+        {
+            if (root.icon == "")
+                root.icon = icon;
+            else root.icon = "";
         }
     }
 
@@ -167,7 +160,6 @@ SystemTrayIcon
         MyAction
         {
             text: "打开主界面"
-            icon: "qrc:/image/winIcon.png"
             onTriggered: chatManager.show();
         }
 

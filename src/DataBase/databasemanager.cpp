@@ -29,6 +29,7 @@ DatabaseManager::DatabaseManager(QObject *parent)
 
 void DatabaseManager::initDatabaseSlot()
 {
+    QMutexLocker locker(&m_mutex);
     m_database = QSqlDatabase::addDatabase("QSQLITE");
     m_database.setDatabaseName(QDir::homePath() + "/MChat/ChatRecord" + "/MSG" +
                                ChatManager::instance()->username() + ".db");

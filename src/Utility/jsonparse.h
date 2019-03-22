@@ -3,8 +3,8 @@
 
 #include <QJsonDocument>
 
-class ItemInfo;
 class FriendGroup;
+class ItemInfo;
 class JsonParser
 {
 public :
@@ -18,6 +18,7 @@ public:
     ItemInfo* userInfo();
     void createFriend(FriendGroup *friendGroup, QMap<QString, ItemInfo *> *friendList);
     QByteArray infoToJson(ItemInfo *info);
+    ItemInfo* jsonToInfo(const QByteArray &data);
 
 private:
     QJsonDocument m_doc;

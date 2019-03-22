@@ -36,7 +36,7 @@ TcpManager::TcpManager(QObject *parent)
     {
         m_recvData += readAll();
         processRecvMessage();
-    }, Qt::DirectConnection);
+    });
     connect(this, &TcpManager::stateChanged, this, &TcpManager::onStateChanged);
     connect(this, static_cast<void(QAbstractSocket::*)(QAbstractSocket::SocketError)>(&QAbstractSocket::error), this,
     [this](QAbstractSocket::SocketError socketError)
@@ -56,8 +56,7 @@ TcpManager::TcpManager(QObject *parent)
     });
     connect(m_heartbeat, &QTimer::timeout, this, [this]()
     {
-        if (!m_hasMessageProcessing)    //如果没有消息在发送中，就发送心跳包
-            sendMessageSlot(MT_HEARTBEAT, MO_NULL, SERVER_ID, HEARTBEAT);
+        sendMessageSlot(MT_HEARTBEAT, MO_NULL, SERVER_ID, HEARTBEAT);
     });
     connect(m_messageTimeout, &QTimer::timeout, this, &TcpManager::messageTimeoutHandle);
 }
@@ -82,7 +81,7 @@ void TcpManager::sendMessageSlot(msg_t type, msg_option_t option, const QByteArr
 {
     QByteArray base64 = data.toBase64();
     QByteArray md5 = QCryptographicHash::hash(base64, QCryptographicHash::Md5);
-    QString username = ChatManager::instance()->username();
+    QString username = m_username;
     MessageHeader header = { MSG_FLAG, type, msg_size_t(base64.size()), option, username.toLatin1(), receiver, md5 };
     Message *message = new Message(header, base64);
     m_messageQueue.enqueue(message);
@@ -98,8 +97,12 @@ void TcpManager::sendChatMessageSlot(const QByteArray &receiver, ChatMessage *ch
 
 void TcpManager::checkLoginInfo()
 {
+    QMutexLocker locker(&m_mutex);
     auto username  = ChatManager::instance()->username();
     auto password = ChatManager::instance()->password();
+    locker.unlock();
+
+    m_username = username;
     auto data = username + "%%" + password;
     sendMessageSlot(MT_CHECK, MO_NULL, SERVER_ID, data.toLocal8Bit());
 }
@@ -225,7 +228,7 @@ void TcpManager::processRecvMessage()
 
     if (get_option(m_recvHeader) == MO_NULL)    //来自服务器的都为NULL
     {
-        auto username = ChatManager::instance()->username();
+        QString username = m_username;
         switch (get_type(m_recvHeader))
         {
         case MT_CHECK:
@@ -234,20 +237,23 @@ void TcpManager::processRecvMessage()
             break;
 
         case MT_USERINFO:
-            qDebug() << "userinfo";
+            qDebug() << "获取到用户信息";
             if (get_sender(m_recvHeader) == SERVER_ID && get_receiver(m_recvHeader) == username)
                 emit infoGot(data);
             break;
 
         case MT_STATECHANGE:
-        {
             qDebug() << "收到一条状态变化来自："
                      << QString(get_sender(m_recvHeader));
-            /*QMutexLocker locker(&m_mutex);
-            int status = ChatManager::instance()->chatStatus();*/
             emit hasNewMessage(QString(get_sender(m_recvHeader)), MT_STATECHANGE, data);
             break;
-        }
+
+        case MT_SEARCH:
+            qDebug() << "收到一条用户搜索来自："
+                     << QString(get_sender(m_recvHeader));
+            if (get_sender(m_recvHeader) == SERVER_ID && get_receiver(m_recvHeader) == username)
+                emit hasNewMessage(QString(get_sender(m_recvHeader)), MT_SEARCH, data);
+            break;
 
         case MT_SHAKE:
             qDebug() << "收到一条窗口震动来自："
@@ -265,11 +271,19 @@ void TcpManager::processRecvMessage()
             break;
 
         case MT_IMAGE:
-            qDebug() << "收到一条图片来自："
+            qDebug() << "收到一副图片来自："
                      << QString(get_sender(m_recvHeader))
                      << "消息为：" + QString::fromLocal8Bit(data);
             if (get_receiver(m_recvHeader) == username)
                 emit hasNewMessage(QString(get_sender(m_recvHeader)), MT_IMAGE, data);
+            break;
+
+        case MT_ADDFRIEND:
+            qDebug() << "收到好友请求来自："
+                     << QString(get_sender(m_recvHeader))
+                     << "消息为：" + QString::fromLocal8Bit(data);
+            if (get_receiver(m_recvHeader) == username)
+                emit hasNewMessage(QString(get_sender(m_recvHeader)), MT_ADDFRIEND, data);
             break;
 
         case MT_UNKNOW:

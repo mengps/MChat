@@ -312,31 +312,13 @@ FramelessWindow
             {
                 id: applicationName
                 anchors.centerIn: parent
+                antialiasing: true
                 text: "MChat"
                 font.family: "Consolas"
                 font.pointSize: 48
                 style: Text.Sunken
                 styleColor: "red"
                 transform: rotation
-                smooth: true
-                property real angle: 0;
-
-                Rotation
-                {
-                    id: rotation
-                    origin.x: applicationName.width / 2;
-                    origin.y: applicationName.height / 2;
-                    axis { x: 0; y: 1; z: 0 }
-                    angle: applicationName.angle
-                }
-
-                Timer
-                {
-                    interval: 30
-                    repeat: true
-                    running: true
-                    onTriggered: applicationName.angle += 2;
-                }
             }
 
             Row

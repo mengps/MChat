@@ -306,5 +306,6 @@
         <file>image/FacesImage/171.png</file>
         <file>image/FacesImage/172.png</file>
         <file>image/WidgetsImage/addFriend_down.png</file>
+        <file>image/WidgetsImage/search_normal.png</file>
     </qresource>
 </RCC>

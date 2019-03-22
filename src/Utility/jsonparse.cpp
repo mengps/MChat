@@ -175,3 +175,54 @@ QByteArray JsonParser::infoToJson(ItemInfo *info)
         return QByteArray();
     }
 }
+
+ItemInfo* JsonParser::jsonToInfo(const QByteArray &data)
+{
+    QJsonParseError error;
+    QJsonDocument doc = QJsonDocument::fromJson(data, &error);
+    if (!doc.isNull() && (error.error == QJsonParseError::NoError))
+    {
+        if (doc.isObject())
+        {
+            FriendInfo *info = new FriendInfo;
+            QJsonObject object = doc.object();
+            QString username;
+            QJsonValue value = object.value("Username");
+            if (value.isString())
+            {
+                username = value.toString();
+                info->setUsername(username);
+            }
+            value = object.value("Nickname");
+            if (value.isString())
+                info->setNickname(value.toString());
+            value = object.value("Gender");
+            if (value.isString())
+                info->setGender(value.toString());
+            value = object.value("Background");
+            if (value.isString())
+                info->setBackground(value.toString());
+            value = object.value("HeadImage");
+            if (value.isString())
+            {
+                QString image = value.toString();
+                if (image.left(3) == "qrc")
+                    info->setHeadImage(image);
+                else info->setHeadImage("file:///" + QDir::homePath() + "/MChat/Settings/" + username +
+                                        "/headImage/" + image);
+            }
+            value = object.value("Signature");
+            if (value.isString())
+                info->setSignature(value.toString());
+            value = object.value("Birthday");
+            if (value.isString())
+                info->setBirthday(value.toString());
+            value = object.value("Level");
+            if (value.isDouble())
+                info->setLevel(value.toInt());
+            return info;
+        }
+    }
+
+    return nullptr;
+}

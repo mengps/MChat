@@ -24,7 +24,6 @@ QString Api::baseName(const QString &arg)
 QString Api::grayImage(const QString &src)
 {
     QImage image(QQmlFile::urlToLocalFileOrQrc(src));
-    qDebug() << src << image;
     if (!image.isNull())
     {
         int width = image.width();

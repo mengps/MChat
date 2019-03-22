@@ -75,13 +75,22 @@ void NetworkManager::updateInfomation()
     m_tcpManager->sendMessage(MT_USERINFO, MO_UPLOAD, SERVER_ID, data);
 }
 
+void NetworkManager::requestUserInfo(const QString &username)
+{
+    m_tcpManager->sendMessage(MT_SEARCH, MO_DOWNLOAD, SERVER_ID, username.toLocal8Bit());
+}
+
+void NetworkManager::requestAddFriend(const QString &username)
+{
+    m_tcpManager->sendMessage(MT_ADDFRIEND, MO_UPLOAD, username.toLatin1(), ADDFRIEND);
+}
+
 void NetworkManager::onLogined(bool ok)
 {
     if (ok)
     {
         qDebug() << "验证通过";
-        m_tcpManager->sendMessage(MT_USERINFO, MO_DOWNLOAD,
-                                  ChatManager::instance()->username().toLatin1(), USERINFO);
+        m_tcpManager->sendMessage(MT_USERINFO, MO_DOWNLOAD, SERVER_ID, USERINFO);
     }
     else
     {
@@ -135,6 +144,12 @@ void NetworkManager::disposeNewMessage(const QString &sender, msg_t type, const 
         info->setChatStatus(int(data.toInt()));
         break;
 
+    case MT_SEARCH:
+    {
+        FriendInfo *newInfo = qobject_cast<FriendInfo *>(m_jsonParser->jsonToInfo(data));
+        emit hasSearchResult(newInfo);
+        break;
+    }
     case MT_SHAKE:
         info->addShakeMessage(sender);
         emit hasNewShake(sender);
@@ -143,6 +158,10 @@ void NetworkManager::disposeNewMessage(const QString &sender, msg_t type, const 
     case MT_TEXT:
         info->addTextMessage(sender, QString::fromLocal8Bit(data));
         emit hasNewText(sender, QString::fromLocal8Bit(data));
+        break;
+
+    case MT_ADDFRIEND:
+        emit hasFriendRequest(sender);
         break;
 
     default:

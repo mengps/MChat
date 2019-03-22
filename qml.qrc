@@ -32,5 +32,7 @@
         <file>qml/MyWidgets/Status.qml</file>
         <file>qml/FlatWidgets/FlatRadioButton.qml</file>
         <file>qml/MyWidgets/MyTextArea.qml</file>
+        <file>qml/MainInterface/AddFriend.qml</file>
+        <file>qml/MainInterface/FriendRequest.qml</file>
     </qresource>
 </RCC>

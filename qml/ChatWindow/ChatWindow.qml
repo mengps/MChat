@@ -123,7 +123,7 @@ FramelessWindow
     {
         id: content
         color: "transparent"
-        glowColor: background.status == Image.Null ? "#12F2D6" : "#8812F2D6";
+        glowColor: background.status == Image.Null ? "#12F2D6" : "#AA12F2D6";
         radius: 6
         glowRadius: 5
         x: 30
