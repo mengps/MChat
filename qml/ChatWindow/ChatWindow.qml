@@ -123,7 +123,7 @@ FramelessWindow
     {
         id: content
         color: "transparent"
-        glowColor: background.status == Image.Null ? "#12F2D6" : "#AA12F2D6";
+        glowColor: background.status == Image.Null ? "#10D2A9" : "#6612F2D6";
         radius: 6
         glowRadius: 5
         x: 30
@@ -641,7 +641,9 @@ FramelessWindow
             focus: true
             anchors.top: toolBar.bottom
             anchors.left: parent.left
+            anchors.leftMargin: 4
             anchors.right: parent.right
+            anchors.rightMargin: 8
             anchors.bottom: close.top
             flickableDirection: Flickable.VerticalFlick
 
@@ -696,20 +698,6 @@ FramelessWindow
             anchors.rightMargin: 15
             anchors.bottom: close.bottom
 
-            MyToolTip
-            {
-                id: emptyTip
-                text: "消息不能为空！"
-                NumberAnimation on opacity
-                {
-                    id: emptyTipHide
-                    running: false
-                    from: 1
-                    to: 0
-                    duration: 1600
-                }
-            }
-
             onClicked:
             {
                 if (sendMessage.length == 0)
@@ -722,6 +710,20 @@ FramelessWindow
                     console.log(Api.toPlainText(sendMessage.textDocument))
                     chatMessage.appendMsg(chatManager.username, sendMessage.text);
                     sendMessage.cleanup();
+                }
+            }
+
+            MyToolTip
+            {
+                id: emptyTip
+                text: "消息不能为空！"
+                NumberAnimation on opacity
+                {
+                    id: emptyTipHide
+                    running: false
+                    from: 1
+                    to: 0
+                    duration: 1600
                 }
             }
         }

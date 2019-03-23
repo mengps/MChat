@@ -109,6 +109,13 @@ void ChatManager::setLoginStatus(Chat::LoginStatus arg)
     else if (arg == Chat::LoginFinished)
     {
         qDebug() << "登录完成";
+        QString path = QDir::homePath() + "/MChat/Settings/" + m_username;
+        if (!QFile::exists(path))   //为每一个帐号创建一个文件夹
+        {
+            QDir dir;
+            dir.mkpath(path);
+            dir.mkpath(path + "/headImage");
+        }
         loadMainInterface();
         QMetaObject::invokeMethod(m_systemTray, "createMessageTipWindow");
     }
@@ -124,7 +131,6 @@ Chat::ChatStatus ChatManager::chatStatus() const
 {
     return m_chatStatus;
 }
-
 
 void ChatManager::setChatStatus(Chat::ChatStatus arg)
 {
@@ -210,6 +216,14 @@ void ChatManager::setPassword(const QString &arg)
     }
 }
 
+void ChatManager::addFriendToGroup(const QString &group, ItemInfo *info)
+{
+    info->setParent(m_friendGroup);
+    m_friendList[info->username()] = info;
+    m_friendGroup->addFriendToGroup(group, info);
+    emit friendGroupsChanged();
+}
+
 ItemInfo* ChatManager::userInfo() const
 {
     return m_userInfo;
@@ -292,6 +306,11 @@ void ChatManager::appendRecentMessageID(const QString &username)
     }
 }
 
+bool ChatManager::isFriend(const QString &username)
+{
+    return m_friendList.contains(username);
+}
+
 void ChatManager::closeAllOpenedChat()
 {
     foreach (FramelessWindow *window, m_chatList)
@@ -311,14 +330,7 @@ ItemInfo* ChatManager::createFriendInfo(const QString &username)
 {
     if (m_friendList.contains(username))
         return m_friendList[username];
-    else
-    {
-        ItemInfo *info = new FriendInfo(this);
-        info->setUsername(username);
-        //设置一般的用户属性
-        m_friendList[username] = info;
-        return info;
-    }
+    else return nullptr;
 }
 
 void ChatManager::readSettings()
@@ -345,7 +357,7 @@ void ChatManager::readSettings()
         settings.beginGroup("MainSettings");
         m_mainInterface->setCoord(settings.value("Coord", m_mainInterface->coord()).toPoint());
         m_mainInterface->setWidth(settings.value("Width", m_mainInterface->width()).toInt());
-        m_mainInterface->setHeight(settings.value("Height", m_mainInterface->height()).toInt());//默认大小即为当前大小
+        m_mainInterface->setHeight(settings.value("Height", m_mainInterface->height()).toInt());
         m_mainInterface->setProperty("isDock", settings.value("IsDock", false).toBool());
         m_mainInterface->setProperty("dockState", settings.value("DockState", 0).toInt());
         settings.endGroup();
@@ -354,25 +366,20 @@ void ChatManager::readSettings()
 
 void ChatManager::writeSettings()
 {
-
     QString path = QDir::homePath() + "/MChat/Settings/" + m_username;
     QSettings settings(path + "/configura.ini", QSettings::IniFormat);
-
-    if (!QFile::exists(path))   //为每一个帐号创建一个文件夹
-    {
-        QDir dir;
-        dir.mkpath(path);
-    }
-
     settings.beginGroup("LoginSettings");
-    settings.setValue("HeadImage", m_headImage);
     settings.setValue("ChatStatus", m_chatStatus);
     settings.setValue("RememberPassword", m_rememberPassword);
     settings.setValue("AutoLogin", m_autoLogin);
     settings.endGroup();
 
     if (m_loginStatus == Chat::LoginFinished)
-    {
+    {        
+        settings.beginGroup("LoginSettings");
+        settings.setValue("HeadImage", m_userInfo->headImage());
+        settings.endGroup();
+
         settings.beginGroup("AccountInfo");
         settings.setValue("Username", m_username);
         if (m_rememberPassword)

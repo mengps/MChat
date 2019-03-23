@@ -62,7 +62,7 @@ class ChatManager : public QObject
     Q_PROPERTY(QString username READ username WRITE setUsername NOTIFY usernameChanged)
     Q_PROPERTY(QString password READ password WRITE setPassword NOTIFY passwordChanged)
     Q_PROPERTY(ItemInfo* userInfo READ userInfo CONSTANT)
-    Q_PROPERTY(QQmlListProperty<FriendModel> friendGroups READ friendGroups CONSTANT)
+    Q_PROPERTY(QQmlListProperty<FriendModel> friendGroups READ friendGroups NOTIFY friendGroupsChanged)
     Q_PROPERTY(QQmlListProperty<ItemInfo> recentMessageID READ recentMessageID NOTIFY recentMessageIDChanged)
 
 public:
@@ -94,15 +94,18 @@ public:
     QString password() const;
     void setPassword(const QString &arg);
 
+
     ItemInfo* userInfo() const;
     QQmlListProperty<FriendModel> friendGroups() const;
     QQmlListProperty<ItemInfo> recentMessageID() const;
+    void addFriendToGroup(const QString &group, ItemInfo *info);
 
     Q_INVOKABLE QStringList getLoginHistory();                              //获取登录历史
     Q_INVOKABLE FramelessWindow* addChatWindow(const QString &username);    //增加一个聊天窗口
     Q_INVOKABLE bool chatWindowIsOpenned(const QString &username);          //判断聊天窗口事是否已经打开
     Q_INVOKABLE void appendRecentMessageID(const QString &username);        //添加一个用户到最近消息列表
-    Q_INVOKABLE ItemInfo *createFriendInfo(const QString &username);      //创建/获取一个好友信息
+    Q_INVOKABLE bool isFriend(const QString &username);                    //判断是否为好友
+    Q_INVOKABLE ItemInfo *createFriendInfo(const QString &username);        //获取一个好友信息
 
     Q_INVOKABLE void show();                                    //显示界面
     Q_INVOKABLE void quit();                                    //退出程序
@@ -118,6 +121,7 @@ signals:
     void headImageChanged(const QString &arg);
     void usernameChanged(const QString &arg);
     void passwordChanged(const QString &arg);
+    void friendGroupsChanged();
     void recentMessageIDChanged();
 
 private slots:

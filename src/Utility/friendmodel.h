@@ -27,6 +27,7 @@ public:
 
     void setData(const QList<ItemInfo *> &data);
     QQmlListProperty<ItemInfo> friends();
+    void addFriend(ItemInfo *info);
 
     Q_INVOKABLE void removeAt(int index);
 
@@ -55,6 +56,7 @@ public:
 
     QQmlListProperty<FriendModel> friendGroups();
     void setData(const QList<FriendModel *> &data);
+    void addFriendToGroup(const QString &group, ItemInfo *info);
 
 signals:
     void friendGroupsChanged();

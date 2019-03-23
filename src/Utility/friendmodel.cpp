@@ -32,6 +32,11 @@ QQmlListProperty<ItemInfo> FriendModel::friends()
     return *m_proxy;
 }
 
+void FriendModel::addFriend(ItemInfo *info)
+{
+    m_friends.append(info);
+}
+
 int FriendModel::onlineNumber() const
 {
     return m_onlineNumber;
@@ -94,6 +99,24 @@ FriendGroup::~FriendGroup()
 void FriendGroup::setData(const QList<FriendModel *> &data)
 {
     m_friendGroups = data;
+}
+
+void FriendGroup::addFriendToGroup(const QString &group, ItemInfo *info)
+{
+    for (auto it : m_friendGroups)
+    {
+        if (it->group() == group)
+        {
+            it->addFriend(info);
+            emit friendGroupsChanged();
+            return;
+        }
+    }
+    //为新的分组
+    QList<ItemInfo *> list;
+    list.append(info);
+    FriendModel *model = new FriendModel(group, 1, list, this);
+    m_friendGroups.append(model);
 }
 
 QQmlListProperty<FriendModel> FriendGroup::friendGroups()

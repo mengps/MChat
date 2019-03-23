@@ -130,6 +130,7 @@ Item
     {
         id: listView
         anchors.fill: parent
+        anchors.margins: 8
         spacing: 18
         model: other.chatRecord.messageList
         delegate: delegate

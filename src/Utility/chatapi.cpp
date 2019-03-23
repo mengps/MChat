@@ -1,4 +1,5 @@
 #include "chatapi.h"
+#include "chatmanager.h"
 
 #include <QDir>
 #include <QImage>
@@ -21,7 +22,7 @@ QString Api::baseName(const QString &arg)
     return QFileInfo(arg).baseName();
 }
 
-QString Api::grayImage(const QString &src)
+QString Api::grayImage(const QString &src, const QString &name)
 {
     QImage image(QQmlFile::urlToLocalFileOrQrc(src));
     if (!image.isNull())
@@ -40,7 +41,8 @@ QString Api::grayImage(const QString &src)
             }
         }
         QFileInfo info(QQmlFile::urlToLocalFileOrQrc(src));
-        QString dstPath = info.absolutePath() + "/gray_" + info.fileName();
+        QString dstPath = QDir::homePath() + "/MChat/Settings/" +
+                ChatManager::instance()->username() + "/headImage/gray_" + name + info.fileName();
         image.save(dstPath);
 
         return "file:///" + dstPath;

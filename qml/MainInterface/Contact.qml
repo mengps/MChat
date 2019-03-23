@@ -31,7 +31,7 @@ Item
                anchors.left: parent.left
                anchors.leftMargin: 10
                anchors.verticalCenter: parent.verticalCenter
-               source: chatStatus === Chat.Online ? headImage : Api.grayImage(headImage);
+               source: chatStatus === Chat.Online ? headImage : Api.grayImage(headImage, username);
            }
 
            Text

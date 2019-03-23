@@ -1,4 +1,4 @@
-import QtQuick 2.12
+﻿import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Window 2.12
 import an.window 1.0
@@ -120,7 +120,7 @@ FramelessWindow
        return obj;
     }
 
-    function createFriendRequestPage(username)
+    function createFriendRequestPage()
     {
         var component = Qt.createComponent("qrc:/qml/MainInterface/FriendRequest.qml", mainInterface);
         if (component.status === Component.Ready)
@@ -145,6 +145,19 @@ FramelessWindow
         {
             var window = chatManager.addChatWindow(sender);
             window.shakeWindow();
+        }
+        onHasFriendRequest:
+        {
+            if (friendRequestPage == undefined)
+            {
+                friendRequestPage = createFriendRequestPage();
+                friendRequestPage.addFriendRequest(username);
+            }
+            else
+            {
+                friendRequestPage.addFriendRequest(username);
+                friendRequestPage.show();
+            }
         }
     }
 
@@ -247,7 +260,7 @@ FramelessWindow
         anchors.centerIn: parent
         width: mainInterface.width
         height: mainInterface.height
-        glowColor: background.status == Image.Null ? "#12F2D6" : "#AA12F2D6";
+        glowColor: background.status == Image.Null ? "#10D2A9" : "#6612F2D6";
         radius: 6
         glowRadius: 6
         antialiasing: true

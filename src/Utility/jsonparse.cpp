@@ -50,17 +50,23 @@ ItemInfo* JsonParser::userInfo()
         value = object.value("Gender");
         if (value.isString())
             info->setGender(value.toString());
-        value = object.value("Background");
-        if (value.isString())
-            info->setBackground(value.toString());
         value = object.value("HeadImage");
         if (value.isString())
         {
             QString image = value.toString();
             if (image.left(3) == "qrc")
                 info->setHeadImage(image);
-            else info->setHeadImage("file:///" + QDir::homePath() + "/MChat/Settings/" + username +
-                                    "/headImage/" + image);
+            else info->setHeadImage("file:///" + QDir::homePath() + "/MChat/Settings/" +
+                                    username + "/headImage/" + image);
+        }
+        value = object.value("Background");
+        if (value.isString())
+        {
+            QString image = value.toString();
+            if (image.left(3) == "qrc" || image.isEmpty())
+                info->setBackground(image);
+            else info->setBackground("file:///" + QDir::homePath() + "/MChat/Settings/" +
+                                     username + "/" + image);
         }
         value = object.value("Signature");
         if (value.isString())
@@ -116,8 +122,17 @@ void JsonParser::createFriend(FriendGroup *friendGroup, QMap<QString, ItemInfo *
                             QString image = value.toString();
                             if (image.left(3) == "qrc")
                                 info->setHeadImage(image);
-                            else info->setHeadImage("file:///" + QDir::homePath() + "/MChat/Settings/" + username +
-                                                    "/headImage/" + image);
+                            else info->setHeadImage("file:///" + QDir::homePath() + "/MChat/Settings/" +
+                                                    username + "/headImage/" + image);
+                        }
+                        value = object.value("Background");
+                        if (value.isString())
+                        {
+                            QString image = value.toString();
+                            if (image.left(3) == "qrc" || image.isEmpty())
+                                info->setBackground(image);
+                            else info->setBackground("file:///" + QDir::homePath() + "/MChat/Settings/" +
+                                                    username + "/" + image);
                         }
                         value = object.value("Signature");
                         if (value.isString())
@@ -208,8 +223,8 @@ ItemInfo* JsonParser::jsonToInfo(const QByteArray &data)
                 QString image = value.toString();
                 if (image.left(3) == "qrc")
                     info->setHeadImage(image);
-                else info->setHeadImage("file:///" + QDir::homePath() + "/MChat/Settings/" + username +
-                                        "/headImage/" + image);
+                else info->setHeadImage("file:///" + QDir::homePath() + "/MChat/Settings/" +
+                                        ChatManager::instance()->username() + "/headImage/" + image);
             }
             value = object.value("Signature");
             if (value.isString())

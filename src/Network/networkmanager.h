@@ -53,6 +53,10 @@ public:
     Q_INVOKABLE void requestUserInfo(const QString &username);
     //发送添加好友的请求
     Q_INVOKABLE void requestAddFriend(const QString &username);
+    //发送接受好友请求
+    Q_INVOKABLE void acceptFriendRequest(const QString &username);
+    //发送拒绝好友请求
+    Q_INVOKABLE void rejectFriendRequest(const QString &username);
     //发送状态改变的消息
     Q_INVOKABLE void sendStateChange(Chat::ChatStatus status);
     //发送聊天的消息

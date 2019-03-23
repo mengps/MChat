@@ -1,5 +1,4 @@
-﻿#include "chatmanager.h"
-#include "chatmessage.h"
+﻿#include "chatmessage.h"
 #include "databasemanager.h"
 #include "friendmodel.h"
 #include "iteminfo.h"
@@ -85,6 +84,26 @@ void NetworkManager::requestAddFriend(const QString &username)
     m_tcpManager->sendMessage(MT_ADDFRIEND, MO_UPLOAD, username.toLatin1(), ADDFRIEND);
 }
 
+void NetworkManager::acceptFriendRequest(const QString &username)
+{
+    m_tcpManager->sendMessage(MT_ADDFRIEND, MO_UPLOAD, username.toLatin1(), ADD_SUCCESS);
+}
+
+void NetworkManager::rejectFriendRequest(const QString &username)
+{
+    m_tcpManager->sendMessage(MT_ADDFRIEND, MO_UPLOAD, username.toLatin1(), ADD_FAILURE);
+}
+
+void NetworkManager::sendStateChange(Chat::ChatStatus status)
+{
+    m_tcpManager->sendMessage(MT_STATECHANGE, MO_UPLOAD, SERVER_ID, QByteArray::number(status));
+}
+
+void NetworkManager::sendChatMessage(const QString &receiver, ChatMessage *chatMessage)
+{
+    m_tcpManager->sendChatMessage(receiver.toLatin1(), chatMessage);
+}
+
 void NetworkManager::onLogined(bool ok)
 {
     if (ok)
@@ -125,16 +144,6 @@ void NetworkManager::cancelLogin()
     m_tcpManager->abortConnection();
 }
 
-void NetworkManager::sendStateChange(Chat::ChatStatus status)
-{
-    m_tcpManager->sendMessage(MT_STATECHANGE, MO_UPLOAD, SERVER_ID, QByteArray::number(status));
-}
-
-void NetworkManager::sendChatMessage(const QString &receiver, ChatMessage *chatMessage)
-{
-    m_tcpManager->sendChatMessage(receiver.toLatin1(), chatMessage);
-}
-
 void NetworkManager::disposeNewMessage(const QString &sender, msg_t type, const QByteArray &data)
 {
     FriendInfo *info = qobject_cast<FriendInfo *>(ChatManager::instance()->createFriendInfo(sender));
@@ -161,8 +170,21 @@ void NetworkManager::disposeNewMessage(const QString &sender, msg_t type, const 
         break;
 
     case MT_ADDFRIEND:
-        emit hasFriendRequest(sender);
+    {
+        QString addStr = QString::fromLocal8Bit(data);
+        if (addStr == ADDFRIEND)
+            emit hasFriendRequest(sender);
+        else if (addStr == ADD_FAILURE)
+        {
+
+        }
+        else
+        {
+            FriendInfo *newInfo = qobject_cast<FriendInfo *>(m_jsonParser->jsonToInfo(data));
+            ChatManager::instance()->addFriendToGroup("我的好友", newInfo);
+        }
         break;
+    }
 
     default:
         break;

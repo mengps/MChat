@@ -52,13 +52,13 @@ FramelessWindow
         width: root.width
         height: root.height
         color: "transparent"
-        glowColor: background.status === Image.Null ? "#12F2D6" : "#AA12F2D6";
+        glowColor: background.status === Image.Null ? "#10D2A9" : "#6612F2D6";
         radius: 6
         glowRadius: 5
         antialiasing: true
         Keys.onPressed:
             if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) searchButton.clicked();
-        Keys.onEscapePressed: root.close()
+        Keys.onEscapePressed: root.close();
 
         MoveMouseArea
         {
@@ -108,7 +108,7 @@ FramelessWindow
 
                 onClicked:
                 {
-                    root.hide();
+                    root.showMinimized();
                 }
                 Component.onCompleted:
                 {
@@ -263,6 +263,17 @@ FramelessWindow
                     text: "添加好友"
                     widthMargin: 15
                     hoverColor: "#CCC"
+                    onClicked:
+                    {
+                        if (friendInfo.info.username.length != 0)
+                        {
+                            //不能添加自己和已有的好友
+                            if (chatManager.userInfo.username !== friendInfo.info.username &&
+                                    !chatManager.isFriend(friendInfo.info.username))
+                                networkManager.requestAddFriend(friendInfo.info.username);
+                        }
+                        else console.log("添加不存在的用户");
+                    }
                 }
             }
         }
