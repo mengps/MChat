@@ -5,7 +5,6 @@
         <file>qml/LoginInterface/MyParticle.qml</file>
         <file>qml/MyWidgets/CusButton.qml</file>
         <file>qml/MyWidgets/HeadStatus.qml</file>
-        <file>qml/MyWidgets/MyCheckButton.qml</file>
         <file>qml/MainInterface/Contact.qml</file>
         <file>qml/MainInterface/Introduction.qml</file>
         <file>qml/MainInterface/MainInterface.qml</file>
