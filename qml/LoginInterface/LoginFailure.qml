@@ -5,6 +5,7 @@ Item
 {
     id: root
     visible: false
+    clip: true
     width: loginInterface.width
     height: 0
     anchors.centerIn: parent
@@ -53,7 +54,7 @@ Item
     {
         anchors.fill: parent
         radius: 8
-        color: "#F9F4D5"
+        color: "#C4E7F8"
 
         Text
         {
@@ -71,23 +72,13 @@ Item
 
     MyButton
     {
-        id: forgetButton
-        hoverColor: "#D0D0D0"
-        anchors.bottom: cancelButton.bottom
-        anchors.right:cancelButton.left
-        anchors.rightMargin: 15
-        text: qsTr("找回密码")
-    }
-
-    MyButton
-    {
         id: cancelButton
         hoverColor: "#D0D0D0"
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 10
         anchors.right: parent.right
         anchors.rightMargin: 15
-        text: qsTr("取消")
+        text: qsTr("  取消  ")
         onReleased:
         {
             cancelLogin.clicked();

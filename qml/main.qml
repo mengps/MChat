@@ -12,8 +12,8 @@ import "MyWidgets"
 FramelessWindow
 {
     id: loginInterface
-    width: 510
-    height: 400
+    width: 450
+    height: 375
     actualWidth: width + 100
     actualHeight: height + 100
     x: (Screen.desktopAvailableWidth - actualWidth) / 2
@@ -139,67 +139,10 @@ FramelessWindow
         Keys.onPressed:
             if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) logging();
 
-        LoginFailure    //登录失败页面，在最高层，开始不可见
-        {
-            id: loginFailure
-            z: 10
-        }
-
-        GlowCircularImage
-        {
-            id: background
-            anchors.fill: parent
-            glowColor: "#C4D6FA"
-            radius: content.radius
-            glowRadius: 12
-            source: "qrc:/image/Background/timg.jpg"
-            antialiasing: true
-            opacity: 0.9
-        }
-
-        MagicPool
-        {
-            id: magicPool
-            width: loginInterface.actualWidth
-            height: loginInterface.actualHeight
-
-            function randomMove()
-            {
-                var r_x = Math.random() * parent.width;
-                var r_y = Math.random() * parent.height;
-                magicPool.moveFish(r_x, r_y, false);
-            }
-
-            Timer
-            {
-                interval: 1500
-                repeat: true
-                running: true
-                onTriggered:
-                {
-                    if (Math.random() > 0.6 && !magicPool.moving) magicPool.randomMove();
-                }
-            }
-
-            Component.onCompleted: randomMove();
-        }
-
-        MoveMouseArea
-        {
-            anchors.fill: parent
-            focus: true
-            target: loginInterface
-
-            onClicked:
-            {
-                focus = true;
-                magicPool.moveFish(mouse.x, mouse.y, true)
-            }
-        }
-
         Rectangle
         {
             id: modeSelect
+            z: cusButtons.z
             focus: false
             width: 100
             height: 64
@@ -274,6 +217,148 @@ FramelessWindow
             }
         }
 
+        Row
+        {
+            id: cusButtons
+            z: 11
+            width: 102
+            height: 40
+            anchors.right: parent.right
+            anchors.rightMargin: 6
+            anchors.top: parent.top
+            anchors.topMargin: 6
+
+            CusButton
+            {
+                id: menuButton
+                width: 32
+                height: 32
+
+                Component.onCompleted:
+                {
+                    buttonNormalImage = "qrc:/image/ButtonImage/menu_normal.png";
+                    buttonPressedImage = "qrc:/image/ButtonImage/menu_down.png";
+                    buttonHoverImage = "qrc:/image/ButtonImage/menu_hover.png";
+                }
+                onClicked:
+                {
+                    modeSelect.focus = !modeSelect.focus;
+                }
+
+                MyToolTip
+                {
+                    visible: menuButton.hovered
+                    text: "打开模式菜单"
+                }
+            }
+
+            CusButton
+            {
+                id: minButton
+                width: 32
+                height: 32
+
+                onClicked: loginInterface.hide();
+                Component.onCompleted:
+                {
+                    buttonNormalImage = "qrc:/image/ButtonImage/min_normal.png";
+                    buttonPressedImage = "qrc:/image/ButtonImage/min_down.png";
+                    buttonHoverImage = "qrc:/image/ButtonImage/min_hover.png";
+                }
+
+                MyToolTip
+                {
+                    visible: minButton.hovered
+                    text: "最小化窗口"
+                }
+            }
+
+            CusButton
+            {
+                id: closeButton
+                width: 32
+                height: 32
+
+                onClicked: chatManager.quit();
+                Component.onCompleted:
+                {
+                    buttonNormalImage = "qrc:/image/ButtonImage/close_normal.png";
+                    buttonPressedImage = "qrc:/image/ButtonImage/close_down.png";
+                    buttonHoverImage = "qrc:/image/ButtonImage/close_hover.png";
+                }
+
+                MyToolTip
+                {
+                    visible: closeButton.hovered
+                    text: "关闭窗口"
+                }
+            }
+        }
+
+        LoginFailure    //登录失败页面，在最高层，开始不可见
+        {
+            id: loginFailure
+            z: 10
+        }
+
+        RegisterPage
+        {
+            id: registerPage
+            z: 5
+        }
+
+        GlowCircularImage
+        {
+            id: background
+            anchors.fill: parent
+            glowColor: "#C4D6FA"
+            radius: content.radius
+            glowRadius: 12
+            source: "qrc:/image/Background/timg.jpg"
+            antialiasing: true
+            opacity: 0.9
+        }
+
+        MagicPool
+        {
+            id: magicPool
+            width: loginInterface.actualWidth
+            height: loginInterface.actualHeight
+
+            function randomMove()
+            {
+                var r_x = Math.random() * parent.width;
+                var r_y = Math.random() * parent.height;
+                magicPool.moveFish(r_x, r_y, false);
+            }
+
+            Timer
+            {
+                interval: 1500
+                repeat: true
+                running: true
+                onTriggered:
+                {
+                    if (Math.random() > 0.6 && !magicPool.moving) magicPool.randomMove();
+                }
+            }
+
+            Component.onCompleted: randomMove();
+        }
+
+        MoveMouseArea
+        {
+            anchors.fill: parent
+            focus: true
+            target: loginInterface
+
+            onClicked:
+            {
+                focus = true;
+                magicPool.moveFish(mouse.x, mouse.y, true)
+            }
+        }
+
         Rectangle
         {
             id: topRect
@@ -320,83 +405,6 @@ FramelessWindow
                 styleColor: "red"
                 transform: rotation
             }
-
-            Row
-            {
-                id: cusButtons
-                width: 102
-                height: 40
-                anchors.right: parent.right
-                anchors.rightMargin: 6
-                anchors.top: parent.top
-                anchors.topMargin: 6
-
-                CusButton
-                {
-                    id: menuButton
-                    width: 32
-                    height: 32
-
-                    Component.onCompleted:
-                    {
-                        buttonNormalImage = "qrc:/image/ButtonImage/menu_normal.png";
-                        buttonPressedImage = "qrc:/image/ButtonImage/menu_down.png";
-                        buttonHoverImage = "qrc:/image/ButtonImage/menu_hover.png";
-                    }
-                    onClicked:
-                    {
-                        modeSelect.focus = !modeSelect.focus;
-                    }
-
-                    MyToolTip
-                    {
-                        visible: menuButton.hovered
-                        text: "打开模式菜单"
-                    }
-                }
-
-                CusButton
-                {
-                    id: minButton
-                    width: 32
-                    height: 32
-
-                    onClicked: loginInterface.hide();
-                    Component.onCompleted:
-                    {
-                        buttonNormalImage = "qrc:/image/ButtonImage/min_normal.png";
-                        buttonPressedImage = "qrc:/image/ButtonImage/min_down.png";
-                        buttonHoverImage = "qrc:/image/ButtonImage/min_hover.png";
-                    }
-
-                    MyToolTip
-                    {
-                        visible: minButton.hovered
-                        text: "最小化窗口"
-                    }
-                }
-
-                CusButton
-                {
-                    id: closeButton
-                    width: 32
-                    height: 32
-
-                    onClicked: chatManager.quit();
-                    Component.onCompleted:
-                    {
-                        buttonNormalImage = "qrc:/image/ButtonImage/close_normal.png";
-                        buttonPressedImage = "qrc:/image/ButtonImage/close_down.png";
-                        buttonHoverImage = "qrc:/image/ButtonImage/close_hover.png";
-                    }
-
-                    MyToolTip
-                    {
-                        visible: closeButton.hovered
-                        text: "关闭窗口"
-                    }
-                }
-            }
         }
 
         Rectangle
@@ -404,7 +412,7 @@ FramelessWindow
             id: clientInput
             radius: content.radius
             width: parent.width
-            height: 290
+            height: 270
             z: 0
             anchors.bottom: parent.bottom
             anchors.horizontalCenter: topRect.horizontalCenter
@@ -591,7 +599,7 @@ FramelessWindow
                         hovered = true;
                     }
                     onExited: hovered = false;
-                    //onClicked: Qt.openUrlExternally("https://");
+                    onClicked: registerPage.show();
 
                     Text
                     {
@@ -713,20 +721,20 @@ FramelessWindow
                 }
             }
 
-            MyCheckButton
+            FlatRadioButton
             {
                 id: remember
                 width: 80
-                height: 14
-                rectWidth: 14
-                rectHeight: 14
-                color: Qt.lighter("#333")
+                height: 20
+                hoverColor: "transparent"
+                textColor: radioColor
+                font.family: "微软雅黑"
+                font.pointSize: 10
                 text: qsTr("记住密码")
                 checked: chatManager.rememberPassword
                 anchors.top: passwordEditor.bottom
                 anchors.topMargin: 15
                 anchors.left: passwordEditor.left
-                anchors.leftMargin: 22
                 onCheckedChanged:
                 {
                     if (checked && passwordEditor.password === "")
@@ -740,20 +748,20 @@ FramelessWindow
                 }
             }
 
-            MyCheckButton
+            FlatRadioButton
             {
                 id: autoLogin
                 width: 80
-                height: 14
-                rectWidth: 14
-                rectHeight: 14
-                color: Qt.lighter("#333")
+                height: 20
+                hoverColor: "transparent"
+                textColor: radioColor
+                font.family: "微软雅黑"
+                font.pointSize: 10
                 text: qsTr("自动登录")
                 checked: chatManager.autoLogin
                 anchors.top: passwordEditor.bottom
                 anchors.topMargin: 15
-                anchors.left: remember.right
-                anchors.leftMargin: 14
+                anchors.right: passwordEditor.right
 
                 MyToolTip
                 {
@@ -768,7 +776,7 @@ FramelessWindow
                 width: 195
                 height: 30
                 anchors.bottom: clientInput.bottom
-                anchors.bottomMargin: 20
+                anchors.bottomMargin: 18
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 GlowRectangle
