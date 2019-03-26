@@ -30,18 +30,21 @@ signals:
     void chatMessageSent(const QString &username, ChatMessage *chatMessage);
     //有新消息时发出
     void hasNewMessage(const QString &sender, msg_t type, const QByteArray &data);
+
     //建立一个新的连接/重新连接
     void requestNewConnection();
     //开始心跳
     void startHeartbeat();
+    //校检用户信息
+    void checkLoginInfo();
     //用于发送聊天消息的
-    void sendChatMessage(const QByteArray &receiver, ChatMessage *chatMessage);
+    void sendChatMessage(msg_t type, const QByteArray &receiver, ChatMessage *chatMessage);
     void sendMessage(msg_t type, msg_option_t option, const QByteArray &receiver, const QByteArray &data);
 
 private slots:
     void requestNewConnectionSlot();
     void startHeartbeatSlot();
-    void sendChatMessageSlot(const QByteArray &receiver, ChatMessage *chatMessage);
+    void sendChatMessageSlot(msg_t type, const QByteArray &receiver, ChatMessage *chatMessage);
     void sendMessageSlot(msg_t type, msg_option_t option, const QByteArray &receiver, const QByteArray &data);
 
     void continueWrite(qint64 sentSize);
@@ -50,7 +53,7 @@ private slots:
     void onStateChanged(QAbstractSocket::SocketState state);
 
 private:
-    void checkLoginInfo();
+    void checkLoginInfoSlot();
     void processNextSendMessage();
     void processRecvMessage();
 

@@ -45,10 +45,14 @@ public:
     void checkLoginInfo();
     void createFriend(FriendGroup *FriendGroup, QMap<QString, ItemInfo *> *friendList);
 
+    //用于连接服务器
+    Q_INVOKABLE void connectServer();
     //用于取消登陆(终止连接)
     Q_INVOKABLE void cancelLogin();
     //用于更新用户信息
     Q_INVOKABLE void updateInfomation();
+    //用于注册新账户
+    Q_INVOKABLE void registerUser(const QString &json);
     //发送获取指定用户信息
     Q_INVOKABLE void requestUserInfo(const QString &username);
     //发送添加好友的请求
@@ -60,12 +64,13 @@ public:
     //发送状态改变的消息
     Q_INVOKABLE void sendStateChange(Chat::ChatStatus status);
     //发送聊天的消息
-    Q_INVOKABLE void sendChatMessage(const QString &receiver, ChatMessage *chatMessage);
+    Q_INVOKABLE void sendChatMessage(msg_t type, const QString &receiver, ChatMessage *chatMessage);
 
 signals:
     void modeChanged();
     void loginError(const QString &error);
     void loginFinshed(bool ok);
+    void hasRegister(const QString &result);
     void hasSearchResult(FriendInfo *info);
     void hasFriendRequest(const QString &username);
     void hasNewShake(const QString &sender);

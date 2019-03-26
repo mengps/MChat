@@ -21,8 +21,8 @@ ChatManager* ChatManager::instance()
 
 ChatManager::ChatManager(QObject *parent)
     : QObject(parent)
-    , m_username("843261040")
-    , m_password("00000000000")
+    , m_username("")
+    , m_password("")
     , m_rememberPassword(false)
     , m_autoLogin(false)
 {
@@ -57,7 +57,7 @@ bool ChatManager::loadLoginInterface()
         }
 
         //给应用一个全局的托盘
-        QQmlComponent component1(m_qmlEngine, QUrl("qrc:/qml/MyWidgets/SystemTray.qml"));
+        QQmlComponent component1(m_qmlEngine, QUrl("qrc:/qml/MyWidgets/SystemTray.qml"), this);
         QObject *object1 = component1.create();
         m_systemTray = qobject_cast<SystemTrayIcon *>(object1);
         m_qmlEngine->rootContext()->setContextProperty("systemTray", m_systemTray);
@@ -340,7 +340,7 @@ void ChatManager::readSettings()
     if (m_loginStatus != Chat::LoginFinished)
     {
         settings.beginGroup("LoginSettings");
-        setChatStatus(static_cast<Chat::ChatStatus>(settings.value("ChatStatus").toInt()));
+        setChatStatus(Chat::ChatStatus(settings.value("ChatStatus").toInt()));
         setRememberPassword(settings.value("RememberPassword").toBool());
         setAutoLogin(settings.value("AutoLogin").toBool());
         setHeadImage(settings.value("HeadImage").toString());

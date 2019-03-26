@@ -18,6 +18,15 @@ Item
         showAnimation.restart();
     }
 
+    Connections
+    {
+        target: networkManager
+        onHasRegister:
+        {
+            registerButton.showEmptyTip(result);
+        }
+    }
+
     NumberAnimation
     {
         id: showAnimation
@@ -252,7 +261,7 @@ Item
 
                 FlatInput
                 {
-                    id: dateField
+                    id: dayField
                     width: 35
                     height: parent.height
                     anchors.left: monthField.right
@@ -352,6 +361,7 @@ Item
                 id: registerButton
                 hoverColor: "#D0D0D0"
                 text: qsTr("  注册  ")
+                property date currentDate: new Date();
 
                 function showEmptyTip(arg)
                 {
@@ -384,7 +394,28 @@ Item
                     }
                     else
                     {
-                        console.log("开始注册")
+                        var date;
+                        if (yearField.text.length < 4 ||
+                            monthField.text.length < 2 ||
+                            dayField.text.length < 2)
+                        {
+                            date = currentDate.toLocaleDateString(Qt.locale(), "yyyy-MM-dd");
+                        }
+                        else date = yearField.text + "-" + monthField.text + "-"  + dayField.text;
+
+                        var row = {
+                            Username   : usernameField.text,
+                            Password   : passwordField.text,
+                            Nickname   : nicknameField.text,
+                            HeadImage  : "qrc:/image/winIcon.png",
+                            Background : "qrc:/image/Background/7.jpg",
+                            Gender     : genderComboBox.model[genderComboBox.index],
+                            Birthday   : date,
+                            Signature  : signatureInput.text,
+                            Level      : 1
+                        };
+                        var str = JSON.stringify(row);
+                        networkManager.registerUser(str);
                     }
                 }
 

@@ -213,28 +213,33 @@ FramelessWindow
             if(pressed)
             {
                 mainInterface.offsetPoint = Qt.point(mouse.x - mainInterface.startPoint.x, mouse.y - mainInterface.startPoint.y);
-                mainInterface.x = mainInterface.x + mainInterface.offsetPoint.x;
-                mainInterface.y = mainInterface.y + mainInterface.offsetPoint.y;
+                var nextX = mainInterface.x + mainInterface.offsetPoint.x;
+                var nextY = mainInterface.y + mainInterface.offsetPoint.y;
 
-                if (mainInterface.y <= -10)     //顶端停靠
+                if (nextY <= -10)     //顶端停靠
                 {
                     isDock = true;
                     dockState = Chat.TopDock;
                     mainInterface.y = -10;
                 }
-                else if(mainInterface.x <= -10)     //左端停靠
+                else if(nextX <= -10)     //左端停靠
                 {
                     isDock = true;
                     dockState = Chat.LeftDock;
                     mainInterface.x = -10;
                 }
-                else if(mainInterface.x >= (Screen.desktopAvailableWidth - mainInterface.width - 10))   //右端停靠
+                else if(nextX >= (Screen.desktopAvailableWidth - mainInterface.width - 10))   //右端停靠
                 {
                     isDock = true;
                     dockState = Chat.RightDock;
                     mainInterface.x = Screen.desktopAvailableWidth - mainInterface.width - 10;
                 }
-                else isDock = false;
+                else
+                {
+                    mainInterface.x = nextX;
+                    mainInterface.y = nextY;
+                    isDock = false;
+                }
             }
         }
         onReleased: cursorShape = Qt.ArrowCursor;
@@ -260,7 +265,7 @@ FramelessWindow
         anchors.centerIn: parent
         width: mainInterface.width
         height: mainInterface.height
-        glowColor: background.status == Image.Null ? "#10D2A9" : "#6612F2D6";
+        glowColor: background.status == Image.Null ? "#C4E7F8" : "#66C4E7F8";
         radius: 6
         glowRadius: 6
         antialiasing: true
@@ -294,28 +299,11 @@ FramelessWindow
         Row
         {
             id: controlButtons
-            width: 102
+            width: 68
             height: 40
             anchors.right: parent.right
             anchors.top: parent.top
             anchors.topMargin: 4
-
-            CusButton
-            {
-                id: menuButton
-                width: 32
-                height: 32
-
-                onClicked:
-                {
-                }
-                Component.onCompleted:
-                {
-                    buttonNormalImage = "qrc:/image/ButtonImage/menu_normal.png";
-                    buttonPressedImage = "qrc:/image/ButtonImage/menu_down.png";
-                    buttonHoverImage = "qrc:/image/ButtonImage/menu_hover.png";
-                }
-            }
 
             CusButton
             {
@@ -332,6 +320,12 @@ FramelessWindow
                     buttonNormalImage = "qrc:/image/ButtonImage/min_normal.png";
                     buttonPressedImage = "qrc:/image/ButtonImage/min_down.png";
                     buttonHoverImage = "qrc:/image/ButtonImage/min_hover.png";
+                }
+
+                MyToolTip
+                {
+                    visible: parent.hovered
+                    text: "最小化"
                 }
             }
 
@@ -350,6 +344,12 @@ FramelessWindow
                     buttonNormalImage = "qrc:/image/ButtonImage/close_normal.png";
                     buttonPressedImage = "qrc:/image/ButtonImage/close_down.png";
                     buttonHoverImage = "qrc:/image/ButtonImage/close_hover.png";
+                }
+
+                MyToolTip
+                {
+                    visible: parent.hovered
+                    text: "关闭窗口"
                 }
             }
         }
@@ -512,7 +512,6 @@ FramelessWindow
             anchors.horizontalCenter: parent.horizontalCenter
             opacity: 0.55
             focusPolicy: Qt.ClickFocus
-            currentIndex: swipeView.currentIndex
 
             TabButton
             {

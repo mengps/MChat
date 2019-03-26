@@ -362,6 +362,7 @@ FramelessWindow
         Rectangle
         {
             id: topRect
+            clip: true
             width: parent.width
             height: 120
             color: "transparent"
@@ -410,6 +411,7 @@ FramelessWindow
         Rectangle
         {
             id: clientInput
+            clip: true
             radius: content.radius
             width: parent.width
             height: 270
@@ -609,6 +611,12 @@ FramelessWindow
                         font.family: "微软雅黑"
                         text: qsTr("注册账户")
                     }
+
+                    MyToolTip
+                    {
+                        visible: parent.hovered
+                        text: "注册新的账户"
+                    }
                 }
             }
 
@@ -635,11 +643,12 @@ FramelessWindow
                     selectByMouse: true
                     hoverEnabled: true
                     rightPadding : 30
-
+                    text: chatManager.password
                     validator: RegExpValidator
                     {
                         regExp: new RegExp("[a-zA-z0-9]*");
                     }
+
                     Item
                     {
                         id: keyboardRect
@@ -695,28 +704,34 @@ FramelessWindow
                 anchors.left: passwordEditor.right
                 anchors.leftMargin: 12
                 anchors.verticalCenter: passwordEditor.verticalCenter
-                property bool hovered: false
 
                 MouseArea
                 {
                     anchors.fill: parent
                     hoverEnabled: true
+                    property bool hovered: false
 
                     onEntered:
                     {
                         cursorShape = Qt.PointingHandCursor;
-                        parent.hovered = true;
+                        hovered = true;
                     }
-                    onExited: parent.hovered = false;
+                    onExited: hovered = false;
                     //onClicked: Qt.openUrlExternally("https://");
 
                     Text
                     {
-                        color: forget.hovered ? Qt.lighter("#007DA7") : "#007DA7"
+                        color: parent.hovered ? Qt.lighter("#007DA7") : "#007DA7"
                         anchors.centerIn: parent
                         font.pointSize: 10
                         font.family: "微软雅黑"
                         text: qsTr("忘记密码")
+                    }
+
+                    MyToolTip
+                    {
+                        visible: parent.hovered
+                        text: "找回密码"
                     }
                 }
             }
@@ -726,6 +741,7 @@ FramelessWindow
                 id: remember
                 width: 80
                 height: 20
+                radioColor: "gray"
                 hoverColor: "transparent"
                 textColor: radioColor
                 font.family: "微软雅黑"
@@ -735,11 +751,6 @@ FramelessWindow
                 anchors.top: passwordEditor.bottom
                 anchors.topMargin: 15
                 anchors.left: passwordEditor.left
-                onCheckedChanged:
-                {
-                    if (checked && passwordEditor.password === "")
-                        passwordEditor.password = chatManager.password;
-                }
 
                 MyToolTip
                 {
@@ -753,6 +764,7 @@ FramelessWindow
                 id: autoLogin
                 width: 80
                 height: 20
+                radioColor: "gray"
                 hoverColor: "transparent"
                 textColor: radioColor
                 font.family: "微软雅黑"

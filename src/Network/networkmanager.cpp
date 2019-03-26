@@ -52,14 +52,14 @@ void NetworkManager::setMode(NetworkMode::Mode mode)
     }
 }
 
-void NetworkManager::checkLoginInfo()
-{
-    m_tcpManager->requestNewConnection();
-}
-
-ItemInfo *NetworkManager::getUserInfo()
+ItemInfo* NetworkManager::getUserInfo()
 {
     return m_jsonParser->userInfo();
+}
+
+void NetworkManager::checkLoginInfo()
+{
+    m_tcpManager->checkLoginInfo();
 }
 
 void NetworkManager::createFriend(FriendGroup *FriendGroup, QMap<QString, ItemInfo *> *friendList)
@@ -67,11 +67,27 @@ void NetworkManager::createFriend(FriendGroup *FriendGroup, QMap<QString, ItemIn
     return m_jsonParser->createFriend(FriendGroup, friendList);
 }
 
+void NetworkManager::connectServer()
+{
+    m_tcpManager->requestNewConnection();
+}
+
+void NetworkManager::cancelLogin()
+{
+    m_tcpManager->abortConnection();
+}
+
 void NetworkManager::updateInfomation()
 {
     FriendInfo *userInfo = qobject_cast<FriendInfo *>(ChatManager::instance()->userInfo());
     QByteArray data = m_jsonParser->infoToJson(userInfo);
     m_tcpManager->sendMessage(MT_USERINFO, MO_UPLOAD, SERVER_ID, data);
+}
+
+void NetworkManager::registerUser(const QString &json)
+{
+    m_tcpManager->requestNewConnection();
+    m_tcpManager->sendMessage(MT_REGISTER, MO_UPLOAD, SERVER_ID, json.toUtf8());
 }
 
 void NetworkManager::requestUserInfo(const QString &username)
@@ -99,9 +115,9 @@ void NetworkManager::sendStateChange(Chat::ChatStatus status)
     m_tcpManager->sendMessage(MT_STATECHANGE, MO_UPLOAD, SERVER_ID, QByteArray::number(status));
 }
 
-void NetworkManager::sendChatMessage(const QString &receiver, ChatMessage *chatMessage)
+void NetworkManager::sendChatMessage(msg_t type, const QString &receiver, ChatMessage *chatMessage)
 {
-    m_tcpManager->sendChatMessage(receiver.toLatin1(), chatMessage);
+    m_tcpManager->sendChatMessage(type, receiver.toLatin1(), chatMessage);
 }
 
 void NetworkManager::onLogined(bool ok)
@@ -137,11 +153,6 @@ void NetworkManager::onInfoGot(const QByteArray &infoJson)
         qDebug() << "数据初始化不成功：" << error.errorString();
         emit loginFinshed(false);
     }
-}
-
-void NetworkManager::cancelLogin()
-{
-    m_tcpManager->abortConnection();
 }
 
 void NetworkManager::disposeNewMessage(const QString &sender, msg_t type, const QByteArray &data)
@@ -183,6 +194,14 @@ void NetworkManager::disposeNewMessage(const QString &sender, msg_t type, const 
             FriendInfo *newInfo = qobject_cast<FriendInfo *>(m_jsonParser->jsonToInfo(data));
             ChatManager::instance()->addFriendToGroup("我的好友", newInfo);
         }
+        break;
+    }
+    case MT_REGISTER:
+    {
+        QString result = QString::fromLocal8Bit(data);
+        if (result == REG_SUCCESS)
+            emit hasRegister("注册成功~\n可以登陆了哟~");
+        else emit hasRegister("注册失败\n原因：已经存在。");
         break;
     }
 

@@ -29,7 +29,7 @@ FramelessWindow
         width: root.width
         height: root.height
         color: "white"
-        glowColor: "#10D2A9"
+        glowColor: "#C4E7F8"
         radius: 6
         glowRadius: 5
         antialiasing: true

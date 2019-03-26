@@ -51,7 +51,7 @@ FramelessWindow
         width: root.width
         height: root.height
         color: "transparent"
-        glowColor: background.status === Image.Null ? "#10D2A9" : "#6612F2D6";
+        glowColor: background.status === Image.Null ? "#C4E7F8" : "#66C4E7F8";
         radius: 6
         glowRadius: 5
         antialiasing: true

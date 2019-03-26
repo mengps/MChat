@@ -5,11 +5,13 @@
 #include <QCryptographicHash>
 #include <QDataStream>
 #include <QFile>
+#include <QThread>
 #include <QTimer>
 
 TcpManager::TcpManager(QObject *parent)
     : QTcpSocket(parent)
 {
+    m_username = CLIENT_ID;
     m_sendDataBytes = 0;
     m_sendData = QByteArray();
     m_recvData = QByteArray();
@@ -28,6 +30,7 @@ TcpManager::TcpManager(QObject *parent)
     });
     connect(this, &TcpManager::requestNewConnection, this, &TcpManager::requestNewConnectionSlot);
     connect(this, &TcpManager::startHeartbeat, this, &TcpManager::startHeartbeatSlot);
+    connect(this, &TcpManager::checkLoginInfo, this, &TcpManager::checkLoginInfoSlot);
     connect(this, &TcpManager::sendChatMessage, this, &TcpManager::sendChatMessageSlot);
     connect(this, &TcpManager::sendMessage, this, &TcpManager::sendMessageSlot);
 
@@ -69,6 +72,7 @@ void TcpManager::requestNewConnectionSlot()
 {
     abort();
     connectToHost(server_ip, server_port, QAbstractSocket::ReadWrite);
+    waitForConnected(10000);
 }
 
 void TcpManager::startHeartbeatSlot()
@@ -89,14 +93,15 @@ void TcpManager::sendMessageSlot(msg_t type, msg_option_t option, const QByteArr
     processNextSendMessage();
 }
 
-void TcpManager::sendChatMessageSlot(const QByteArray &receiver, ChatMessage *chatMessage)
+void TcpManager::sendChatMessageSlot(msg_t type, const QByteArray &receiver, ChatMessage *chatMessage)
 {
     m_chatMessageQueue.enqueue(chatMessage);
-    sendMessageSlot(MT_TEXT, MO_UPLOAD, receiver, chatMessage->message().toLocal8Bit());
+    sendMessageSlot(type, MO_UPLOAD, receiver, chatMessage->message().toLocal8Bit());
 }
 
-void TcpManager::checkLoginInfo()
+void TcpManager::checkLoginInfoSlot()
 {
+    requestNewConnectionSlot();
     QMutexLocker locker(&m_mutex);
     auto username  = ChatManager::instance()->username();
     auto password = ChatManager::instance()->password();
@@ -113,8 +118,7 @@ void TcpManager::onStateChanged(QAbstractSocket::SocketState state)
     {
     case QAbstractSocket::ConnectedState:
     {
-        //已连接到服务器，校检登录信息
-        checkLoginInfo();
+        //已连接到服务器
         qDebug() << "已经连接到服务器。";
         break;
     }
@@ -249,7 +253,7 @@ void TcpManager::processRecvMessage()
             break;
 
         case MT_SEARCH:
-            qDebug() << "收到一条用户搜索来自："
+            qDebug() << "收到一条搜索结果来自："
                      << QString(get_sender(m_recvHeader));
             if (get_sender(m_recvHeader) == SERVER_ID && get_receiver(m_recvHeader) == username)
                 emit hasNewMessage(QString(get_sender(m_recvHeader)), MT_SEARCH, data);
@@ -284,6 +288,10 @@ void TcpManager::processRecvMessage()
                      << "消息为：" + QString::fromLocal8Bit(data);
             if (get_receiver(m_recvHeader) == username)
                 emit hasNewMessage(QString(get_sender(m_recvHeader)), MT_ADDFRIEND, data);
+            break;
+
+        case MT_REGISTER:
+            emit hasNewMessage(QString(get_sender(m_recvHeader)), MT_REGISTER, data);
             break;
 
         case MT_UNKNOW:

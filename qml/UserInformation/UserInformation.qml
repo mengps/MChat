@@ -71,7 +71,7 @@ FramelessWindow
         width: root.width
         height: root.height
         color: "transparent"
-        glowColor: background.status == Image.Null ? "#10D2A9" : "#6612F2D6";
+        glowColor: background.status == Image.Null ? "#C4E7F8" : "#66C4E7F8";
         radius: 6
         glowRadius: 5
         antialiasing: true
@@ -391,14 +391,14 @@ FramelessWindow
                     border.color: (parent.hovered || parent.focus) ? "#1583DD" : "transparent"
                 }
                 KeyNavigation.up: yearField
-                KeyNavigation.tab: dateField
-                KeyNavigation.down: dateField
+                KeyNavigation.tab: dayField
+                KeyNavigation.down: dayField
                 onTextEdited: root.hasModify = true;
             }
 
             TextField
             {
-                id: dateField
+                id: dayField
                 width: 35
                 height: 30
                 font.pointSize: 10
@@ -466,7 +466,7 @@ FramelessWindow
                 chatManager.userInfo.background = root.backgroundImage[index];
             }
             onComboBoxEdited: root.hasModify = true;
-            KeyNavigation.up: clicked ? comboBox : dateField;
+            KeyNavigation.up: clicked ? comboBox : dayField;
             KeyNavigation.tab: clicked ? comboBox : signatureInput;
             KeyNavigation.down: clicked ? comboBox : signatureInput;
         }

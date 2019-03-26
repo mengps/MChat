@@ -43,7 +43,8 @@ QString Api::grayImage(const QString &src, const QString &name)
         QFileInfo info(QQmlFile::urlToLocalFileOrQrc(src));
         QString dstPath = QDir::homePath() + "/MChat/Settings/" +
                 ChatManager::instance()->username() + "/headImage/gray_" + name + info.fileName();
-        image.save(dstPath);
+        if (!QFile::exists(dstPath))
+            image.save(dstPath);
 
         return "file:///" + dstPath;
     }
